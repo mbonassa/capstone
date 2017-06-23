@@ -12,28 +12,38 @@ import { firebaseUsersRef } from './utils/firebase';
 import styles from './styles/mainStyles';
 
 
-class App extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      val: ""
-    }
-  }
+import {
+  StackNavigator,
+} from 'react-navigation';
 
-  handleFacebookLogin () {
-    const provider = new firebase.auth.FacebookAuthProvider();
-    firebase.auth().signInWithCredential(provider)
-    .then(() => {
-        alert("We did it")
-    })
-    .catch(error => {
-        // alert("An error occurred", error.code, error.message);
-        return ({
-            errorCode: error.code,
-            errorMessage: error.message,
-        })
-    });
-  }
+const App = StackNavigator({
+  Main: {screen: Login},
+  Profile: {screen: UserView},
+});
+
+
+// class App extends React.Component {
+//   constructor(props){
+//     super(props);
+//     this.state = {
+//       val: ""
+//     }
+//   }
+
+  // handleFacebookLogin () {
+  //   const provider = new firebase.auth.FacebookAuthProvider();
+  //   firebase.auth().signInWithCredential(provider)
+  //   .then(() => {
+  //       alert("We did it")
+  //   })
+  //   .catch(error => {
+  //       // alert("An error occurred", error.code, error.message);
+  //       return ({
+  //           errorCode: error.code,
+  //           errorMessage: error.message,
+  //       })
+  //   });
+  // }
   // componentDidMount(){
   //   firebaseUsersRef.on("value",
   //     (snapshot) => {
@@ -43,28 +53,28 @@ class App extends React.Component {
   //     console.log("The read failed: " + errorObject.code);
   //   }
   //   )}
-
-  render() {
-    return (
-      <View style={styles.container}>
-
-        < UserView />
-        <Login />
-        <View>
-          <Text style={styles.text}>Open up main.js to start working on your app!</Text>
-          <Text style={styles.text}>{firebaseUsersRef.key} </Text>
-          <Text style={styles.text}>{this.state.val}</Text>
-        </View>
-        <View>
-          <Text style={styles.text}>Login with</Text>
-          </View>
-          <View>
-          <Text style={styles.text}>{this.state.val}</Text>
-          </View>
-        </View>
-    );
-  }
-}
+//
+//   render() {
+//     return (
+//       <View style={styles.container}>
+//
+//         < UserView />
+//         <Login />
+//         <View>
+//           <Text style={styles.text}>Open up main.js to start working on your app!</Text>
+//           <Text style={styles.text}>{firebaseUsersRef.key} </Text>
+//           <Text style={styles.text}>{this.state.val}</Text>
+//         </View>
+//         <View>
+//           <Text style={styles.text}>Login with</Text>
+//           </View>
+//           <View>
+//           <Text style={styles.text}>{this.state.val}</Text>
+//           </View>
+//         </View>
+//     );
+//   }
+// }
 
 // const styles = StyleSheet.create({
 //   container: {

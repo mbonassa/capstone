@@ -62,6 +62,7 @@ export default class App extends React.Component {
     )}
 
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         <View>
@@ -82,6 +83,12 @@ export default class App extends React.Component {
             }}
             value={this.state.password}
           />
+          <Button
+        title="Go to Jane's profile"
+        onPress={() =>
+          navigate('Profile', { name: 'Jane' })
+        }
+      />
           <Button
             title="Login"
             onPress={this.handleLogin}></Button>
@@ -120,4 +127,3 @@ export default class App extends React.Component {
 // });
 
 Expo.registerRootComponent(App);
-

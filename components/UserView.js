@@ -28,6 +28,10 @@ export default class UserView extends React.Component{
     });
   }
 
+  // justGotLiked(){
+  //
+  // }
+
   render() {
     console.log('image', this.state.val.imageUrl)
       return (
@@ -60,9 +64,12 @@ export default class UserView extends React.Component{
           <Image
             source={require('../assets/icons/broken_heart.png')}
             style={{width:50, height: 50}} />
+
+        
           <Image
             source={require('../assets/icons/heart_eyes.png')}
             style={{width:50, height: 50}} />
+
         </View>
         </View>
       </View>
