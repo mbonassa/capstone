@@ -2,12 +2,15 @@ import Expo from 'expo';
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import 'react-native-fbsdk';
-// import { FBLogin } from 'react-native-facebook-login';
+
+import UserView from './components/UserView';
+
 import firebase from 'firebase';
 import { FIREBASE_CONFIG } from './config';
 import Login from './components/Login';
 import { firebaseUsersRef } from './utils/firebase';
 import styles from './styles/mainStyles';
+
 
 class App extends React.Component {
   constructor(props){
@@ -31,19 +34,21 @@ class App extends React.Component {
         })
     });
   }
-  componentDidMount(){
-    firebaseUsersRef.on("value",
-      (snapshot) => {
-      this.setState({val: snapshot.val()});
-    },
-      (errorObject) => {
-      console.log("The read failed: " + errorObject.code);
-    }
-    )}
+  // componentDidMount(){
+  //   firebaseUsersRef.on("value",
+  //     (snapshot) => {
+  //     this.setState({val: snapshot.val()});
+  //   },
+  //     (errorObject) => {
+  //     console.log("The read failed: " + errorObject.code);
+  //   }
+  //   )}
 
   render() {
     return (
       <View style={styles.container}>
+
+        < UserView />
         <Login />
         <View>
           <Text style={styles.text}>Open up main.js to start working on your app!</Text>
