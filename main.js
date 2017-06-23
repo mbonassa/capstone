@@ -2,7 +2,7 @@ import Expo from 'expo';
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import 'react-native-fbsdk';
-import { FBLogin } from 'react-native-facebook-login';
+// import { FBLogin } from 'react-native-facebook-login';
 import firebase from 'firebase';
 import { FIREBASE_CONFIG } from './config';
 
@@ -54,8 +54,6 @@ class App extends React.Component {
         </View>
         <View>
           <Text>Login with</Text>
-          <FBLogin
-          loginBehavior="Native"/>
           </View>
           <View>
           <Text>{this.state.val}</Text>
