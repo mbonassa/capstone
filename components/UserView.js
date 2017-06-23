@@ -1,6 +1,6 @@
 import Expo from 'expo';
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import FireBaseTools, { firebaseUsersRef } from '../utils/firebase';
 
 const styles = StyleSheet.create({
@@ -19,7 +19,7 @@ export default class UserView extends React.Component{
   }
 
   componentDidMount(){
-    firebaseUsersRef.on("value",
+    firebaseUsersRef.child('User1').on("value",
       (snapshot) => {
       this.setState({val: snapshot.val()});
     },
@@ -29,12 +29,28 @@ export default class UserView extends React.Component{
   }
 
   render() {
+    console.log('image', this.state.val.imageUrl)
       return (
       <View style={styles.container}>
         <View>
           <Text>Your User Page</Text>
-          <Text>{firebaseUsersRef.key} </Text>
-          <Text>{this.state.val}</Text>
+          <Image
+            source={{uri: this.state.val.imageUrl}}
+            style={{width: 200, height: 200}} />
+          <Text>{this.state.val.name}, {this.state.val.age}</Text>
+          <Text>{this.state.val.bio}</Text>
+
+        <View style={{
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Image
+            source={require('../assets/icons/heart_eyes.png')}
+            style={{width:50, height: 50}} />
+          <Image
+              source={require('../assets/icons/broken_heart.png')}
+              style={{width:50, height: 50}} />
+        </View>
         </View>
       </View>
       )
