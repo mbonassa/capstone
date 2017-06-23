@@ -5,12 +5,9 @@ import 'react-native-fbsdk';
 // import { FBLogin } from 'react-native-facebook-login';
 import firebase from 'firebase';
 import { FIREBASE_CONFIG } from './config';
-
-
-const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
-const firebaseAuth = firebaseApp.auth();
-const firebaseDb = firebaseApp.database();
-const firebaseUsersRef = firebaseApp.database().ref("test");
+import Login from './components/Login';
+import { firebaseUsersRef } from './utils/firebase';
+import styles from './styles/mainStyles';
 
 class App extends React.Component {
   constructor(props){
@@ -47,29 +44,30 @@ class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Login />
         <View>
-          <Text>Open up main.js to start working on your app!</Text>
-          <Text>{firebaseUsersRef.key} </Text>
-          <Text>{this.state.val}</Text>
+          <Text style={styles.text}>Open up main.js to start working on your app!</Text>
+          <Text style={styles.text}>{firebaseUsersRef.key} </Text>
+          <Text style={styles.text}>{this.state.val}</Text>
         </View>
         <View>
-          <Text>Login with</Text>
+          <Text style={styles.text}>Login with</Text>
           </View>
           <View>
-          <Text>{this.state.val}</Text>
+          <Text style={styles.text}>{this.state.val}</Text>
           </View>
         </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#fff',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+// });
 
 Expo.registerRootComponent(App);
