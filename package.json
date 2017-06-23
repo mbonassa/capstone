@@ -1,14 +1,22 @@
 {
-  "name": "my-new-project",
-  "version": "0.0.0",
-  "description": "Hello Expo!",
+  "name": "capstone",
+  "version": "0.0.1",
+  "description": "Dating for the 21st century",
   "author": null,
   "private": true,
   "main": "main.js",
+  "scripts": {
+    "start": "echo nothing"
+  },
   "dependencies": {
     "expo": "17.0.0",
     "firebase": "^4.1.3",
     "react": "16.0.0-alpha.6",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-17.0.0.tar.gz"
+    "react-native": "https://github.com/expo/react-native/archive/sdk-17.0.0.tar.gz",
+    "react-native-facebook-login": "^1.5.0",
+    "react-native-fbsdk": "^0.6.1",
+    "react-redux": "^5.0.5",
+    "redux": "^3.7.0",
+    "redux-promise": "^0.5.3"
   }
 }

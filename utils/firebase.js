@@ -21,14 +21,8 @@ const FireBaseTools = {
             return new firebase.auth.EmailAuthProvider();
         case 'facebook':
             return new firebase.auth.FacebookAuthProvider();
-        case 'github':
-            return new firebase.auth.GithubAuthProvider();
-        case 'google':
-            return new firebase.auth.GoogleAuthProvider();
-        case 'twitter':
-            return new firebase.auth.TwitterAuthProvider();
         default:
-            throw new Error('Provider is not supported!!!');
+            throw new Error('Provider is not supported!');
         }
     },
 
@@ -40,10 +34,17 @@ const FireBaseTools = {
    */
     loginWithProvider: (p) => {
         const provider = FireBaseTools.getProvider(p);
-        return firebaseAuth.signInWithPopup(provider).then(firebaseAuth.currentUser).catch(error => ({
-            errorCode: error.code,
-            errorMessage: error.message,
-        }));
+        return firebaseAuth.signInWithPopup(provider)
+        .then(() => {
+            alert("We did it")
+        })
+        .catch(error => {
+            alert("An error occurred", error.code, error.message);
+            return ({
+                errorCode: error.code,
+                errorMessage: error.message,
+            })
+        });
     },
 
   /**

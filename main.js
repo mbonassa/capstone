@@ -1,7 +1,16 @@
 import Expo from 'expo';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { firebaseUsersRef } from './utils/firebase'
+import { StyleSheet, Text, View, Button } from 'react-native';
+import 'react-native-fbsdk';
+import { FBLogin } from 'react-native-facebook-login';
+import firebase from 'firebase';
+import { FIREBASE_CONFIG } from './config';
+
+
+const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+const firebaseAuth = firebaseApp.auth();
+const firebaseDb = firebaseApp.database();
+const firebaseUsersRef = firebaseApp.database().ref("test");
 
 class App extends React.Component {
   constructor(props){
@@ -11,10 +20,23 @@ class App extends React.Component {
     }
   }
 
+  handleFacebookLogin () {
+    const provider = new firebase.auth.FacebookAuthProvider();
+    firebase.auth().signInWithCredential(provider)
+    .then(() => {
+        alert("We did it")
+    })
+    .catch(error => {
+        // alert("An error occurred", error.code, error.message);
+        return ({
+            errorCode: error.code,
+            errorMessage: error.message,
+        })
+    });
+  }
   componentDidMount(){
     firebaseUsersRef.on("value",
       (snapshot) => {
-      console.log("------------------------VAL-------------",snapshot)
       this.setState({val: snapshot.val()});
     },
       (errorObject) => {
@@ -25,10 +47,20 @@ class App extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>Open up main.js to start working on your app!</Text>
-        <Text>{firebaseUsersRef.key} </Text>
-        <Text>{this.state.val}</Text>
-      </View>
+        <View>
+          <Text>Open up main.js to start working on your app!</Text>
+          <Text>{firebaseUsersRef.key} </Text>
+          <Text>{this.state.val}</Text>
+        </View>
+        <View>
+          <Text>Login with</Text>
+          <FBLogin
+          loginBehavior="Native"/>
+          </View>
+          <View>
+          <Text>{this.state.val}</Text>
+          </View>
+        </View>
     );
   }
 }
