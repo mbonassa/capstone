@@ -7,8 +7,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'column'
   },
 });
 
@@ -33,23 +33,36 @@ export default class UserView extends React.Component{
       return (
       <View style={styles.container}>
         <View>
-          <Text>Your User Page</Text>
+
+        <View style={{
+          justifyContent: 'space-between',
+          flexDirection: 'row'
+        }}>
+          <Image
+            source={require('../assets/icons/house.jpg')}
+            style={{width:50, height: 50}} />
+            <Text>Despacito</Text>
+          <Image
+            source={require('../assets/icons/speech_bubble.png')}
+            style={{width:50, height: 50}} />
+        </View>
+
           <Image
             source={{uri: this.state.val.imageUrl}}
-            style={{width: 200, height: 200}} />
+            style={{width: 300, height: 500, zIndex: 0}} />
           <Text>{this.state.val.name}, {this.state.val.age}</Text>
           <Text>{this.state.val.bio}</Text>
 
         <View style={{
-          justifyContent: 'center',
-          alignItems: 'center'
+          justifyContent: 'space-between',
+          flexDirection: 'row'
         }}>
+          <Image
+            source={require('../assets/icons/broken_heart.png')}
+            style={{width:50, height: 50}} />
           <Image
             source={require('../assets/icons/heart_eyes.png')}
             style={{width:50, height: 50}} />
-          <Image
-              source={require('../assets/icons/broken_heart.png')}
-              style={{width:50, height: 50}} />
         </View>
         </View>
       </View>
