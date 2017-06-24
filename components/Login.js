@@ -20,7 +20,6 @@ export default class App extends React.Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleFacebookLogin = this.handleFacebookLogin.bind(this);
-    this.faceBookAuth = this.faceBookAuth.bind(this);
   }
 
   handleLogin (event) {
@@ -33,7 +32,6 @@ export default class App extends React.Component {
     })
   }
 
-
   handleSignUp (event) {
     firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword).catch(function(error){
       var errorCode = error.code;
@@ -42,16 +40,6 @@ export default class App extends React.Component {
     .then(() => {
       this.props.navigation.navigate('Profile')
     })
-  }
-
-  faceBookAuth (token){
-
-    console.log(token, "that's the token");
-    const provider = FireBaseTools.getProvider('facebook');
-    console.log(provider, "that's the provider")
-    const credential = provider.credential(token);
-    console.log(credential, "let's go");
-    return firebaseAuth.signInWithCredential(credential);
   }
 
   handleFacebookLogin () {
@@ -68,8 +56,8 @@ export default class App extends React.Component {
           })
           .catch((error) => {
             console.log("ERROR", error)
+            alert("Sorry, but you got an error:", error)
         });
-        //});
       } else if (type === "cancel"){
         alert("Sign-in cancelled")
       } else {
@@ -85,7 +73,6 @@ export default class App extends React.Component {
       this.props.navigation.navigate('Profile')
     }
     firebaseAuth.onAuthStateChanged(user => {
-      console.log(this.props);
       if (user){
       this.props.navigation ? this.props.navigation.navigate(('Profile', { name: 'Jane' })) : console.log("no props received")
 
@@ -94,7 +81,6 @@ export default class App extends React.Component {
   }
 
   render() {
-    console.log("hi", this.LoginManager)
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
