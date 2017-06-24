@@ -28,6 +28,9 @@ export default class App extends React.Component {
       var errorCode = error.code;
       var errorMessage = error.message;
     })
+    .then(() => {
+      this.props.navigation.navigate('Profile')
+    })
   }
 
 
