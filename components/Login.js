@@ -60,9 +60,15 @@ export default class App extends React.Component {
     async function logIn() {
         const { type, token }  = await Expo.Facebook.logInWithReadPermissionsAsync('1475591312496976') // string is App ID
       if (type === "success"){
-        // self.faceBookAuth(token)
-        // .then(() => {
-          self.props.navigation.navigate('Profile')
+
+          const credential = firebase.auth.FacebookAuthProvider.credential(token);
+          firebaseAuth.signInWithCredential(credential)
+          .then(() => {
+            self.props.navigation.navigate('Profile')
+          })
+          .catch((error) => {
+            console.log("ERROR", error)
+        });
         //});
       } else if (type === "cancel"){
         alert("Sign-in cancelled")
@@ -71,6 +77,7 @@ export default class App extends React.Component {
       }
    }
    logIn();
+
   }
 
   componentDidMount(){
