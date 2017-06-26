@@ -1,7 +1,7 @@
 import Expo from 'expo';
 import React from 'react';
 import { StyleSheet, Text, View, Button, Image } from 'react-native';
-import FireBaseTools, { firebaseUsersRef } from '../utils/firebase';
+import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../utils/firebase';
 
 const styles = StyleSheet.create({
   container: {
@@ -15,17 +15,20 @@ const styles = StyleSheet.create({
 export default class UserView extends React.Component{
   constructor(props){
     super(props)
-    this.state = {val: ''}
+    this.state = {val: {}}
   }
 
   componentDidMount(){
-    firebaseUsersRef.child('User1').on("value",
-      (snapshot) => {
-      this.setState({val: snapshot.val()});
-    },
-      (errorObject) => {
-      console.log("The read failed: " + errorObject.code);
-    });
+    console.log(firebaseAuth.currentUser.uid)
+    if (firebaseAuth.currentUser){
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value",
+        (snapshot) => {
+        this.setState({val: snapshot.val()});
+      },
+        (errorObject) => {
+        console.log("The read failed: " + errorObject.code);
+      });
+    }
   }
 
   // justGotLiked(){
@@ -65,7 +68,7 @@ export default class UserView extends React.Component{
             source={require('../assets/icons/broken_heart.png')}
             style={{width:50, height: 50}} />
 
-        
+
           <Image
             source={require('../assets/icons/heart_eyes.png')}
             style={{width:50, height: 50}} />

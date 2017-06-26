@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import styles from '../styles/mainStyles';
-import FireBaseTools, { firebaseAuth, firebaseApp } from '../utils/firebase'
+import FireBaseTools, { firebaseUsersRef, firebaseAuth, firebaseApp } from '../utils/firebase'
 import firebase from 'firebase';
 
 import Expo from 'expo';
@@ -33,12 +33,19 @@ export default class App extends React.Component {
   }
 
   handleSignUp (event) {
-    firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword).catch(function(error){
+    return firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword).catch(function(error){
       var errorCode = error.code;
       var errorMessage = error.message;
     })
     .then(() => {
-      this.props.navigation.navigate('Profile')
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+        name: "working",
+        age: 15,
+        bio: "My mom said I could have a tinder"
+      })
+    })
+    .then(() => {
+      this.props.navigation.navigate('Profile');
     })
   }
 
@@ -48,7 +55,6 @@ export default class App extends React.Component {
     async function logIn() {
         const { type, token }  = await Expo.Facebook.logInWithReadPermissionsAsync('1475591312496976') // string is App ID
       if (type === "success"){
-
           const credential = firebase.auth.FacebookAuthProvider.credential(token);
           firebaseAuth.signInWithCredential(credential)
           .then(() => {
@@ -69,15 +75,10 @@ export default class App extends React.Component {
   }
 
   componentDidMount(){
-    if (firebaseAuth.currentUser){
-      this.props.navigation.navigate('Profile')
-    }
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user){
-      this.props.navigation ? this.props.navigation.navigate(('Profile', { name: 'Jane' })) : console.log("no props received")
 
-      }
-    });
+    if (firebaseAuth.currentUser){
+      this.setState({user: firebaseAuth.currentUser.uid})
+    }
   }
 
   render() {
@@ -86,7 +87,7 @@ export default class App extends React.Component {
       <View style={styles.container}>
        <View>
         <View>
-          <Text> {this.state.user ? this.state.user : "" } here he is!! </Text>
+          <Text> {this.state.user} here he is!! </Text>
           <Text style={styles.text}>Login</Text>
           <TextInput
             style={{height: 40, borderColor: 'gray', borderWidth: 1}}
