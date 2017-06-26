@@ -23,8 +23,6 @@ export default class UserView extends React.Component{
     }}
 
     this.handleLogout = this.handleLogout.bind(this);
-    this.handleRejectPress = this.handleRejectPress.bind(this);
-    this.handleLikePress = this.handleLikePress.bind(this);
   }
 
   handleLogout(){
@@ -46,14 +44,9 @@ export default class UserView extends React.Component{
     }
   }
 
-  handleRejectPress(){
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('viewed').update({User1: true})
-  }
-
-  handleLikePress(){
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('viewed').update({User1: true})
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('likes').update({User1: true})
-  }
+  // justGotLiked(){
+  //
+  // }
 
   render() {
     console.log('image', this.state.val.imageUrl)
@@ -79,31 +72,23 @@ export default class UserView extends React.Component{
             style={{width: 300, height: 500, zIndex: 0}} />
           <Text>{this.state.val.name}, {this.state.val.age}</Text>
           <Text>{this.state.val.bio}</Text>
-          <Text>FOR TESTING PURPOSES: {this.state.val.email}</Text>
-
 
         <View style={{
           justifyContent: 'space-between',
           flexDirection: 'row'
         }}>
-
           <Image
             source={require('../assets/icons/broken_heart.png')}
-            style={{width:50, height: 50}}
-            onPress={this.handleRejectPress} />
+            style={{width:50, height: 50}} />
 
 
           <Image
             source={require('../assets/icons/heart_eyes.png')}
-            style={{width:50, height: 50}}
-            onPress={this.handleLikePress} />
-
-
+            style={{width:50, height: 50}} />
           <Button
             title="Log out"
             onPress={this.handleLogout}
           />
-
         </View>
         </View>
       </View>
