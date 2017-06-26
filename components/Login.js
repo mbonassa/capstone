@@ -33,10 +33,10 @@ export default class App extends React.Component {
   }
 
   handleSignUp (event) {
-    firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword)
+    return firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword)
     .then(() => {
       return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
-        name: "Eli2",
+        name: "Eli4",
         age: 22,
         bio: "Fullstack rules"
       })
