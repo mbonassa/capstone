@@ -1,7 +1,6 @@
 import Expo from 'expo';
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import 'react-native-fbsdk';
 
 import UserView from './components/UserView';
 import InitialMatch from './components/InitialMatch';
