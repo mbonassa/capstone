@@ -53,7 +53,7 @@ export default class UserView extends React.Component{
 
         </div>
 
-          <h4>{this.state.val.name}, {this.state.val.age}</h4>
+          {this.state.name ? (<h4>{this.state.val.name}, {this.state.val.age}</h4>) : null}
           <h4>{this.state.val.bio}</h4>
           <h4>FOR TESTING PURPOSES: {this.state.val.email}</h4>
 
