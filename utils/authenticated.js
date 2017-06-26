@@ -11,4 +11,13 @@ function requireAuth(nextState, replace) {
     }
 }
 
+firebaseAuth.onAuthStateChanged(user => {
+      console.log("THE AUTH STATE CHANGED");
+      console.log(user)
+      if (user){
+      this.props.navigation ? this.props.navigation.navigate(('Profile', { name: 'Jane' })) : console.log("no props received")
+
+      }
+    });
+
 module.exports = requireAuth;
