@@ -92,6 +92,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount(){
+    firebaseAuth.signOut();
 
     if (firebaseAuth.currentUser){
       this.setState({user: firebaseAuth.currentUser.uid})
