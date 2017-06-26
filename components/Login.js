@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, Button, TextInput, Image } from 'react-native';
 import styles from '../styles/mainStyles';
 import FireBaseTools, { firebaseUsersRef, firebaseAuth, firebaseApp } from '../utils/firebase'
 import firebase from 'firebase';
-import FitImage from 'react-native-fit-image';
 import Expo from 'expo';
 
 export default class App extends React.Component {
@@ -93,6 +92,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount(){
+    firebaseAuth.signOut();
 
     if (firebaseAuth.currentUser){
       this.setState({user: firebaseAuth.currentUser.uid})
