@@ -15,7 +15,11 @@ const styles = StyleSheet.create({
 export default class UserView extends React.Component{
   constructor(props){
     super(props)
-    this.state = {val: {}}
+    this.state = {val: {}
+  }
+    this.handleRejectPress = this.handleRejectPress.bind(this);
+    this.handleLikePress = this.handleLikePress.bind(this);
+
   }
 
   componentDidMount(){
@@ -31,9 +35,14 @@ export default class UserView extends React.Component{
     }
   }
 
-  // justGotLiked(){
-  //
-  // }
+  handleRejectPress(){
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('viewed').update({User1: true})
+  }
+
+  handleLikePress(){
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('viewed').update({User1: true})
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('likes').update({User1: true})
+  }
 
   render() {
     console.log('image', this.state.val.imageUrl)
@@ -64,14 +73,17 @@ export default class UserView extends React.Component{
           justifyContent: 'space-between',
           flexDirection: 'row'
         }}>
+
           <Image
             source={require('../assets/icons/broken_heart.png')}
-            style={{width:50, height: 50}} />
+            style={{width:50, height: 50}}
+            onPress={this.handleRejectPress} />
 
 
           <Image
             source={require('../assets/icons/heart_eyes.png')}
             style={{width:50, height: 50}} />
+            onPress={this.handleLikePress} />
 
         </View>
         </View>
