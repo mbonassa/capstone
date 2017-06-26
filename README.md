@@ -1,134 +1,37 @@
-# Hi, I'm 🔥🔥firebones🔥🔥
+# Boilermaker
 
-I'm a happy little skeleton who is totally on [fire(base)](https://firebase.google.com)!
+*Good things come in pairs*
 
-You can clone me to use as a starter on your projects. I have React and Firebase,
-and some examples of how to put them together.
+Looking to mix up a backend with express/sequelize and a frontend with react/redux? That's `boilermaker`!
 
-## I need node >= 7.0.0
+Follow along with the workshop to make your own! This canonical version can serve as a reference, or a starting point all on its own.
 
-If you don't have it, I'll complain and tell you how to install it.
+## Setup
 
-## 1. Make me into something!
+To use this boilerplate, you'll need to take the following steps:
 
-We recommend that you **clone**, not fork, this repo – unless your intention is
-to develop Firebones proper instead of using Firebones as the starting point for your
-own application.
+* `npm install`, or `yarn install` - whatever you're into
+* Create two postgres databases: `boilermaker` and `boilermaker-test`
+  * By default, running `npm test` will use `boilermaker-test`, while regular development uses `boilermaker`
+* Create a file called `secrets.js` in the project root
+  * This file is `.gitignore`'d, and will *only* be required in your *development* environment
+  * Its purpose is to attach the secret env variables that you'll use while developing
+  * However, it's **very** important that you **not** push it to Github! Otherwise, *prying eyes* will find your secret API keys!
+  * It might look like this:
 
-Start by doing either of the following:
+  ```
+    process.env.GOOGLE_CLIENT_ID = 'hush hush';
+    process.env.GOOGLE_CLIENT_SECRET = 'pretty secret';
+    process.env.GOOGLE_CALLBACK = '/auth/google/callback';
+  ```
 
-* Create a GitHub repo and clone it, or
-* `git init` in an empty directory on your machine.
+* To use OAuth with Google, complete the step above with a real client ID and client secret from Google
+  * You can get them here: https://console.developers.google.com/apis/credentials
 
-After you have a repo on your machine:
+## Start
 
-```sh
-git remote add bones https://github.com/FullstackAcademy/firebones.git
-git fetch bones
-git merge bones/master
-```
+`npm start` will make great things happen!
 
-And then you'll have me! If I change – which I probably will – you can get the most recent
-version by doing this again:
+If you want to run the server and/or webpack separately, you can also `npm run start-server` and `npm run build-client`.
 
-```sh
-git fetch bones
-git merge bones/master
-```
-
-## 2. Install the Firebase command line tools
-
-You'll want this globally:
-
-```sh
-npm install -g firebase-tools
-```
-
-If you just installed them, you'll need to log in:
-
-```sh
-firebase login
-```
-
-## 2. Start my dusty heart
-
-Short and sweet:
-
-```sh
-npm install
-npm run dev
-```
-
-The `dev` script runs webpack, `firebase serve`, the linter, and the tests. You can run these
-in separate terminals if you prefer:
-
-```sh
-npm run build-watch   # webpack
-```
-
-```sh
-firebase serve        # Serve the app on port 5000
-```
-
-```sh
-npm run test-watch    # Watch tests
-```
-
-```sh
-npm run lint-watch    # Watch lint
-```
-
-## 3. Tell me about your Firebase
-
-By default, I'm pointed at the firebones firebase. That might be nice for exploring,
-but soon you'll want to create your own.
-
-Go to [the Firebase console](https://console.firebase.google.com/) and create
-a project. Go to Overview in that project's console, and click "Add Firebase to your web app".
-
-Copy and paste the config from there into [fire/index.js](fire/index.js). You don't have to
-copy the call to `initializeApp`, I've already got that.
-
-Then, in your code, you can import firebase like so:
-
-```javascript
-import firebase from 'APP/fire'
-```
-
-## 4. Deploy
-
-The first time you deploy, you'll need to tell firebase which project to use:
-
-```sh
-firebase use --add
-```
-
-Then, and every time thereafter, just say,
-
-```sh
-firebase deploy
-```
-
-And I'll be deployed to Firebase hosting.
-
-## My anatomy
-
-`/app` has the React setup. `main.jsx` is the entry point.
-
-`/fire` has the Firebase config.
-
-`/functions` is where your [cloud functions](https://firebase.google.com/preview/functions/write-firebase-functions) live.
-
-`/demos` has some demos (currently just a little scratchpad).
-
-`/bin` has scripts. (Right now it has *one* script that creates a useful symlink.)
-
-## Conventions
-
-I use `require` and `module.exports` in `.js` files.
-
-I use `import` and `export` in `.jsx` files, unless `require` makes for cleaner code.
-
-I use two spaces, no semi-colons, and generally prefer a less strict version of
-[NPM's funny coding style](https://docs.npmjs.com/misc/coding-style). My lint config is
-in [eslintrc.js](eslintrc.js).
+From there, just follow your bliss.
