@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Image } from 'react-native';
 import styles from '../styles/mainStyles';
 import FireBaseTools, { firebaseAuth, firebaseApp } from '../utils/firebase'
 import firebase from 'firebase';
-
+import FitImage from 'react-native-fit-image';
 import Expo from 'expo';
 
 export default class App extends React.Component {
@@ -11,11 +11,12 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       val: "",
-      signUpEmail: "",
-      signUpPassword: "",
-      logInEmail: "",
-      logInPassword: "",
-      user: ""
+      signUpEmail: "email",
+      signUpPassword: "password",
+      logInEmail: "email",
+      logInPassword: "password",
+      user: "",
+      toggleLogin: true,
     }
     this.handleLogin = this.handleLogin.bind(this);
     this.handleSignUp = this.handleSignUp.bind(this);
@@ -78,6 +79,7 @@ export default class App extends React.Component {
 
       }
     });
+
   }
 
   render() {
@@ -86,55 +88,52 @@ export default class App extends React.Component {
       <View style={styles.container}>
        <View>
         <View>
-          <Text> {this.state.user ? this.state.user : "" } here he is!! </Text>
-          <Text style={styles.text}>Login</Text>
-          <TextInput
-            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-            onChangeText={(logInEmail) => {
-              this.setState({logInEmail});
-            }}
-            value={this.state.logInEmail}
-          />
-          <TextInput
-            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-            onChangeText={(logInPassword) => {
-              this.setState({logInPassword})
-            }}
-            value={this.state.logInPassword}
-          />
+          <Image source={require('../assets/icons/logo.png')} style={{height: 220, width:220, marginTop: 20, marginBottom: -30}} />
+         {this.state.toggleLogin ? ( <View>
+              <TextInput
+                style={styles.input}
+                onChangeText={(logInEmail) => {
+                  this.setState({logInEmail});
+                }}
+                value={this.state.logInEmail}
+              />
+              <TextInput
+                style={styles.input}
+                onChangeText={(logInPassword) => {
+                  this.setState({logInPassword})
+                }}
+                value={this.state.logInPassword}
+              />
+              <Button
+                buttonStyle={styles.button}
+                title="Login"
+                color="white"
+                onPress={this.handleLogin}
+              />
+            </View>) : (<View>
+            <TextInput
+              style={styles.input}
+              onChangeText={(signUpEmail) => {
+                this.setState({signUpEmail});
+              }}
+              value={this.state.signUpEmail}
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(signUpPassword) => {
+                this.setState({signUpPassword})
+              }}
+              value={this.state.signUpPassword}
+            />
+            <Button
+              title="Sign up"
+              onPress={this.handleSignUp}
+              color="white"
+            />
+          </View>)}
+          <Button style={styles.header} color="white" title={!this.state.toggleLogin ? "Returning? Login" : "New here? Sign up"} onPress={()=>{this.setState({toggleLogin: !this.state.toggleLogin})}} />
           <Button
-            title="Go to Jane's profile"
-            onPress={() =>
-              navigate('Profile', { name: 'Jane' })
-            }
-          />
-          <Button
-            title="Login"
-            onPress={this.handleLogin}
-          />
-          <Text style={styles.text}> or </Text>
-          <Text style={styles.text}> Sign Up </Text>
-          <TextInput
-            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-            onChangeText={(signUpEmail) => {
-              this.setState({signUpEmail});
-            }}
-            value={this.state.signUpEmail}
-          />
-          <TextInput
-            style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-            onChangeText={(signUpPassword) => {
-              this.setState({signUpPassword})
-            }}
-            value={this.state.signUpPassword}
-          />
-          <Button
-            title="Sign up"
-            onPress={this.handleSignUp}
-          />
-          <Text> Sign in thru Facebook </Text>
-          <Button
-            title="Facebook"
+            title="Sign in with Facebook"
             onPress={this.handleFacebookLogin}
           />
         </View>
