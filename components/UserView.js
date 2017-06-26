@@ -72,6 +72,8 @@ export default class UserView extends React.Component{
             style={{width: 300, height: 500, zIndex: 0}} />
           <Text>{this.state.val.name}, {this.state.val.age}</Text>
           <Text>{this.state.val.bio}</Text>
+          <Text>FOR TESTING PURPOSES: {this.state.val.email}</Text>
+
 
         <View style={{
           justifyContent: 'space-between',

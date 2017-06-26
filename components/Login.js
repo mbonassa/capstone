@@ -33,21 +33,27 @@ export default class App extends React.Component {
   }
 
   handleSignUp (event) {
-    return firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword)
+    console.log("Firing");
+    if (firebaseAuth){
+    firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword)
     .then(() => {
       return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
-        name: "Eli4",
+        name: "Happy Fullstacker",
+        email: this.state.signUpEmail,
+        password: this.state.signUpPassword,
         age: 22,
         bio: "Fullstack rules"
-      })
-    })
-    .then(() => {
+      }, () => {
       this.props.navigation.navigate('Profile');
+      });
     })
     .catch(function(error){
       var errorCode = error.code;
       var errorMessage = error.message;
     })
+    } else {
+      alert("Auth db not connected")
+    }
   }
 
   handleFacebookLogin () {
