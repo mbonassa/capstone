@@ -4,6 +4,8 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import 'react-native-fbsdk';
 
 import UserView from './components/UserView';
+import InitialMatch from './components/InitialMatch';
+
 
 import firebase from 'firebase';
 import { FIREBASE_CONFIG } from './config';
@@ -18,7 +20,7 @@ import {
 
 const App = StackNavigator({
   Main: {screen: Login},
-  Profile: {screen: UserView},
+  Profile: {screen: UserView}
 });
 
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, TextInput, Image } from 'react-native';
 import styles from '../styles/mainStyles';
-import FireBaseTools, { firebaseAuth, firebaseApp } from '../utils/firebase'
+import FireBaseTools, { firebaseUsersRef, firebaseAuth, firebaseApp } from '../utils/firebase'
 import firebase from 'firebase';
 import FitImage from 'react-native-fit-image';
 import Expo from 'expo';
@@ -34,13 +34,27 @@ export default class App extends React.Component {
   }
 
   handleSignUp (event) {
-    firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword).catch(function(error){
+    console.log("Firing");
+    if (firebaseAuth){
+    firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword)
+    .then(() => {
+      return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+        name: "Happy Fullstacker",
+        email: this.state.signUpEmail,
+        password: this.state.signUpPassword,
+        age: 22,
+        bio: "Fullstack rules"
+      }, () => {
+      this.props.navigation.navigate('Profile');
+      });
+    })
+    .catch(function(error){
       var errorCode = error.code;
       var errorMessage = error.message;
     })
-    .then(() => {
-      this.props.navigation.navigate('Profile')
-    })
+    } else {
+      alert("Auth db not connected")
+    }
   }
 
   handleFacebookLogin () {
@@ -49,15 +63,24 @@ export default class App extends React.Component {
     async function logIn() {
         const { type, token }  = await Expo.Facebook.logInWithReadPermissionsAsync('1475591312496976') // string is App ID
       if (type === "success"){
-
-          const credential = firebase.auth.FacebookAuthProvider.credential(token);
-          firebaseAuth.signInWithCredential(credential)
-          .then(() => {
-            self.props.navigation.navigate('Profile')
-          })
-          .catch((error) => {
-            console.log("ERROR", error)
-            alert("Sorry, but you got an error:", error)
+        const credential = firebase.auth.FacebookAuthProvider.credential(token);
+        firebaseAuth.signInWithCredential(credential)
+        .then(() => {
+          //have to get their facebook name somehow
+          if (!firebaseUsersRef.child(firebaseAuth.currentUser.uid).child("name")){
+            firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+              name: "Cool Facebooker",
+              age: 22,
+              bio: "Check me out on facebook"
+            })
+          }
+        })
+        .then(() => {
+          self.props.navigation.navigate('Profile')
+        })
+        .catch((error) => {
+          console.log("ERROR", error)
+          alert("Sorry, but you got an error:", error)
         });
       } else if (type === "cancel"){
         alert("Sign-in cancelled")
@@ -70,16 +93,10 @@ export default class App extends React.Component {
   }
 
   componentDidMount(){
+
     if (firebaseAuth.currentUser){
-      this.props.navigation.navigate('Profile')
+      this.setState({user: firebaseAuth.currentUser.uid})
     }
-    firebaseAuth.onAuthStateChanged(user => {
-      if (user){
-      this.props.navigation ? this.props.navigation.navigate(('Profile', { name: 'Jane' })) : console.log("no props received")
-
-      }
-    });
-
   }
 
   render() {
@@ -132,6 +149,7 @@ export default class App extends React.Component {
             />
           </View>)}
           <Button style={styles.header} color="white" title={!this.state.toggleLogin ? "Returning? Login" : "New here? Sign up"} onPress={()=>{this.setState({toggleLogin: !this.state.toggleLogin})}} />
+
           <Button
             title="Sign in with Facebook"
             onPress={this.handleFacebookLogin}
