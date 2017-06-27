@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 
-import { Profile, Login, EditProfile, Signup, Quiz} from './components';
+import { Profile, Login, EditProfile, Signup, Quiz, DailyMatch } from './components';
 
 ReactDOM.render(
    <Router history={browserHistory}>
@@ -15,6 +15,7 @@ ReactDOM.render(
         <Route path="/login" component={Login}/>
         <Route path="/quiz" component={Quiz}/>
         <Route path="/signup" component={Signup}/>
+        <Route path="/match" component={DailyMatch}/>
       </Route>
     </Router>,
     document.getElementById('app')

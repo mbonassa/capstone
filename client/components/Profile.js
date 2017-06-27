@@ -2,6 +2,7 @@ import React from 'react';
 import { browserHistory } from 'react-router';
 import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase.js';
 import { Link } from 'react-router';
+import DailyMatch from './'
 
 export default class UserView extends React.Component {
   constructor(props){
@@ -67,9 +68,15 @@ export default class UserView extends React.Component {
             onClick={this.handleLogout}
           >LOG OUT </button>
         </div>
+         <Link to={
+           {
+             pathname: "match",
+             state: {
+               partnerId: "User1"
+            }
+           }
+          }> Your Daily Match </Link>
       </div>
       )
   }
 }
-
-// firebaseAuth.currentUser.uid
