@@ -1,7 +1,8 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase.js';
+import { Link } from 'react-router';
 
-export default class UserView extends React.Component{
+export default class UserView extends React.Component {
   constructor(props){
     super(props)
     this.state = {val: {
@@ -24,8 +25,8 @@ export default class UserView extends React.Component{
   }
 
   componentDidMount(){
-    if (firebaseAuth.currentUser){
-      firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value",
+    // if (firebaseAuth.currentUser){
+      firebaseUsersRef.child('User1').on("value",
         (snapshot) => {
         this.setState({val: snapshot.val()});
       },
@@ -33,7 +34,7 @@ export default class UserView extends React.Component{
         console.log("The read failed: " + errorObject.code);
       });
     }
-  }
+  // }
 
   handleRejectPress(){
     firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('viewed').update({User1: true})
@@ -46,46 +47,27 @@ export default class UserView extends React.Component{
 
   render() {
       return (
-      <div>
-        <div>
+      <div className="user-page">
+      <img id="logo-top" src="./img/logo.png" />
+        <div className="row default-container">
+      				<Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className='fancy-type'>EDIT INFO</p></Link>
+      			</div>
+
 
         <div>
-
+        <img className="profile-image"src={`${this.state.val.imageUrl}`} />
         </div>
 
-          {this.state.name ? (<h4>{this.state.val.name}, {this.state.val.age}</h4>) : null}
-          <h4>{this.state.val.bio}</h4>
-          <h4>FOR TESTING PURPOSES: {this.state.val.email}</h4>
-
-
         <div>
+          {this.state.val.name ? (<h3>{this.state.val.name}, {this.state.val.age}</h3>) : null}
 
-          <button
-            title="Log out"
-            onClick={this.handleLogout}
-          />
-         </div>
+          <hr className="horizontal-line" />
+          <h5>{this.state.val.bio}</h5>
         </div>
+
       </div>
       )
   }
 }
 
-
-          // <img
-          //   src={require('../assets/icons/broken_heart.png')}
-          //   onClick={this.handleRejectPress} />
-
-
-          // <img
-          //   src={require('../assets/icons/heart_eyes.png')}
-          //   onClick={this.handleLikePress} />     <img
-          //   src={`${this.state.val.imageUrl}`}
-          //   />
-          //    <img
-          //   src={require('../assets/icons/house.jpg')}
-          //   />
-          //   <h4>Despacito</h4>
-          // <img
-          //   source={require('../assets/icons/speech_bubble.png')}
-          //   />
+// firebaseAuth.currentUser.uid
