@@ -44,9 +44,10 @@ export default class Quiz extends React.Component {
     }
 
     render() {
-      let questionNumbers = [1,5,2,7,8]
-      let question = this.state.data[questionNumbers[this.state.current]];
+        let questionNumbers = [83,23,57,91,8]
+        let question = this.state.data[questionNumbers[this.state.current]];
         console.log('current', this.state.current)
+
         return (
             <div>
                 <h1>{question ? question[0] : null}</h1>
@@ -54,7 +55,6 @@ export default class Quiz extends React.Component {
                 <a onClick={this.handleClick}><h3>{question ? question[2] : null}</h3></a>
                 <a onClick={this.handleClick}><h3>{question ? question[3] : null}</h3></a>
                 <a onClick={this.handleClick}><h3>{question ? question[4] : null}</h3></a>
-
             </div>
         )
     }
