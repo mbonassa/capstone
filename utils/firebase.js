@@ -8,6 +8,7 @@ export const firebaseUsersRef = firebaseApp.database().ref('Users');
 export const firebaseQuizRef = firebaseApp.database().ref('MCQuestions');
 
 
+
 const FireBaseTools = {
 
   /**

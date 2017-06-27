@@ -1,7 +1,9 @@
 import React from 'react';
+import { browserHistory } from 'react-router';
 import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase.js';
+import { Link } from 'react-router';
 
-export default class UserView extends React.Component{
+export default class UserView extends React.Component {
   constructor(props){
     super(props)
     this.state = {val: {
@@ -19,7 +21,7 @@ export default class UserView extends React.Component{
   handleLogout(){
     firebaseAuth.signOut()
     .then(() => {
-      browserHistory.push('..')
+      browserHistory.push('/login')
     })
   }
 
@@ -32,6 +34,8 @@ export default class UserView extends React.Component{
         (errorObject) => {
         console.log("The read failed: " + errorObject.code);
       });
+    } else {
+      alert("You are not logged in.")
     }
   }
 
@@ -46,46 +50,26 @@ export default class UserView extends React.Component{
 
   render() {
       return (
-      <div>
+      <div className="user-page">
+      <img id="logo-top" src="./img/logo.png" />
+        <div className="row default-container">
+      		<Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className='fancy-type'>EDIT INFO</p></Link>
+      	</div>
         <div>
-
-        <div>
-
+        <img className="profile-image"src={`${this.state.val.imageUrl}`} />
         </div>
-
-          {this.state.name ? (<h4>{this.state.val.name}, {this.state.val.age}</h4>) : null}
-          <h4>{this.state.val.bio}</h4>
-          <h4>FOR TESTING PURPOSES: {this.state.val.email}</h4>
-
-
         <div>
-
+          {this.state.val.name ? (<h3>{this.state.val.name}, {this.state.val.age}</h3>) : null}
+          <hr className="horizontal-line" />
+          <h5>{this.state.val.bio}</h5>
           <button
             title="Log out"
             onClick={this.handleLogout}
-          />
-         </div>
+          >LOG OUT </button>
         </div>
       </div>
       )
   }
 }
 
-
-          // <img
-          //   src={require('../assets/icons/broken_heart.png')}
-          //   onClick={this.handleRejectPress} />
-
-
-          // <img
-          //   src={require('../assets/icons/heart_eyes.png')}
-          //   onClick={this.handleLikePress} />     <img
-          //   src={`${this.state.val.imageUrl}`}
-          //   />
-          //    <img
-          //   src={require('../assets/icons/house.jpg')}
-          //   />
-          //   <h4>Despacito</h4>
-          // <img
-          //   source={require('../assets/icons/speech_bubble.png')}
-          //   />
+// firebaseAuth.currentUser.uid
