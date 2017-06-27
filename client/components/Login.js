@@ -65,47 +65,50 @@ export default class App extends React.Component {
   render() {
     return (
       <div>
+      <img id="login-img" src='./img/logo.png' />
        <div>
-        <div>
-        <p> Can you see me </p>
+        <div className="container">
          {this.state.toggleLogin ? ( <div>
-              <input
+              <input className="login-input"
                 onChange={(evt) => {
                   this.setState({logInEmail:  evt.target.value});
                 }}
-                value={this.state.logInEmail}
+                placeholder="email"
               />
-              <input
+              <input className="login-input"
                 onChange={(evt) => {
                   this.setState({logInPassword:  evt.target.value})
                 }}
-                value={this.state.logInPassword}
+                placeholder="password"
+
               />
-              <button
+              <button className="btn login-btn"
                 title="Login"
                 color="white"
                 onClick={this.handleLogin}
               > Log in </button>
             </div>) : (<div>
-            <input
+            <input className="login-input"
               onChange={(evt) => {
                 this.setState({signUpEmail: evt.target.value});
               }}
-              value={this.state.signUpEmail}
+              placeholder="email"
             />
-            <input
+            <input className="login-input"
               onChange={(evt) => {
                 this.setState({signUpPassword: evt.target.value})
               }}
-              value={this.state.signUpPassword}
+              placeholder="password"
             />
-            <button
+            <button className="btn login-btn"
               title="Sign up"
               onClick={this.handleSignUp}
               color="white"
             > Sign up </button>
           </div>)}
-          <button color="white" title={!this.state.toggleLogin ? "Returning? Login" : "New here? Sign up"} onClick={()=>{this.setState({toggleLogin: !this.state.toggleLogin})}} > Toggle me </button>
+          <button className="btn toggle-btn center"  onClick={()=>{this.setState({toggleLogin: !this.state.toggleLogin})}} >
+          {!this.state.toggleLogin ? "Returning? Login" : "New here? Sign up"}
+          </button>
         </div>
       </div>
     </div>
