@@ -7,16 +7,42 @@ import DailyMatch from './'
 export default class UserView extends React.Component {
   constructor(props){
     super(props)
-    this.state = {val: {
-      name: '',
-      age: '',
-      bio: '',
-      imageUrl: ''
-    }}
+    this.state = {
+      usersObj: [],
+      val: {
+        name: '',
+        age: '',
+        bio: '',
+        imageUrl: '',
+        active: false
+    }
+  }
 
     this.handleLogout = this.handleLogout.bind(this);
+    this.setActive = this.setActive.bind(this);
     this.handleRejectPress = this.handleRejectPress.bind(this);
     this.handleLikePress = this.handleLikePress.bind(this);
+  }
+
+  setActive(){
+     firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+       active: !this.state.val.active
+     })
+     .then(() => {
+      var activeUsers = Object.keys(this.state.usersObj).map(key => {
+        let objIdx = {};
+        objIdx = this.state.usersObj[key];
+        objIdx.key = key;
+        return objIdx
+      }).filter(el => {
+       return el.active === true
+     })
+    //  .filter(el => {
+    //    return el.gender === "male"
+    //  })
+        console.log(activeUsers)
+        firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({partnerId: activeUsers[0].key})
+     });
   }
 
   handleLogout(){
@@ -27,17 +53,23 @@ export default class UserView extends React.Component {
   }
 
   componentDidMount(){
-    if (firebaseAuth.currentUser){
-      firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value",
-        (snapshot) => {
-        this.setState({val: snapshot.val()});
+      firebaseUsersRef.on("value", (snapshot) => {
+        this.setState({usersObj: snapshot.val()});
       },
         (errorObject) => {
         console.log("The read failed: " + errorObject.code);
-      });
-    } else {
-      alert("You are not logged in.")
-    }
+      })
+      if (firebaseAuth.currentUser){
+          firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value",
+            (snapshot) => {
+            this.setState({val: snapshot.val()});
+          },
+            (errorObject) => {
+            console.log("The read failed: " + errorObject.code);
+          });
+      } else {
+        alert("You are not logged in.")
+      }
   }
 
   handleRejectPress(){
@@ -50,6 +82,7 @@ export default class UserView extends React.Component {
   }
 
   render() {
+      console.log(this.state)
       return (
       <div className="user-page">
       <img id="logo-top" src="./img/logo.png" />
@@ -67,12 +100,23 @@ export default class UserView extends React.Component {
             title="Log out"
             onClick={this.handleLogout}
           >LOG OUT </button>
+          {!this.state.val.active ?
+            <button
+            title="Score"
+            onClick={this.setActive}
+          >GO SCORE </button> :
+          <button
+            title="Score"
+            onClick={this.setActive}
+            disabled="disabled"
+          >GO SCORE</button>
+          }
         </div>
          <Link to={
            {
              pathname: "match",
              state: {
-               partnerId: "User1"
+               partnerId: this.state.val.partnerId
             }
            }
           }> Your Daily Match </Link>
