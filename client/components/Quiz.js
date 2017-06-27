@@ -7,17 +7,19 @@ export default class Quiz extends React.Component {
         this.state = {
             data: {},
             userData: {},
-            currentQuestion: {}
+            current: 0
         }
-
+        this.handleClick = this.handleClick.bind(this);
     }
 
 
 
     componentDidMount () {
-        firebaseQuizRef.on('value', 
+        firebaseQuizRef.on('value',
             (snapshot) => {
-                this.setState({data: snapshot.val()})
+                this.setState({
+                  data: snapshot.val()
+                })
             },
             (errorObject) => {
                 console.error('The read failed: ' + errorObject.code)
@@ -25,7 +27,7 @@ export default class Quiz extends React.Component {
 
         //let user = firebaseAuth.currentUser.uid;
         let data = firebaseUsersRef.child('User1')
-        data.on('value', 
+        data.on('value',
             (snapshot) => {
                 this.setState({userData: snapshot.val()})
             },
@@ -34,15 +36,24 @@ export default class Quiz extends React.Component {
             })
     }
 
+    handleClick() {
+      let number = this.state.current + 1;
+      this.setState({
+        current: number,
+      })
+    }
+
     render() {
-        let question = this.state.currentQuestion;
+      let questionNumbers = [1,5,2,7,8]
+      let question = this.state.data[questionNumbers[this.state.current]];
+        console.log('current', this.state.current)
         return (
             <div>
                 <h1>{question ? question[0] : null}</h1>
-                <a><h3>{question ? question[1] : null}</h3></a>
-                <a><h3>{question ? question[2] : null}</h3></a>
-                <a><h3>{question ? question[3] : null}</h3></a>
-                <a><h3>{question ? question[4] : null}</h3></a>     
+                <a onClick={this.handleClick}><h3>{question ? question[1] : null}</h3></a>
+                <a onClick={this.handleClick}><h3>{question ? question[2] : null}</h3></a>
+                <a onClick={this.handleClick}><h3>{question ? question[3] : null}</h3></a>
+                <a onClick={this.handleClick}><h3>{question ? question[4] : null}</h3></a>
 
             </div>
         )
