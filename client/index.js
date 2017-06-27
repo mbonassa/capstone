@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 
-import { Profile, Login, EditProfile, Signup, Quiz} from './components';
+import { Profile, Login, EditProfile, Signup, Quiz, PickQuestion } from './components';
 
 ReactDOM.render(
    <Router history={browserHistory}>
@@ -14,6 +14,7 @@ ReactDOM.render(
          <Route path="/profile/edit" component={EditProfile} />
         <Route path="/login" component={Login}/>
         <Route path="/quiz" component={Quiz}/>
+        <Route path="/pickquestion" component={PickQuestion}/>
         <Route path="/signup" component={Signup}/>
       </Route>
     </Router>,
