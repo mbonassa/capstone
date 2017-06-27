@@ -1,4 +1,5 @@
 import React from 'react';
+import { browserHistory } from 'react-router';
 import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase.js';
 import { Link } from 'react-router';
 
@@ -20,7 +21,7 @@ export default class UserView extends React.Component {
   handleLogout(){
     firebaseAuth.signOut()
     .then(() => {
-      browserHistory.push('..')
+      browserHistory.push('/login')
     })
   }
 
@@ -63,6 +64,13 @@ export default class UserView extends React.Component {
 
           <hr className="horizontal-line" />
           <h5>{this.state.val.bio}</h5>
+
+          <button
+            title="Log out"
+            onClick={this.handleLogout}
+          >LOG OUT </button>
+         </div>
+
         </div>
 
       </div>
