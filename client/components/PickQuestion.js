@@ -1,21 +1,19 @@
 import React from 'react';
-import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
+import FireBaseTools, { firebaseUsersRef, firebaseQuestionsRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
 
 export default class Quiz extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             data: {},
-            userData: {},
-            currentQuestion: {}
+            userData: {}
         }
 
     }
 
 
-
     componentDidMount () {
-        firebaseQuizRef.on('value', 
+        firebaseQuestionsRef.on('value', 
             (snapshot) => {
                 this.setState({data: snapshot.val()})
             },
@@ -32,18 +30,27 @@ export default class Quiz extends React.Component {
             (errorObject) => {
                 console.error('The read failed: ' + errorObject.code)
             })
+
+
     }
 
     render() {
-        let question = this.state.currentQuestion;
+
+        let arr = [];
+        while (arr.length < 4) {
+            let random = Math.round(Math.random() * this.state.data.length) + 1;
+            if (arr.indexOf(random) === -1) arr.push(random)
+        }
+
+        console.log(arr)
+
+        console.log(this.state)
         return (
             <div>
-                <h1>{question ? question[0] : null}</h1>
-                <a><h3>{question ? question[1] : null}</h3></a>
-                <a><h3>{question ? question[2] : null}</h3></a>
-                <a><h3>{question ? question[3] : null}</h3></a>
-                <a><h3>{question ? question[4] : null}</h3></a>     
-
+                <h1>Pick a question to send Marianne!</h1>
+                <h3>{this.state.data[arr[0]]}</h3>
+                <h3>{this.state.data[arr[1]]}</h3>
+                <h3>{this.state.data[arr[2]]}</h3>
             </div>
         )
     }
