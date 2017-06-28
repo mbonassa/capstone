@@ -8,25 +8,44 @@ export default class DailyMatch extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      user: '',
+      partnerId: '',
       partnerInfo: {}
     }
     this.handleMatch = this.handleMatch.bind(this);
   }
 
  handleMatch(){
-    browserHistory.push('quiz', {state: {partnerId: 'User1'}})
+    var q1 = Math.floor(Math.random() * 100)
+    return firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.partnerId).set({
+      heartStatus: 0,
+      numbers: `${q1}, ${q1 + 1}, ${q1 - 1}, ${q1 + 2}, ${q1 - 2}`,
+      round1: {},
+      timestamp: Date.now()
+    })
+    .then(() => {
+      return firebaseUsersRef.child(this.state.partnerId).child('matches').child(firebaseAuth.currentUser.uid).set({
+        heartStatus: 0,
+        numbers: `${q1}, ${q1 + 1}, ${q1 - 1}, ${q1 + 2}, ${q1 - 2}`,
+        round1: {},
+        timestamp: Date.now()
+      });
+    })
+    .then(() => {
+      browserHistory.push('quiz')
+    })
   }
 
   componentDidMount(){
     if (this.props.location.state.partnerId){
-      firebaseUsersRef.child(this.props.location.state.partnerId).on("value",
-        (snapshot) => {
-        this.setState({partnerInfo: snapshot.val()});
-      },
-        (errorObject) => {
-        console.log("The read failed: " + errorObject.code);
-      });
+        this.setState({partnerId: this.props.location.state.partnerId}, () => {
+        firebaseUsersRef.child(this.props.location.state.partnerId).on("value",
+          (snapshot) => {
+          this.setState({partnerInfo: snapshot.val()});
+        },
+          (errorObject) => {
+          console.log("The read failed: " + errorObject.code);
+        });
+      })
     } else {
       alert("No partner loaded")
     }
@@ -50,7 +69,9 @@ export default class DailyMatch extends React.Component {
         <button
         onClick={this.handleMatch}
         >GET STARTED</button>
-        <button>Run away...</button>
+        <button
+        onClick={this.dismissMatch}
+        >Run away...</button>
       </div>
     )
   }

@@ -9,7 +9,7 @@ import { Profile, Login, EditProfile, DailyMatch, Signup, Quiz, PickQuestion, Wa
 ReactDOM.render(
    <Router history={browserHistory}>
       <Route path="/" >
-        <IndexRoute component={Profile} />
+        <IndexRoute component={Login} />
         <Route path="/profile" component={Profile}/>
          <Route path="/profile/edit" component={EditProfile} />
         <Route path="/login" component={Login}/>
