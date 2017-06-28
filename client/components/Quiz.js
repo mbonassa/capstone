@@ -8,10 +8,10 @@ export default class Quiz extends React.Component {
             data: {},
             userData: {},
             current: 0,
-            questionNumbers: []
+            questionNumbers: [],
+            latestMatchKey: ''
         }
         this.handleClick = this.handleClick.bind(this);
-        this.findLatestMatch = this.findLatestMatch.bind(this);
     }
 
 
@@ -44,7 +44,7 @@ export default class Quiz extends React.Component {
     }
 
     handleClick(event) {
-
+        //let user = firebaseAuth.currentUser.uid;
         let matchRef = firebaseUsersRef.child('User2').child('matches');
         let questionNumber = +this.state.questionNumbers[this.state.current];
         let answerNumber = Number(event.target.className);
@@ -58,7 +58,6 @@ export default class Quiz extends React.Component {
         });
 
         let number = this.state.current + 1;
-        this.findLatestMatch();
         this.setState({
             current: number
         })
