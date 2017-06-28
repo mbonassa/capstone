@@ -2,20 +2,63 @@ import React from 'react';
 import { browserHistory } from 'react-router';
 import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase.js';
 import { Link } from 'react-router';
+import DailyMatch from './'
 
 export default class UserView extends React.Component {
   constructor(props){
     super(props)
-    this.state = {val: {
-      name: '',
-      age: '',
-      bio: '',
-      imageUrl: ''
-    }}
+    this.state = {
+      partnerId: '',
+      waiting: false,
+      usersObj: [],
+      val: {
+        name: '',
+        age: '',
+        bio: '',
+        imageUrl: '',
+        active: false
+    }
+  }
 
     this.handleLogout = this.handleLogout.bind(this);
+    this.setActive = this.setActive.bind(this);
     this.handleRejectPress = this.handleRejectPress.bind(this);
     this.handleLikePress = this.handleLikePress.bind(this);
+  }
+
+  setActive(){
+
+    this.setState({'waiting': true}, () => {
+      var activeUsers = Object.keys(this.state.usersObj).map(key => {
+          let objIdx = {};
+          objIdx = this.state.usersObj[key];
+          objIdx.key = key;
+          return objIdx
+        }).filter(el => {
+        return el.active === true
+      })
+     .filter(el => {
+       return el.partnerId === ""
+     })
+      console.log(activeUsers)
+      if (activeUsers.length){
+        let partnerId = activeUsers[0].key
+        return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+            partnerId: partnerId
+          })
+        .then(() => {
+          return firebaseUsersRef.child(partnerId).update({
+            active: false,
+            partnerId: firebaseAuth.currentUser.uid
+          });
+        })
+      } else {
+         return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+            active: true
+          });
+      }
+    })
+    this.setState({'waiting': false})
   }
 
   handleLogout(){
@@ -26,17 +69,27 @@ export default class UserView extends React.Component {
   }
 
   componentDidMount(){
-    if (firebaseAuth.currentUser){
-      firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value",
-        (snapshot) => {
-        this.setState({val: snapshot.val()});
+      firebaseUsersRef.on("value", (snapshot) => {
+        this.setState({usersObj: snapshot.val()});
       },
         (errorObject) => {
         console.log("The read failed: " + errorObject.code);
-      });
-    } else {
-      alert("You are not logged in.")
-    }
+      })
+      if (firebaseAuth.currentUser){
+          firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value",
+            (snapshot) => {
+            this.setState({val: snapshot.val()});
+          },
+            (errorObject) => {
+            console.log("The read failed: " + errorObject.code);
+          });
+      } else {
+        alert("You are not logged in.")
+      }
+  }
+
+  componentWillUnmount(){
+    firebaseUsersRef.off('value')
   }
 
   handleRejectPress(){
@@ -49,6 +102,7 @@ export default class UserView extends React.Component {
   }
 
   render() {
+      console.log(this.state)
       return (
       <div className="user-page">
       <img id="logo-top" src="./img/logo.png" />
@@ -66,10 +120,33 @@ export default class UserView extends React.Component {
             title="Log out"
             onClick={this.handleLogout}
           >LOG OUT </button>
+          {!this.state.val.partnerId ?
+            <button
+            title="Score"
+            onClick={this.setActive}
+          >GO SCORE </button> :
+          !this.state.waiting ?
+           <button
+            title="Score"
+            onClick={this.setActive}
+            disabled="disabled"
+          >You already have a match!</button> :
+          <button
+            title="Score"
+            onClick={this.setActive}
+            disabled="disabled"
+          >Finding your match...</button>
+          }
         </div>
+         <Link to={
+           {
+             pathname: "match",
+             state: {
+               partnerId: this.state.val.partnerId
+            }
+           }
+          }> Your Daily Match </Link>
       </div>
       )
   }
 }
-
-// firebaseAuth.currentUser.uid
