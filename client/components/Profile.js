@@ -8,6 +8,8 @@ export default class UserView extends React.Component {
   constructor(props){
     super(props)
     this.state = {
+      partnerId: '',
+      waiting: false,
       usersObj: [],
       val: {
         name: '',
@@ -25,24 +27,37 @@ export default class UserView extends React.Component {
   }
 
   setActive(){
-     firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
-       active: !this.state.val.active
-     })
-     .then(() => {
+
+    this.setState({'waiting': true}, () => {
       var activeUsers = Object.keys(this.state.usersObj).map(key => {
-        let objIdx = {};
-        objIdx = this.state.usersObj[key];
-        objIdx.key = key;
-        return objIdx
-      }).filter(el => {
-       return el.active === true
-     })
+          let objIdx = {};
+          objIdx = this.state.usersObj[key];
+          objIdx.key = key;
+          return objIdx
+        }).filter(el => {
+        return el.active === true
+      })
     //  .filter(el => {
     //    return el.gender === "male"
     //  })
-        console.log(activeUsers)
-        firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({partnerId: activeUsers[0].key})
-     });
+      console.log(activeUsers)
+      if (activeUsers.length){
+        let partnerId = activeUsers[0].key
+        return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update(
+            {partnerId: partnerId
+          })
+        .then(() => {
+          return firebaseUsersRef.child(partnerId).update({
+            active: false
+          });
+        })
+      } else {
+         return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+            active: true
+          });
+      }
+    })
+    this.setState({'waiting': false})
   }
 
   handleLogout(){
@@ -100,16 +115,22 @@ export default class UserView extends React.Component {
             title="Log out"
             onClick={this.handleLogout}
           >LOG OUT </button>
-          {!this.state.val.active ?
+          {!this.state.val.partnerId ?
             <button
             title="Score"
             onClick={this.setActive}
           >GO SCORE </button> :
+          !this.state.waiting ?
+           <button
+            title="Score"
+            onClick={this.setActive}
+            disabled="disabled"
+          >You already have a match!</button> :
           <button
             title="Score"
             onClick={this.setActive}
             disabled="disabled"
-          >GO SCORE</button>
+          >Finding your match...</button>
           }
         </div>
          <Link to={
