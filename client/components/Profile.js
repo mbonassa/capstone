@@ -16,7 +16,6 @@ export default class UserView extends React.Component {
         age: '',
         bio: '',
         imageUrl: '',
-        active: false
     }
   }
 
@@ -29,10 +28,10 @@ export default class UserView extends React.Component {
   setActive(){
 
     this.setState({'waiting': true}, () => {
-      firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
-        active: true
-      })
-      .then(() => {
+      // firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+      //   active: true
+      // })
+      // .then(() => {
       let activeUsers = Object.keys(this.state.usersObj).map(key => {
           let objIdx = {};
           objIdx = this.state.usersObj[key];
@@ -56,6 +55,7 @@ export default class UserView extends React.Component {
         })
         .then(() => {
           return firebaseUsersRef.child(partnerId).update({
+            active: true,
             partnerId: firebaseAuth.currentUser.uid
           });
         })
@@ -63,7 +63,6 @@ export default class UserView extends React.Component {
          console.log("no match found")
          alert("no matches yet!")
       }
-      })
     });
     this.setState({'waiting': false})
   }

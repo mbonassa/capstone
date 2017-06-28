@@ -9,6 +9,7 @@ export default class DailyMatch extends React.Component {
     super(props)
     this.state = {
       partnerId: '',
+      userObj: '',
       partnerInfo: {}
     }
     this.handleMatch = this.handleMatch.bind(this);
@@ -69,6 +70,10 @@ export default class DailyMatch extends React.Component {
   }
 
   componentDidMount(){
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value", (snapshot) => {
+          this.setState({userObj: snapshot.val()})
+    });
+
     if (this.props.location.state.partnerId){
         this.setState({partnerId: this.props.location.state.partnerId}, () => {
         firebaseUsersRef.child(this.props.location.state.partnerId).on("value",
@@ -122,6 +127,9 @@ export default class DailyMatch extends React.Component {
           onClick={this.enterQuiz}
           >Go to your quiz...</button>
         </div>
+        :
+        !this.state.userObj && this.state.userObj.active ?
+        <h4> Waiting on your partner's response... </h4>
         :
         <div>
           <button
