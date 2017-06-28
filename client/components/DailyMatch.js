@@ -108,15 +108,18 @@ export default class DailyMatch extends React.Component {
         <div>
           <h5> You're already in a match! </h5>
           <button
+          className="btn btn-misc"
           onClick={this.enterQuiz}
           >Go to your quiz...</button>
         </div>
         :
         <div>
           <button
+          className="btn btn-misc"
           onClick={this.handleMatch}
           >GET STARTED</button>
           <button
+          className="btn btn-misc"
           onClick={this.dismissMatch}
           >Run away...</button>
         </div>
