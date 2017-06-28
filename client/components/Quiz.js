@@ -7,7 +7,8 @@ export default class Quiz extends React.Component {
         this.state = {
             data: {},
             userData: {},
-            current: 0
+            current: 0,
+            questionNumbers: []
         }
         this.handleClick = this.handleClick.bind(this);
     }
@@ -30,10 +31,15 @@ export default class Quiz extends React.Component {
         data.on('value',
             (snapshot) => {
                 this.setState({userData: snapshot.val()})
+                
+                let questionNumbers = snapshot.val().matches.m1.numbers.split(',');
+                this.setState({questionNumbers})
             },
             (errorObject) => {
                 console.error('The read failed: ' + errorObject.code)
             })
+
+
     }
 
     handleClick() {
@@ -44,10 +50,9 @@ export default class Quiz extends React.Component {
     }
 
     render() {
-        let questionNumbers = [83,23,57,91,8]
+        let questionNumbers = this.state.questionNumbers;
         let question = this.state.data[questionNumbers[this.state.current]];
-        console.log(this.state.userData)
-
+        
         return (
             this.state.current < 5 ?
             <div>
