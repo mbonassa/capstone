@@ -11,6 +11,7 @@ export default class Quiz extends React.Component {
             questionNumbers: []
         }
         this.handleClick = this.handleClick.bind(this);
+        this.findLatestMatch = this.findLatestMatch.bind(this);
     }
 
 
@@ -31,7 +32,7 @@ export default class Quiz extends React.Component {
         data.on('value',
             (snapshot) => {
                 this.setState({userData: snapshot.val()})
-                
+
                 let questionNumbers = snapshot.val().matches.m1.numbers.split(',');
                 this.setState({questionNumbers})
             },
@@ -42,8 +43,23 @@ export default class Quiz extends React.Component {
 
     }
 
+    findLatestMatch() {
+      var matchRef = firebaseUsersRef.child('User1').child('matches');
+        matchRef.orderByValue().limitToFirst(1).on("value", function(snapshot) {
+          snapshot.forEach(function(data) {
+          console.log("The " + data.key + " score is " + data.val().timestamp);
+          matchRef.child(data.key).update({
+            'round1': {
+              '1': '3'
+            }
+          })
+  });
+});
+    }
+
     handleClick() {
       let number = this.state.current + 1;
+      this.findLatestMatch();
       this.setState({
         current: number
       })
@@ -52,7 +68,7 @@ export default class Quiz extends React.Component {
     render() {
         let questionNumbers = this.state.questionNumbers;
         let question = this.state.data[questionNumbers[this.state.current]];
-        
+
         return (
             this.state.current < 5 ?
             <div>
@@ -68,7 +84,7 @@ export default class Quiz extends React.Component {
                 <a href='/waiting'><h3>{question ? question[2] : null}</h3></a>
                 <a href='/waiting'><h3>{question ? question[3] : null}</h3></a>
                 <a href='/waiting'><h3>{question ? question[4] : null}</h3></a>
-            </div>   
+            </div>
             )
     }
 
