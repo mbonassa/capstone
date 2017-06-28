@@ -43,10 +43,6 @@ export default class Quiz extends React.Component {
 
     }
 
-    findLatestMatch() {
-
-    }
-
     handleClick(event) {
 
         let matchRef = firebaseUsersRef.child('User2').child('matches');
