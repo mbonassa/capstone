@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 
-import { Profile, Login, EditProfile, Signup, Quiz, PickQuestion, GameTransition, Waiting, Answer, Random } from './components';
+import { Profile, Login, EditProfile, Signup, Quiz, PickQuestion, Waiting, Answer, Random } from './components';
 
 ReactDOM.render(
    <Router history={browserHistory}>
@@ -16,7 +16,6 @@ ReactDOM.render(
         <Route path="/quiz" component={Quiz}/>
         <Route path="/pickquestion" component={PickQuestion}/>
         <Route path="/signup" component={Signup}/>
-        <Route path="/gametransition" component={GameTransition}/>
         <Route path="/waiting" component={Waiting}/>
         <Route path="/answer" component={Answer}/>
         <Route path="/random" component={Random}/>
