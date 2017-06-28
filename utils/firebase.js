@@ -6,6 +6,7 @@ export const firebaseAuth = firebaseApp.auth();
 export const firebaseDb = firebaseApp.database();
 export const firebaseUsersRef = firebaseApp.database().ref('Users');
 export const firebaseQuizRef = firebaseApp.database().ref('MCQuestions');
+export const firebaseQuestionsRef = firebaseApp.database().ref('Questions');
 
 
 
