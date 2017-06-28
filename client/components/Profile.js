@@ -35,14 +35,17 @@ export default class UserView extends React.Component {
           objIdx.key = key;
           return objIdx
         }).filter(el => {
-        return el.active === true
-      })
-     .filter(el => {
-       return el.partnerId === ""
+        if (
+          el.active === true &&
+          el.partnerId === "" &&
+          el.partnerId !== firebaseAuth.currentUser.uid
+          )
+          return el
      })
       console.log(activeUsers)
       if (activeUsers.length){
         let partnerId = activeUsers[0].key
+        console.log("ID:", partnerId)
         return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
             partnerId: partnerId
           })
@@ -132,16 +135,13 @@ export default class UserView extends React.Component {
               onClick={this.setActive}
             >GO SCORE </button> :
             !this.state.waiting ?
+            <div>
              <button
               className="btn misc-btn"
               title="Score"
               onClick={this.setActive}
               disabled="disabled"
-            >You already have a match!</button> :
-          !this.state.waiting ?
-           <div>
-            <h4
-            >You have a match!</h4>
+            >You already have a match!</button>
               <Link to={
             {
               pathname: "match",
@@ -150,7 +150,7 @@ export default class UserView extends React.Component {
               }
             }
             }> Your Match </Link>
-          </div>:
+          </div> :
           <button
              className="btn misc-btn"
             title="Score"
