@@ -13,6 +13,8 @@ export default class Waiting extends React.Component {
     }
 
     componentDidMount () {
+        //To get theirAnswers:
+            //
 
         //let user = firebaseAuth.currentUser.uid;
         let data = firebaseUsersRef.child('User4')
@@ -44,7 +46,7 @@ export default class Waiting extends React.Component {
                     let myAnswers = [];
                     if (questions) {
                     Object.keys(questions).forEach(question => {
-                        myAnswers.push(question[0]);
+                        myAnswers.push(questions[question][0]);
                     })
                     this.setState({myAnswers: myAnswers})
                     }
@@ -57,16 +59,7 @@ export default class Waiting extends React.Component {
 
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevState.userData !== this.props.userData) {
-
-
-
-        }
-    }
-
     render() {
-        console.log(this.state.myAnswers)
         return (
             this.state.userData.matches && this.state.userData.matches.User5.heartStatus ? 
             <div>
