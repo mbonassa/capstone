@@ -39,23 +39,41 @@ export default class Quiz extends React.Component {
     handleClick() {
       let number = this.state.current + 1;
       this.setState({
-        current: number,
+        current: number
       })
     }
 
     render() {
         let questionNumbers = [83,23,57,91,8]
         let question = this.state.data[questionNumbers[this.state.current]];
-        console.log('current', this.state.current)
+        console.log(this.state.userData)
 
         return (
+            this.state.current < 5 ?
             <div>
                 <h1>{question ? question[0] : null}</h1>
                 <a onClick={this.handleClick}><h3>{question ? question[1] : null}</h3></a>
                 <a onClick={this.handleClick}><h3>{question ? question[2] : null}</h3></a>
                 <a onClick={this.handleClick}><h3>{question ? question[3] : null}</h3></a>
                 <a onClick={this.handleClick}><h3>{question ? question[4] : null}</h3></a>
-            </div>
+            </div> : (
+            this.state.userData.matches.m1.heartStatus ?
+            <div>
+                <h1>{question ? question[0] : null}</h1>
+                <a href='/gametransition'><h3>{question ? question[1] : null}</h3></a>
+                <a href='/gametransition'><h3>{question ? question[2] : null}</h3></a>
+                <a href='/gametransition'><h3>{question ? question[3] : null}</h3></a>
+                <a href='/gametransition'><h3>{question ? question[4] : null}</h3></a>
+            </div>      
+            :
+            <div>
+                <h1>{question ? question[0] : null}</h1>
+                <a href='/waiting'><h3>{question ? question[1] : null}</h3></a>
+                <a href='/waiting'><h3>{question ? question[2] : null}</h3></a>
+                <a href='/waiting'><h3>{question ? question[3] : null}</h3></a>
+                <a href='/waiting'><h3>{question ? question[4] : null}</h3></a>
+            </div> 
+            )
         )
     }
 

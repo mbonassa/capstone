@@ -1,7 +1,7 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
 
-export default class Quiz extends React.Component {
+export default class Waiting extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
