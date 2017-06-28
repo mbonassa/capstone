@@ -84,7 +84,7 @@ export default class UserView extends React.Component {
             console.log("The read failed: " + errorObject.code);
           });
       } else {
-        alert("You are not logged in.")
+        browserHistory.push('/login')
       }
   }
 
@@ -105,48 +105,60 @@ export default class UserView extends React.Component {
       console.log(this.state)
       return (
       <div className="user-page">
-      <img id="logo-top" src="./img/logo.png" />
+      <img className="logo-top" src="./img/sm-logo.png" />
+      <div id="profile-main" className="">
         <div className="row default-container">
-      		<Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className='fancy-type'>EDIT INFO</p></Link>
       	</div>
-        <div>
-        <img className="profile-image"src={`${this.state.val.imageUrl}`} />
-        </div>
-        <div>
-          {this.state.val.name ? (<h3>{this.state.val.name}, {this.state.val.age}</h3>) : null}
-          <hr className="horizontal-line" />
-          <h5>{this.state.val.bio}</h5>
-          <button
-            title="Log out"
-            onClick={this.handleLogout}
-          >LOG OUT </button>
-          {!this.state.val.partnerId ?
+          <div>
+            <img className="profile-image"src={`${this.state.val.imageUrl}`} />
+          </div>
+          <div >
+            {this.state.val.name ? (
+              <div>
+                <h3>{this.state.val.name}, {this.state.val.age}</h3>
+                <Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className='fancy-type'>(EDIT PROFILE)</p></Link>
+              </div>) : null}
+            <h5>{this.state.val.bio}</h5>
             <button
-            title="Score"
-            onClick={this.setActive}
-          >GO SCORE </button> :
-          !this.state.waiting ?
-           <button
-            title="Score"
-            onClick={this.setActive}
-            disabled="disabled"
-          >You already have a match!</button> :
-          <button
-            title="Score"
-            onClick={this.setActive}
-            disabled="disabled"
-          >Finding your match...</button>
+              className="btn misc-btn"
+              title="Log out"
+              onClick={this.handleLogout}
+            >LOG OUT </button>
+            {!this.state.val.partnerId ?
+              <button
+              className="btn misc-btn"
+              title="Score"
+              onClick={this.setActive}
+            >GO SCORE </button> :
+            !this.state.waiting ?
+             <button
+              className="btn misc-btn"
+              title="Score"
+              onClick={this.setActive}
+              disabled="disabled"
+            >You already have a match!</button> :
+            <button
+              className="btn misc-btn"
+              title="Score"
+              onClick={this.setActive}
+              disabled="disabled"
+            >Finding match</button>
+            }
+          </div>
+          { this.state.val.partnerId ?
+           (<Link to={
+             {
+               pathname: "match",
+               state: {
+                 partnerId: this.state.val.partnerId
+              }
+             }
+            }> Your Daily Match </Link>) : null
           }
         </div>
-         <Link to={
-           {
-             pathname: "match",
-             state: {
-               partnerId: this.state.val.partnerId
-            }
-           }
-          }> Your Daily Match </Link>
       </div>
+
       )
+
   }
 }
