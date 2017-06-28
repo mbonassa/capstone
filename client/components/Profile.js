@@ -35,7 +35,7 @@ export default class UserView extends React.Component {
         console.log("The read failed: " + errorObject.code);
       });
     } else {
-      alert("You are not logged in.")
+      browserHistory.push('/login');
     }
   }
 
