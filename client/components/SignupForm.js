@@ -34,7 +34,8 @@ export default class Signup extends React.Component {
       genderPreference: this.state.genderPreference,
       agePreference: this.state.agePreference,
       active: false,
-      partnerId: ''
+      partnerId: '',
+      viewed: {}
     })
     .then(() => {
       browserHistory.push('/profile')

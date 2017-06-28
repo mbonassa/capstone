@@ -37,18 +37,19 @@ export default class UserView extends React.Component {
         }).filter(el => {
         return el.active === true
       })
-    //  .filter(el => {
-    //    return el.gender === "male"
-    //  })
+     .filter(el => {
+       return el.partnerId === ""
+     })
       console.log(activeUsers)
       if (activeUsers.length){
         let partnerId = activeUsers[0].key
-        return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update(
-            {partnerId: partnerId
+        return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+            partnerId: partnerId
           })
         .then(() => {
           return firebaseUsersRef.child(partnerId).update({
-            active: false
+            active: false,
+            partnerId: firebaseAuth.currentUser.uid
           });
         })
       } else {
@@ -85,6 +86,10 @@ export default class UserView extends React.Component {
       } else {
         alert("You are not logged in.")
       }
+  }
+
+  componentWillUnmount(){
+    firebaseUsersRef.off('value')
   }
 
   handleRejectPress(){
