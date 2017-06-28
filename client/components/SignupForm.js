@@ -32,7 +32,10 @@ export default class Signup extends React.Component {
       imageUrl: this.state.imageUrl,
       bio: this.state.bio,
       genderPreference: this.state.genderPreference,
-      agePreference: this.state.agePreference
+      agePreference: this.state.agePreference,
+      active: false,
+      partnerId: '',
+      viewed: {}
     })
     .then(() => {
       browserHistory.push('/profile')
