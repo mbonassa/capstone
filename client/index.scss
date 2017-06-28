@@ -7,6 +7,24 @@
     margin-bottom: -50px;
   }
 
+  .logo-top {
+    float:right;
+    clear: both;
+    margin-top: -40px;
+    margin-right: -20px;
+    width: 90%;
+  }
+
+  .logo-top:after {
+    clear: both;
+  }
+
+  #profile-main {
+   clear: both;
+   margin-top: -80px;
+   padding: -10px 30px;
+  }
+
   .login-input {
     background-color: rgba(255, 255, 255, 0.3);
     color: white;
@@ -17,6 +35,15 @@
     padding: 0px 8px;
     border: 1px;
     border-color: white;
+  }
+
+  .misc-btn {
+    background-color: white;
+    color: #fc5f5d;
+  }
+
+  .misc-btn:hover {
+    background-color: rgba(255, 255, 255, 0.5);
   }
 
   .login-btn {
@@ -68,4 +95,5 @@ img {
 
 #app {
   max-width: 100vw;
+  overflow-x: hidden;
 }
