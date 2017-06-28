@@ -82,6 +82,10 @@ export default class DailyMatch extends React.Component {
     }
   }
 
+  componentWillUnmount(){
+    firebaseUsersRef.off('value');
+  }
+
   render(){
     return (
     <div className="user-page">
