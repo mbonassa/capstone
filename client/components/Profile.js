@@ -29,7 +29,7 @@ export default class UserView extends React.Component {
   setActive(){
 
     this.setState({'waiting': true}, () => {
-      var activeUsers = Object.keys(this.state.usersObj).map(key => {
+      let activeUsers = Object.keys(this.state.usersObj).map(key => {
           let objIdx = {};
           objIdx = this.state.usersObj[key];
           objIdx.key = key;
@@ -53,6 +53,7 @@ export default class UserView extends React.Component {
           });
         })
       } else {
+         console.log("no match found")
          return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
             active: true
           });
@@ -138,22 +139,38 @@ export default class UserView extends React.Component {
               disabled="disabled"
             >You already have a match!</button> :
             <button
-              className="btn misc-btn"
-              title="Score"
-              onClick={this.setActive}
-              disabled="disabled"
-            >Finding match</button>
-            }
-          </div>
-          { this.state.val.partnerId ?
-           (<Link to={
-             {
-               pathname: "match",
-               state: {
-                 partnerId: this.state.val.partnerId
+             className="btn misc-btn"
+
+            title="Score"
+            onClick={this.setActive}
+          >GO SCORE </button> :
+          !this.state.val.active ?
+           <button
+             className="btn misc-btn"
+
+            title="Score"
+            disabled="disabled"
+          >No matches yet! Searching...</button> :
+          !this.state.waiting ?
+           <div>
+            <h4
+            >You have a match!</h4>
+              <Link to={
+            {
+              pathname: "match",
+              state: {
+                partnerId: this.state.val.partnerId
               }
-             }
-            }> Your Daily Match </Link>) : null
+            }
+            }> Your Match </Link>
+          </div>:
+          <button
+             className="btn misc-btn"
+            title="Score"
+            onClick={this.setActive}
+            disabled="disabled"
+          >Finding your match...</button>
+
           }
         </div>
       </div>
