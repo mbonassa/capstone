@@ -29,39 +29,42 @@ export default class UserView extends React.Component {
   setActive(){
 
     this.setState({'waiting': true}, () => {
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+        active: true
+      })
+      .then(() => {
       let activeUsers = Object.keys(this.state.usersObj).map(key => {
           let objIdx = {};
           objIdx = this.state.usersObj[key];
           objIdx.key = key;
           return objIdx
         }).filter(el => {
-        if (
+       if (
           el.active === true &&
           el.partnerId === "" &&
-          el.partnerId !== firebaseAuth.currentUser.uid
-          )
+          el.key !== firebaseAuth.currentUser.uid
+          ){
+          console.log("EL", el)
           return el
+          }
      })
-      console.log(activeUsers)
       if (activeUsers.length){
         let partnerId = activeUsers[0].key
-        console.log("ID:", partnerId)
         return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+            active: true,
             partnerId: partnerId
-          })
+        })
         .then(() => {
           return firebaseUsersRef.child(partnerId).update({
-            active: false,
             partnerId: firebaseAuth.currentUser.uid
           });
         })
       } else {
          console.log("no match found")
-         return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
-            active: true
-          });
+         alert("no matches yet!")
       }
-    })
+      })
+    });
     this.setState({'waiting': false})
   }
 
@@ -106,7 +109,6 @@ export default class UserView extends React.Component {
   }
 
   render() {
-      console.log(this.state)
       return (
       <div className="user-page">
       <img className="logo-top" src="./img/sm-logo.png" />

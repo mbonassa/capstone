@@ -22,24 +22,34 @@ export default class DailyMatch extends React.Component {
   }
 
  handleMatch(){
-    var q1 = Math.floor(Math.random() * 100)
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.partnerId).set({
-      heartStatus: 0,
-      numbers: `${q1}, ${q1 + 1}, ${q1 - 1}, ${q1 + 2}, ${q1 - 2}`,
-      round1: {},
-      timestamp: Date.now()
-    })
-    .then(() => {
-      return firebaseUsersRef.child(this.state.partnerId).child('matches').child(firebaseAuth.currentUser.uid).set({
+   firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+     active: false
+   })
+   .then(() => {
+     if (!this.state.partnerInfo.active) {
+      var q1 = Math.floor(Math.random() * 100)
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.partnerId).set({
         heartStatus: 0,
         numbers: `${q1}, ${q1 + 1}, ${q1 - 1}, ${q1 + 2}, ${q1 - 2}`,
         round1: {},
         timestamp: Date.now()
-      });
-    })
-    .then(() => {
-      browserHistory.push('quiz')
-    })
+      })
+      .then(() => {
+        return firebaseUsersRef.child(this.state.partnerId).child('matches').child(firebaseAuth.currentUser.uid).set({
+          heartStatus: 0,
+          numbers: `${q1}, ${q1 + 1}, ${q1 - 1}, ${q1 + 2}, ${q1 - 2}`,
+          round1: {},
+          timestamp: Date.now()
+        });
+      })
+      .then(() => {
+        browserHistory.push('quiz')
+      })
+     } else {
+       console.log("Not ready yet")
+       browserHistory.push('profile')
+     }
+   });
   }
 
   dismissMatch(){
