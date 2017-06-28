@@ -138,19 +138,6 @@ export default class UserView extends React.Component {
               onClick={this.setActive}
               disabled="disabled"
             >You already have a match!</button> :
-            <button
-             className="btn misc-btn"
-
-            title="Score"
-            onClick={this.setActive}
-          >GO SCORE </button> :
-          !this.state.val.active ?
-           <button
-             className="btn misc-btn"
-
-            title="Score"
-            disabled="disabled"
-          >No matches yet! Searching...</button> :
           !this.state.waiting ?
            <div>
             <h4
@@ -173,6 +160,7 @@ export default class UserView extends React.Component {
 
           }
         </div>
+       </div>
       </div>
 
       )
