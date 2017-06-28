@@ -48,7 +48,6 @@ export default class DailyMatch extends React.Component {
       })
      } else {
        console.log("Not ready yet")
-       browserHistory.push('profile')
      }
    });
   }
@@ -128,7 +127,7 @@ export default class DailyMatch extends React.Component {
           >Go to your quiz...</button>
         </div>
         :
-        !this.state.userObj && this.state.userObj.active ?
+        this.state.userObj && !this.state.userObj.active ?
         <h4> Waiting on your partner's response... </h4>
         :
         <div>
