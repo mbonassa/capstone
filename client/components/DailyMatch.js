@@ -69,30 +69,32 @@ export default class DailyMatch extends React.Component {
   }
 
   componentDidMount(){
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value", (snapshot) => {
-          this.setState({userObj: snapshot.val()})
-    });
+    if(firebaseAuth.currentUser){
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value", (snapshot) => {
+            this.setState({userObj: snapshot.val()})
+      });
 
-    if (this.props.location.state.partnerId){
-        this.setState({partnerId: this.props.location.state.partnerId}, () => {
-        firebaseUsersRef.child(this.props.location.state.partnerId).on("value",
-          (snapshot) => {
-          this.setState({partnerInfo: snapshot.val()}, () => {
-             var partnerMatches = Object.keys(this.state.partnerInfo.matches).map(key => {
-              let objIdx = {};
-              objIdx = this.state.partnerInfo.matches[key];
-              objIdx.key = key;
-              return objIdx
+      if (this.props.location.state.partnerId){
+          this.setState({partnerId: this.props.location.state.partnerId}, () => {
+          firebaseUsersRef.child(this.props.location.state.partnerId).on("value",
+            (snapshot) => {
+            this.setState({partnerInfo: snapshot.val()}, () => {
+              var partnerMatches = Object.keys(this.state.partnerInfo.matches).map(key => {
+                let objIdx = {};
+                objIdx = this.state.partnerInfo.matches[key];
+                objIdx.key = key;
+                return objIdx
+              });
+              this.setState({partnerMatches})
             });
-            this.setState({partnerMatches})
+          },
+            (errorObject) => {
+            console.log("The read failed: " + errorObject.code);
           });
-        },
-          (errorObject) => {
-          console.log("The read failed: " + errorObject.code);
-        });
-      })
-    } else {
-      alert("No partner loaded")
+        })
+      } else {
+        alert("No partner loaded")
+      }
     }
   }
 
@@ -120,7 +122,7 @@ export default class DailyMatch extends React.Component {
            return el.key === firebaseAuth.currentUser.uid
         }).length ?
         <div>
-          <h5> You're already in a match! </h5>
+          <h5> Your partner also confirmed, let's do it! </h5>
           <button
           className="btn btn-misc"
           onClick={this.enterQuiz}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
-import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase.js';
+import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase';
+import { arrayify, arrayifyWithKey} from '../../utils/helperFunctions'
 import { Link } from 'react-router';
 import DailyMatch from './'
 
@@ -21,30 +22,25 @@ export default class UserView extends React.Component {
 
     this.handleLogout = this.handleLogout.bind(this);
     this.setActive = this.setActive.bind(this);
-    this.handleRejectPress = this.handleRejectPress.bind(this);
-    this.handleLikePress = this.handleLikePress.bind(this);
   }
 
   setActive(){
 
     this.setState({'waiting': true}, () => {
-      // firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
-      //   active: true
-      // })
-      // .then(() => {
-      let activeUsers = Object.keys(this.state.usersObj).map(key => {
-          let objIdx = {};
-          objIdx = this.state.usersObj[key];
-          objIdx.key = key;
-          return objIdx
-        }).filter(el => {
-       if (
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+        active: true
+      })
+      .then(() => {
+      let activeUsers = arrayifyWithKey(this.state.usersObj).filter(el => {
+        if (!el.pastMatches) el.pastMatches = {};
+        if (
+          !arrayify(el.pastMatches).includes(firebaseAuth.currentUser.uid) &&
           el.active === true &&
           el.partnerId === "" &&
           el.key !== firebaseAuth.currentUser.uid
           ){
-          console.log("EL", el)
-          return el
+            console.log("EL", el)
+            return el
           }
      })
       if (activeUsers.length){
@@ -54,10 +50,20 @@ export default class UserView extends React.Component {
             partnerId: partnerId
         })
         .then(() => {
+          firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('pastMatches').update({
+            [partnerId]: true
+          })
+        })
+        .then(() => {
           return firebaseUsersRef.child(partnerId).update({
             active: true,
             partnerId: firebaseAuth.currentUser.uid
           });
+        })
+        .then(() => {
+          firebaseUsersRef.child(partnerId).child('pastMatches').update({
+            [firebaseAuth.currentUser.uid]: true
+          })
         })
       } else {
          console.log("no match found")
@@ -65,6 +71,7 @@ export default class UserView extends React.Component {
       }
     });
     this.setState({'waiting': false})
+    });
   }
 
   handleLogout(){
@@ -96,15 +103,6 @@ export default class UserView extends React.Component {
 
   componentWillUnmount(){
     firebaseUsersRef.off('value')
-  }
-
-  handleRejectPress(){
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('viewed').update({User1: true})
-  }
-
-  handleLikePress(){
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('viewed').update({User1: true})
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('likes').update({User1: true})
   }
 
   render() {
