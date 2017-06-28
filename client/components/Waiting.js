@@ -6,6 +6,7 @@ export default class Waiting extends React.Component {
         super(props)
         this.state = {
             userData: {},
+            otherData: {},
             allMatches: {},
             myAnswers: [],
             theirAnswers: []
@@ -14,7 +15,12 @@ export default class Waiting extends React.Component {
 
     componentDidMount () {
         //To get theirAnswers:
-            //
+            //Get latest match key 
+            //Make database request for matched user's data. Set it to state as otherData
+            //Find latest match of matched user's data, whose key will be the current user's username
+            //Apply same logic to get answers. Set them to state as theirAnswers
+            //Compare answers and find heartStatus
+            //Update heartStatus on database for both users to result
 
         //let user = firebaseAuth.currentUser.uid;
         let data = firebaseUsersRef.child('User4')
