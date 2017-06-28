@@ -6,8 +6,10 @@ export default class Random extends React.Component {
         super(props)
         this.state = {
             data: {},
-            userData: {}
+            userData: {},
+            boolean: true
         }
+        this.handleClick = this.handleClick.bind(this);
     }
 
     componentDidMount () {
@@ -33,16 +35,20 @@ export default class Random extends React.Component {
 
     }
 
+    handleClick () {
+        this.setState({boolean: false});
+    }
+
     render() {
         let number = Math.round(Math.random() * this.state.data.length) + 1;
         let question = this.state.data[number];
         return (
             <div>
                 <h1>{question ? question[0] : null}</h1>
-                <a><h3>{question ? question[1] : null}</h3></a>
-                <a><h3>{question ? question[2] : null}</h3></a>
-                <a><h3>{question ? question[3] : null}</h3></a>
-                <a><h3>{question ? question[4] : null}</h3></a>
+                <a onClick={this.handleClick}><h3>{question ? question[1] : null}</h3></a>
+                <a onClick={this.handleClick}><h3>{question ? question[2] : null}</h3></a>
+                <a onClick={this.handleClick}><h3>{question ? question[3] : null}</h3></a>
+                <a onClick={this.handleClick}><h3>{question ? question[4] : null}</h3></a>
             </div>
         )
     }
