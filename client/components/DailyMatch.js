@@ -28,7 +28,7 @@ export default class DailyMatch extends React.Component {
    })
    .then(() => {
      if (!this.state.partnerInfo.active) {
-      let numbersString = randomize(120).split(", ")
+      let numbersString = randomize(120).join(", ")
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.partnerId).set({
         heartStatus: 0,
         numbers: `${numbersString}`,
