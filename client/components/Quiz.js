@@ -91,7 +91,7 @@ export default class Quiz extends React.Component {
         let question = questionNumbers ? this.state.data[questionNumbers[this.state.current]] : null;
 
         return (
-            this.state.current < 5 ?
+            this.state.current < 4 ?
             <div className="quiz">
                 <h1 id="question-title">{question ? question[0] : null}</h1>
                 <div id="answers">
