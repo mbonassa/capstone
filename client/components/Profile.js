@@ -148,14 +148,14 @@ export default class UserView extends React.Component {
                 partnerId: this.state.val.partnerId
               }
             }
-            }> Your Match </Link>
+            }> See your Match </Link>
           </div> :
           <button
              className="btn misc-btn"
             title="Score"
             onClick={this.setActive}
             disabled="disabled"
-          >Finding your match...</button>
+          >Finding your match</button>
 
           }
         </div>
