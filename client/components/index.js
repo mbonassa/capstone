@@ -9,4 +9,5 @@ export { default as MatchHistory } from './MatchHistory'
 export { default as Waiting } from './Waiting';
 export { default as Answer } from './Answer';
 export { default as Random } from './Random';
-export { default as Chat } from './ChatManager'
+export { default as Chat } from './ChatManager';
+export { default as ViewAnswer } from './ViewAnswer';

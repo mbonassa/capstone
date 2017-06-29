@@ -15,7 +15,8 @@ export default class Signup extends React.Component {
                           male: false,
                           female: false
                         },
-      agePreference: ""
+      minAge: "",
+      maxAge: ""
     }
     this.onChange = this.onChange.bind(this);
     this.genderPreferenceChange = this.genderPreferenceChange.bind(this);
@@ -32,7 +33,8 @@ export default class Signup extends React.Component {
       imageUrl: this.state.imageUrl,
       bio: this.state.bio,
       genderPreference: this.state.genderPreference,
-      agePreference: this.state.agePreference,
+      minAge: this.state.minAge,
+      maxAge: this.state.maxAge,
       active: false,
       partnerId: '',
       viewed: {},
@@ -56,6 +58,22 @@ export default class Signup extends React.Component {
       this.setState(Object.assign({}, this.state, newStateObj))
       console.log(evt.target.value)
     }
+  }
+
+  minAgeRange(){
+    let output = [];
+    for (var i = 18; i < 100; i++){
+      output.push(i)
+    }
+    return output
+  }
+
+  maxAgeRange(){
+    let output = [];
+    for (var i = 18; i < 100; i++){
+      output.push(i)
+    }
+    return output
   }
 
   generateAgeDropdown(){
@@ -87,6 +105,17 @@ export default class Signup extends React.Component {
         </label>
         </div>
       </div>
+
+      <div>
+      <label htmlFor="age" className="col-sm-2 control-label">Your Age</label>
+      <select onChange={this.onChange('age')} className="form-control">
+        {this.generateAgeDropdown().map(el => {
+          return <option key={el}>{el}</option>
+        })
+      }
+      </select>
+      </div>
+
       <div className="form-group">
         <label htmlFor="userBio" className="col-sm-2 control-label">Bio</label>
         <div className="col-sm-10">
@@ -104,21 +133,27 @@ export default class Signup extends React.Component {
           </label>
           </div>
       </div>
-      <div className="form-group">
-        <label htmlFor="agePreference" className="col-sm-2 control-label">Age Preference</label>
-        <div className="col-sm-10">
-          <input onChange={this.onChange('agePreference')} type="agePreference" className="form-control" id="agePreference" placeholder="Enter your preferred age range..." />
-        </div>
-      </div>
+
       <div>
-      <label htmlFor="age" className="col-sm-2 control-label">Age</label>
-      <select onChange={this.onChange('age')} className="form-control">
+      <label htmlFor="minAge" className="col-sm-2 control-label"> Minimum Age</label>
+      <select onChange={this.onChange('minAge')} className="age-range col-sm-6 form-control">
         {this.generateAgeDropdown().map(el => {
           return <option key={el}>{el}</option>
         })
       }
       </select>
       </div>
+
+      <div>
+      <label htmlFor="maxAge" className="col-sm-2 control-label">Maximum Age</label>
+      <select onChange={this.onChange('maxAge')} className="age-range col-sm-6 form-control">
+        {this.generateAgeDropdown().map(el => {
+          return <option key={el}>{el}</option>
+        })
+      }
+      </select>
+      </div>
+
       <div className="form-group">
         <label htmlFor="imageUrl" className="col-sm-2 control-label">Profile Picture URL</label>
         <div className="col-sm-10">
