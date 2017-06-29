@@ -1,5 +1,6 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth, firebaseQuestionsRef } from '../../utils/firebase.js';
+import { Link } from 'react-router';
 
 export default class Answer extends React.Component {
     constructor(props) {
@@ -25,8 +26,8 @@ export default class Answer extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         let response = this.state.response;
-        //let user = firebaseAuth.currentUser.uid;
-        let userRef = firebaseUsersRef.child('User5');
+        let user = firebaseAuth.currentUser.uid;
+        let userRef = firebaseUsersRef.child(user);
         let answerKey = this.state.latestQuestionKey + 'answer';
         userRef.child('matches').child(this.state.latestMatchKey).child('round2answers').update({
             [answerKey]: [response]
@@ -36,8 +37,8 @@ export default class Answer extends React.Component {
 
     componentDidMount () {
 
-        //let user = firebaseAuth.currentUser.uid;
-        let userRef = firebaseUsersRef.child('User5')
+        let user = firebaseAuth.currentUser.uid;
+        let userRef = firebaseUsersRef.child(user);
         userRef.on('value',
             (snapshot) => {
                 let userData = snapshot.val();
@@ -100,7 +101,9 @@ export default class Answer extends React.Component {
                         </label>
                         <input disabled={this.state.answered} type="submit" value="Submit" />
                     </form>
-                {this.state.answered ? <a href='/pickquestion'>Send {this.state.theirName} a question</a> : null}
+                {this.state.answered ? 
+                    <a href='/pickquestion'>Send {this.state.theirName} a question</a>
+                : null}
             </div> 
         )
     }
