@@ -59,7 +59,7 @@ handleFacebookLogin () {
     })
     .then(() => {
       if (firebaseAuth.currentUser) browserHistory.push("profile")
-      else alert ("Incorrect login")
+      else alert ("Seems like you don't have an account yet. Create one below!")
     })
   }
 
