@@ -59,7 +59,7 @@ handleFacebookLogin () {
     })
     .then(() => {
       if (firebaseAuth.currentUser) browserHistory.push("profile")
-      else alert ("Incorrect login")
+      else alert ("Seems like you don't have an account yet. Create one below!")
     })
   }
 
@@ -145,7 +145,6 @@ handleFacebookLogin () {
           > Sign in thru Facebook </button>
           <button className="btn toggle-btn center"  onClick={()=>{this.setState({toggleLogin: !this.state.toggleLogin})}} >
           {!this.state.toggleLogin ? "Returning? Login" : "New here? Sign up"}
-
           </button>
         </div>
       </div>

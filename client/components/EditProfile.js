@@ -14,11 +14,13 @@ export default class EditProfile extends React.Component {
                           male: false,
                           female: false
                         },
-      agePreference: ''
+      minAge: '',
+      maxAge: ''
     }
     this.onChange = this.onChange.bind(this);
     this.genderPreferenceChange = this.genderPreferenceChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.generateAgeDropdown = this.generateAgeDropdown.bind(this);
   }
 
   componentDidMount(){
@@ -38,7 +40,7 @@ export default class EditProfile extends React.Component {
         console.log("The read failed: " + errorObject.code);
       });
     } else {
-      browserHistory.push('/login');
+      alert("You are not logged in.")
     }
   }
 
@@ -51,7 +53,8 @@ export default class EditProfile extends React.Component {
       imageUrl: this.state.imageUrl,
       bio: this.state.bio,
       genderPreference: this.state.genderPreference,
-      agePreference: this.state.agePreference
+      minAge: this.state.minAge,
+      maxAge: this.state.maxAge
     })
     .then(() => {
       browserHistory.push('/profile')
@@ -71,6 +74,14 @@ export default class EditProfile extends React.Component {
       this.setState(Object.assign({}, this.state, newStateObj))
       console.log(evt.target.value)
     }
+  }
+
+  generateAgeDropdown(){
+    let output = [];
+    for (var i = 18; i < 100; i++){
+      output.push(i)
+    }
+    return output
   }
 
   render(){
@@ -100,11 +111,25 @@ export default class EditProfile extends React.Component {
           </label>
           </div>
       </div>
-      <div className="form-group">
-        <label htmlFor="agePreference" className="col-sm-2 control-label">Age Preference</label>
-        <div className="col-sm-10">
-          <input onChange={this.onChange('agePreference')} type="agePreference" className="form-control" id="agePreference" value={this.state.agePreference} />
-        </div>
+
+      <div>
+      <label htmlFor="minAge" className="age-range-title col-sm-2 control-label">Minimum Age</label>
+      <select onChange={this.onChange('minAge')} className="age-range col-sm-6 form-control" placeholder="min">
+        {this.generateAgeDropdown().map(el => {
+          return <option key={el}>{el}</option>
+        })
+      }
+      </select>
+      </div>
+
+      <div>
+      <label htmlFor="maxAge" className="age-range-title col-sm-2 control-label">Maximum Age</label>
+      <select onChange={this.onChange('maxAge')} className="age-range col-sm-6 form-control" placeholder="max">
+        {this.generateAgeDropdown().map(el => {
+          return <option key={el}>{el}</option>
+        })
+      }
+      </select>
       </div>
 
       <div className="form-group">

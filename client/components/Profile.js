@@ -123,6 +123,11 @@ export default class UserView extends React.Component {
                 <Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className='fancy-type'>(EDIT PROFILE)</p></Link>
               </div>) : null}
             <h5>{this.state.val.bio}</h5>
+              <Link to={
+            {
+              pathname: "matchHistory",
+            }
+            }> View Past Matches </Link>
             <button
               className="btn misc-btn"
               title="Log out"
@@ -161,7 +166,12 @@ export default class UserView extends React.Component {
         }
         {
           this.state.val.partnerId ?
-          <Link to={`/chat/${this.state.val.partnerId}`}> Chat </Link> : null
+          <Link to={
+            {
+            pathname:`/chat/${this.state.val.partnerId}`,
+            state: {partnerInfo: this.state.usersObj[this.state.val.partnerId]}
+            }
+          }> Chat </Link> : null
         }
         </div>
        </div>

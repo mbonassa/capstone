@@ -5,52 +5,79 @@ export default class Quiz extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            data: {},
-            userData: {}
+            questions: {},
+            matchKey: '',
+            randomNumbers: [],
+            theirName: ''
         }
-
+        this.handleClick = this.handleClick.bind(this);
     }
 
 
     componentDidMount () {
         firebaseQuestionsRef.on('value', 
             (snapshot) => {
-                this.setState({data: snapshot.val()})
+                this.setState({questions: snapshot.val()})
+                let arr = [];
+                while (arr.length < 4) {
+                    let random = Math.round(Math.random() * Object.keys(snapshot.val()).length) + 1;
+                    if (arr.indexOf(random) === -1) arr.push(random)
+                }
+                this.setState({randomNumbers: arr})
             },
             (errorObject) => {
                 console.error('The read failed: ' + errorObject.code)
             })
 
         //let user = firebaseAuth.currentUser.uid;
-        let data = firebaseUsersRef.child('User1')
-        data.on('value', 
-            (snapshot) => {
-                this.setState({userData: snapshot.val()})
-            },
-            (errorObject) => {
-                console.error('The read failed: ' + errorObject.code)
-            })
+        let userRef = firebaseUsersRef.child('User4')
 
+        //We obtain an object with all the user's matches from the database
+        //We preserve this object to state on allMatches
+        //Then, we find the most recent match by comparing timestamps
+        userRef.child('matches').on("value", (snapshot) => {
+            this.setState({allMatches: snapshot.val()})
+                let max = 0;
+                let maxKey;
+                let matchKeys = Object.keys(snapshot.val()).forEach(key => {
+                    let timestamp = snapshot.val()[key].timestamp;
+                    if (timestamp > max) {
+                        max = timestamp;
+                        maxKey = key;
+                    }})
+                    this.setState({matchKey: maxKey});
+                    //Getting name of match
+                    firebaseUsersRef.child(maxKey).on('value', (snapshot) => {
+                        let name = snapshot.val().name;
+                        this.setState({theirName: name})
+                    })
+        },
+        (errorObject) => {
+            console.error('The read failed: ' + errorObject.code)
+        });
 
+    }
+
+    handleClick (n) {
+        //let user = firebaseAuth.currentUser.uid;
+        let userRef = firebaseUsersRef.child('User4')
+        let matchKey = this.state.matchKey;
+        let questionNumber = this.state.randomNumbers[n]
+        //This is the database reference to the latest (current) match's match object
+        firebaseUsersRef.child(matchKey).child('matches').child('User4').child('round2').update({
+            //We affix a timestamp to each question so later we can be sure to get the latest one
+            [questionNumber]: 'true,' + Date.now()
+        })
     }
 
     render() {
 
-        let arr = [];
-        while (arr.length < 4) {
-            let random = Math.round(Math.random() * this.state.data.length) + 1;
-            if (arr.indexOf(random) === -1) arr.push(random)
-        }
-
-        console.log(arr)
-
-        console.log(this.state)
         return (
             <div>
-                <h1>Pick a question to send Marianne!</h1>
-                <h3>{this.state.data[arr[0]]}</h3>
-                <h3>{this.state.data[arr[1]]}</h3>
-                <h3>{this.state.data[arr[2]]}</h3>
+                {this.state.theirName.length ? <h1>Pick a question to send to {this.state.theirName}!</h1> : null}
+                <a><h3 onClick={() => this.handleClick(0)}>{this.state.questions[this.state.randomNumbers[0]]}</h3></a>
+                <a><h3 onClick={() => this.handleClick(1)}>{this.state.questions[this.state.randomNumbers[1]]}</h3></a>
+                <a><h3 onClick={() => this.handleClick(2)}>{this.state.questions[this.state.randomNumbers[2]]}</h3></a>
             </div>
         )
     }
