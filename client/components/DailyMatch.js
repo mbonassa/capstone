@@ -28,7 +28,7 @@ export default class DailyMatch extends React.Component {
    })
    .then(() => {
      if (!this.state.partnerInfo.active) {
-      let numbersString = randomize(120).split(", ")
+      let numbersString = randomize(120).join(", ")
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.partnerId).set({
         heartStatus: 0,
         numbers: `${numbersString}`,
@@ -129,7 +129,7 @@ export default class DailyMatch extends React.Component {
           >Go to your quiz...</button>
         </div>
         :
-        this.state.userObj && !this.state.userObj.active ?
+        this.state.userObj && !this.state.userObj.active && this.state.partnerInfo.active ?
         <div>
           <h4> Waiting on your partner's response... </h4>
           <Link to="profile"> Return to Profile </Link>

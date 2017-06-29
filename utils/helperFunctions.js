@@ -19,4 +19,5 @@ export function randomize(numberOfQuestions) {
     let number = Math.floor(Math.random () * numberOfQuestions) + 1;
     if (!arr.includes(number)) arr.push(number);
   }
+  return arr;
 }
