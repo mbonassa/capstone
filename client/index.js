@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 
-import { Profile, Login, EditProfile, DailyMatch, Signup, Quiz, PickQuestion, Waiting, Answer, Random, Chat } from './components';
+import { Profile, Login, EditProfile, DailyMatch, Signup, Quiz, PickQuestion, Waiting, Answer, Random, Chat, MatchHistory } from './components';
 
 ReactDOM.render(
    <Router history={browserHistory}>
@@ -17,6 +17,7 @@ ReactDOM.render(
         <Route path="/pickquestion" component={PickQuestion}/>
         <Route path="/signup" component={Signup}/>
         <Route path="/match" component={DailyMatch}/>
+        <Route path="/matchHistory" component={MatchHistory}/>
         <Route path="/waiting" component={Waiting}/>
         <Route path="/answer" component={Answer}/>
         <Route path="/random" component={Random}/>
