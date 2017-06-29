@@ -159,7 +159,10 @@ export default class UserView extends React.Component {
           >Finding your match...</button>
 
         }
-        <Link to={`/chat/${this.state.val.partnerId}`}> Chat </Link>
+        {
+          this.state.val.partnerId ?
+          <Link to={`/chat/${this.state.val.partnerId}`}> Chat </Link> : null
+        }
         </div>
        </div>
       </div>

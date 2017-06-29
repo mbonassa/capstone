@@ -11,7 +11,6 @@ const Nickname = ignite(
 
 const ChatMessage = ignite(
   ({value}) => {
-    console.log(value)
     if (!value) return null
     const {from, body, timestamp} = value
     let realTime;
