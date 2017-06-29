@@ -101,7 +101,8 @@ export default class Waiting extends React.Component {
                     let otherUserRef = firebaseUsersRef.child(maxKey)
                     otherUserRef.on('value',
                         (snapshot) => {
-                            this.setState({theirName: snapshot.val()})
+                            let theirName = snapshot.val().name;
+                            this.setState({theirName: theirName})
                         })
                 }
         ,
@@ -113,6 +114,7 @@ export default class Waiting extends React.Component {
     }
 
     render() {
+        console.log(this.state.theirName)
         return (
             this.state.userData.matches && this.state.heartStatus && this.state.theirName ? 
             <div>
