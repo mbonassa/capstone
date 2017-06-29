@@ -31,6 +31,7 @@ export default class EditProfile extends React.Component {
           val: snapshot.val(),
           name: snapshot.val().name,
           bio: snapshot.val().bio,
+          gender: snapshot.val().gender,
           genderPreference: snapshot.val().genderPreference,
           agePreference: snapshot.val().agePreference,
           imageUrl: snapshot.val().imageUrl
@@ -93,6 +94,9 @@ export default class EditProfile extends React.Component {
         <div className="col-sm-10">
           <input onChange={this.onChange('name')} type="userName" className="form-control" id="userName" value={this.state.name} />
         </div>
+          <div className="col-sm-10">
+            <p className="control-label"> Gender: {this.state.gender} </p>
+          </div>
       </div>
       <div className="form-group">
         <label htmlFor="userBio" className="col-sm-2 control-label">Update Bio</label>

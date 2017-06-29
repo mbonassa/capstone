@@ -42,7 +42,7 @@ handleFacebookLogin () {
     }
   })
   .then(() => {
-    browserHistory.push('/profile')
+    browserHistory.push('/profile/edit')
   })
   .catch((error) => {
     console.log("ERROR", error)
