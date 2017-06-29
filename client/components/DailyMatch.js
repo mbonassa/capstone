@@ -34,13 +34,15 @@ export default class DailyMatch extends React.Component {
         numbers: `${numbersString}`,
         round1: {},
         timestamp: Date.now()
+        turnToAsk: true
       })
       .then(() => {
         return firebaseUsersRef.child(this.state.partnerId).child('matches').child(firebaseAuth.currentUser.uid).set({
           heartStatus: 0,
           numbers: `${numbersString}`,
           round1: {},
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          turnToAsk: true
         });
       })
       .then(() => {
