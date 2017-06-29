@@ -4,7 +4,7 @@ Score is an innovative dating app where you get to know your matches through fun
 
 ## Website
 
-tbd.herokuapp.com
+http://score-dating.herokuapp.com/
 
 ## Setup
 
