@@ -32,7 +32,7 @@ export default class EditProfile extends React.Component {
           name: snapshot.val().name,
           bio: snapshot.val().bio,
           gender: snapshot.val().gender,
-          genderPreference: snapshot.val().genderPreference,
+          genderPreference: snapshot.val().genderPreference || {male: false, female: false},
           agePreference: snapshot.val().agePreference,
           imageUrl: snapshot.val().imageUrl
         });
@@ -47,7 +47,6 @@ export default class EditProfile extends React.Component {
 
   handleSubmit(evt){
     evt.preventDefault();
-    console.log(this.state)
     firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
       name: this.state.name,
       gender: this.state.gender,
@@ -73,7 +72,6 @@ export default class EditProfile extends React.Component {
       let newStateObj = {};
       newStateObj[type] = evt.target.value
       this.setState(Object.assign({}, this.state, newStateObj))
-      console.log(evt.target.value)
     }
   }
 

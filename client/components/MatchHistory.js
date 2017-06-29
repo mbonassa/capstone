@@ -26,6 +26,7 @@ export default class MatchHistory extends React.Component {
 
   componentWillUnmount(){
     firebaseUsersRef.child(firebaseAuth.currentUser.uid).off('value')
+    firebaseUsersRef.off('value')
   }
 
   render(){

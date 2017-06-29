@@ -24,19 +24,17 @@ handleFacebookLogin () {
   FireBaseTools.loginWithProvider('facebook')
   .then((user) => {
     user = user.additionalUserInfo.profile
-    console.log("user", user)
     if (user.age_range.min < 18){
       alert("You are too young for this. Come back later")
-      throw new Error("Baby")
+      throw new Error("baby detected")
     } else {
-    //have to get their facebook name somehow
       if (!firebaseUsersRef.child(firebaseAuth.currentUser.uid).child("name")){
         firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
           name: user.name,
           gender: user.gender,
           imageUrl: user.picture.data.url,
           age: null,
-          bio: "Check me out on facebook"
+          bio: `I'm ${user.name}. Check me out on facebook`
         })
       }
     }
@@ -45,7 +43,6 @@ handleFacebookLogin () {
     browserHistory.push('/profile/edit')
   })
   .catch((error) => {
-    console.log("ERROR", error)
     alert("Sorry, but you got an error:", error.message)
   });
    }
@@ -88,7 +85,6 @@ handleFacebookLogin () {
 
   componentDidMount(){
     firebaseAuth.signOut();
-
     if (firebaseAuth.currentUser){
       this.setState({user: firebaseAuth.currentUser.uid})
     }
@@ -152,5 +148,3 @@ handleFacebookLogin () {
     );
   }
 }
-
-          // <img src='img/logo.png' />
