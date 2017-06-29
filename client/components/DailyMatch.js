@@ -1,7 +1,7 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase.js';
-import { browserHistory } from 'react-router';
-
+import { browserHistory, Link } from 'react-router';
+import { randomize } from '../../utils/helperFunctions'
 
 
 export default class DailyMatch extends React.Component {
@@ -28,17 +28,17 @@ export default class DailyMatch extends React.Component {
    })
    .then(() => {
      if (!this.state.partnerInfo.active) {
-      var q1 = Math.floor(Math.random() * 100)
+      let numbersString = randomize(120).split(", ")
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.partnerId).set({
         heartStatus: 0,
-        numbers: `${q1}, ${q1 + 1}, ${q1 - 1}, ${q1 + 2}, ${q1 - 2}`,
+        numbers: `${numbersString}`,
         round1: {},
         timestamp: Date.now()
       })
       .then(() => {
         return firebaseUsersRef.child(this.state.partnerId).child('matches').child(firebaseAuth.currentUser.uid).set({
           heartStatus: 0,
-          numbers: `${q1}, ${q1 + 1}, ${q1 - 1}, ${q1 + 2}, ${q1 - 2}`,
+          numbers: `${numbersString}`,
           round1: {},
           timestamp: Date.now()
         });
@@ -69,30 +69,32 @@ export default class DailyMatch extends React.Component {
   }
 
   componentDidMount(){
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value", (snapshot) => {
-          this.setState({userObj: snapshot.val()})
-    });
+    if(firebaseAuth.currentUser){
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value", (snapshot) => {
+            this.setState({userObj: snapshot.val()})
+      });
 
-    if (this.props.location.state.partnerId){
-        this.setState({partnerId: this.props.location.state.partnerId}, () => {
-        firebaseUsersRef.child(this.props.location.state.partnerId).on("value",
-          (snapshot) => {
-          this.setState({partnerInfo: snapshot.val()}, () => {
-             var partnerMatches = Object.keys(this.state.partnerInfo.matches).map(key => {
-              let objIdx = {};
-              objIdx = this.state.partnerInfo.matches[key];
-              objIdx.key = key;
-              return objIdx
+      if (this.props.location.state.partnerId){
+          this.setState({partnerId: this.props.location.state.partnerId}, () => {
+          firebaseUsersRef.child(this.props.location.state.partnerId).on("value",
+            (snapshot) => {
+            this.setState({partnerInfo: snapshot.val()}, () => {
+              var partnerMatches = Object.keys(this.state.partnerInfo.matches).map(key => {
+                let objIdx = {};
+                objIdx = this.state.partnerInfo.matches[key];
+                objIdx.key = key;
+                return objIdx
+              });
+              this.setState({partnerMatches})
             });
-            this.setState({partnerMatches})
+          },
+            (errorObject) => {
+            console.log("The read failed: " + errorObject.code);
           });
-        },
-          (errorObject) => {
-          console.log("The read failed: " + errorObject.code);
-        });
-      })
-    } else {
-      alert("No partner loaded")
+        })
+      } else {
+        alert("No partner loaded")
+      }
     }
   }
 
@@ -120,7 +122,7 @@ export default class DailyMatch extends React.Component {
            return el.key === firebaseAuth.currentUser.uid
         }).length ?
         <div>
-          <h5> You're already in a match! </h5>
+          <h5> Your partner also confirmed, let's do it! </h5>
           <button
           className="btn btn-misc"
           onClick={this.enterQuiz}
@@ -128,7 +130,10 @@ export default class DailyMatch extends React.Component {
         </div>
         :
         this.state.userObj && !this.state.userObj.active ?
-        <h4> Waiting on your partner's response... </h4>
+        <div>
+          <h4> Waiting on your partner's response... </h4>
+          <Link to="profile"> Return to Profile </Link>
+        </div>
         :
         <div>
           <button
