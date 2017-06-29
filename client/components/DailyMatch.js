@@ -130,7 +130,7 @@ export default class DailyMatch extends React.Component {
             >Go to your quiz...</button>
           </div>
           :
-          this.state.userObj && !this.state.userObj.active ?
+          this.state.userObj && !this.state.userObj.active && this.state.partnerInfo.active ?
           <div>
             <h4> Waiting on your partner's response </h4>
             <Link to="profile"> Return to Profile </Link>
