@@ -32,8 +32,16 @@ export default class Quiz extends React.Component {
         data.on('value',
             (snapshot) => {
                 this.setState({userData: snapshot.val()})
-
-                let questionNumbers = snapshot.val().matches.m3.numbers.split(',');
+                let max = 0;
+                let maxKey;
+                let matchKeys = Object.keys(snapshot.val().matches).forEach(key => {
+                    let timestamp = snapshot.val().matches[key].timestamp;
+                    if (timestamp > max) {
+                        max = timestamp;
+                        maxKey = key;
+                    }
+                })
+                let questionNumbers = snapshot.val().matches[maxKey] ? snapshot.val().matches[maxKey].numbers.split(',') : null;
                 this.setState({questionNumbers})
             },
             (errorObject) => {
