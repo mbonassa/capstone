@@ -18,8 +18,8 @@ export default class ViewAnswer extends React.Component {
 
     componentDidMount () {
 
-        let user = firebaseAuth.currentUser.uid;
-        let userRef = firebaseUsersRef.child('User5');
+        // let user = firebaseAuth.currentUser.uid;
+        let userRef = firebaseUsersRef.child('User4');
         userRef.on('value',
             (snapshot) => {
                 let userData = snapshot.val();
@@ -39,7 +39,8 @@ export default class ViewAnswer extends React.Component {
                     (snapshot) => {
                         let theirName = snapshot.val().name;
                         //Getting their question number (key)
-                        let round2 = snapshot.val().matches[username].round2;
+                        // let user = firebaseAuth.currentUser.uid;
+                        let round2 = snapshot.val()['matches']['User4'].round2
                         let max2 = 0;
                         let latestQuestionKey;
                         Object.keys(round2).forEach(questionKey => {
@@ -53,10 +54,11 @@ export default class ViewAnswer extends React.Component {
                         firebaseQuestionsRef.on('value', 
                             (snapshot) => {
                                 let questions = snapshot.val();
-                                let latestQuestionText = questions[maxKey];
+                                let latestQuestionText = questions[latestQuestionKey];
                                 //Finding answer to latest question
                                 let answerKey = latestQuestionKey + 'answer';
-                                firebaseUsersRef.child(latestMatchKey).child('matches').child('round2answers').child(answerKey).on('value',
+                                // let user = firebaseAuth.currentUser.uid;
+                                firebaseUsersRef.child(latestMatchKey).child('matches').child('User4').child('round2answers').child(answerKey).on('value',
                                     (snapshot) => {
                                         let answer = snapshot.val()[0]
                                         this.setState({latestQuestionText, latestQuestionKey, questions, userData, theirName, latestMatchKey, answer});
