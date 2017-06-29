@@ -27,8 +27,8 @@ export default class Quiz extends React.Component {
                 console.error('The read failed: ' + errorObject.code)
             })
 
-        //let user = firebaseAuth.currentUser.uid;
-        let data = firebaseUsersRef.child('User2')
+        let user = firebaseAuth.currentUser.uid;
+        let data = firebaseUsersRef.child(user)
         data.on('value',
             (snapshot) => {
                 this.setState({userData: snapshot.val()})
@@ -44,8 +44,8 @@ export default class Quiz extends React.Component {
     }
 
     handleClick(event) {
-        //let user = firebaseAuth.currentUser.uid;
-        let matchRef = firebaseUsersRef.child('User2').child('matches');
+        let user = firebaseAuth.currentUser.uid;
+        let matchRef = firebaseUsersRef.child(user).child('matches');
         let questionNumber = +this.state.questionNumbers[this.state.current];
         let answerNumber = Number(event.target.className);
 

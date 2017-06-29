@@ -16,8 +16,8 @@ export default class Waiting extends React.Component {
 
     componentDidMount () {
 
-        //let user = firebaseAuth.currentUser.uid;
-        let data = firebaseUsersRef.child('User4')
+        let user = firebaseAuth.currentUser.uid;
+        let data = firebaseUsersRef.child(user)
 
         data.on('value',
             (snapshot) => {
@@ -27,8 +27,8 @@ export default class Waiting extends React.Component {
                 console.error('The read failed: ' + errorObject.code)
             })
 
-        let matchRef = firebaseUsersRef.child('User4').child('matches');
-        
+        let matchRef = firebaseUsersRef.child(user).child('matches');
+
         //We obtain an object with all the user's matches from the database
         //We preserve this object to state on allMatches
         //Then, we find the most recent match by comparing timestamps
@@ -62,8 +62,8 @@ export default class Waiting extends React.Component {
                     //1) 
                         //let matchedUserRef = firebaseUsersRef.child(maxKey)
                     //2)
-                    //let user = firebaseAuth.currentUser.uid; instead of User4, which is hardcoding
-                    let otherUserMatchRef = firebaseUsersRef.child(maxKey).child('matches').child('User4')
+                    let user = firebaseAuth.currentUser.uid;
+                    let otherUserMatchRef = firebaseUsersRef.child(maxKey).child('matches').child(user)
                     otherUserMatchRef.on('value', 
                         (snapshot) => {
                             this.setState({otherData: snapshot.val()});
