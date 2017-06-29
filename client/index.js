@@ -3,14 +3,14 @@ import './index.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
-
-
-import { Profile, Login, EditProfile, DailyMatch, Signup, Quiz, PickQuestion, Waiting, Answer, Random, Chat, ViewAnswer, MatchHistory } from './components';
+import { Profile, Login, EditProfile, DailyMatch, Signup, Quiz, PickQuestion, Waiting, Answer, Random, Chat, Test, Load, ViewAnswer, MatchHistory } from './components';
 
 ReactDOM.render(
    <Router history={browserHistory}>
       <Route path="/" >
         <IndexRoute component={Login} />
+        <Route path="/test" component={Test}/>
+        <Route path="/load" component={Load}/>
         <Route path="/profile" component={Profile}/>
         <Route path="/profile/edit" component={EditProfile} />
         <Route path="/login" component={Login}/>

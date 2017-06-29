@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=VT323');
+
 @media (max-width: 400px) {
   .container {
     padding: 20px;
@@ -64,6 +66,38 @@
     margin-top: 30px;
     margin-left: 15%;
   }
+
+  /* QUIZ */
+
+  #answers {
+    margin-top: 150px;
+  }
+
+  #question-title {
+    top: 15px !important;
+    text-align: center;
+    margin-bottom: 25px;
+    font-family: 'VT323', monospace;
+    font-size: 3em;
+    position: absolute;
+    left: -250px;
+    width: 100%;
+  }
+
+  .answer {
+    background-color: white;
+    border: 1px red;
+    padding: 15px 20px;
+    text-align: center;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+
+  .answer-text {
+    color: #fc5f5d;
+    background-color: white;
+  }
+
 }
 
 @media (max-width: 600px) and (min-width: 401px) {
