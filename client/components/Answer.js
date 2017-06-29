@@ -11,7 +11,8 @@ export default class Answer extends React.Component {
             latestQuestionKey: '',
             latestMatchKey: '',
             theirName: '',
-            latestQuestionText: ''
+            latestQuestionText: '',
+            answered: false
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -23,6 +24,14 @@ export default class Answer extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        let response = this.state.response;
+        //let user = firebaseAuth.currentUser.uid;
+        let userRef = firebaseUsersRef.child('User5');
+        let answerKey = this.state.latestQuestionKey + 'answer';
+        userRef.child('matches').child(this.state.latestMatchKey).child('round2answers').update({
+            [answerKey]: [response]
+        })
+        this.setState({answered: true, response: ''})
     }
 
     componentDidMount () {
@@ -55,10 +64,10 @@ export default class Answer extends React.Component {
                         let max2 = 0;
                         let maxKey2;
                         Object.keys(round2).forEach(questionKey => {
-                            let timestamp = round2[questionKey].split(',')[1]
-                            if (timestamp > max2) {
-                                maxKey2 = questionKey;
-                            }
+                                let timestamp = round2[questionKey].split(',')[1]
+                                if (timestamp > max2) {
+                                    maxKey2 = questionKey;
+                                }
                         })
                         this.setState({latestQuestionKey: maxKey2})
                         //Finding latest question text
@@ -81,18 +90,18 @@ export default class Answer extends React.Component {
 
 
     render() {
-        console.log(this.state)
         return (
             <div>
-                <h3>{this.state.theirName} asked</h3>
+                <h3>{this.state.theirName} {this.state.theirName && this.state.latestQuestionText ? 'asked' : null}</h3>
                 <h1>{this.state.latestQuestionText}</h1>
-                    <form>
+                    <form onSubmit={this.handleSubmit}>
                         <label>
-                        <input onChange={this.handleChange} type="text" name="name" />
+                        <input onChange={this.handleChange} value={this.state.response} type="text" name="name" />
                         </label>
-                        <input type="submit" value="Submit" />
+                        <input disabled={this.state.answered} type="submit" value="Submit" />
                     </form>
-            </div>
+                {this.state.answered ? <a href='/pickquestion'>Send {this.state.theirName} a question</a> : null}
+            </div> 
         )
     }
 
