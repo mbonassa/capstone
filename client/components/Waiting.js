@@ -41,7 +41,7 @@ export default class Waiting extends React.Component {
                     if (timestamp > max) {
                         max = timestamp;
                         maxKey = key;
-                    }
+                    }})
                     let questions = snapshot.val()[maxKey] ? snapshot.val()[maxKey].round1 : null
                     let myAnswers = [];
                     if (questions) {
@@ -96,8 +96,8 @@ export default class Waiting extends React.Component {
                         (errorObject) => {
                             console.error('The read failed: ' + errorObject.code)
                         })
-                })
-        },
+                }
+        ,
         (errorObject) => {
             console.error('The read failed: ' + errorObject.code)
         });
