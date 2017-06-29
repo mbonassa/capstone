@@ -33,7 +33,7 @@ export default class Waiting extends React.Component {
         //We obtain an object with all the user's matches from the database
         //We preserve this object to state on allMatches
         //Then, we find the most recent match by comparing timestamps
-        matchRef.orderByValue().on("value", (snapshot) => {
+        matchRef.on("value", (snapshot) => {
             this.setState({allMatches: snapshot.val()})
                 let max = 0;
                 let maxKey;
@@ -97,6 +97,7 @@ export default class Waiting extends React.Component {
                         (errorObject) => {
                             console.error('The read failed: ' + errorObject.code)
                         })
+                    //Getting name of matched user
                     let otherUserRef = firebaseUsersRef.child(maxKey)
                     otherUserRef.on('value',
                         (snapshot) => {
