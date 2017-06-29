@@ -8,6 +8,18 @@ import React from 'react'
 //
 //   const Hello = ignite(({value}) => <span>{value}</span>)
 //   <Hello fireRef={db.ref('/some/path')} />
+
+/*
+const duo = ignite({name, chatroom}) => {
+  return(
+    <div>
+      <User fireRef={db.ref(`Users/${user.id}`)} />
+      <Chatroom fireRef = {db.ref(`Chats/${chatroom.id}`)} />
+    </div>
+  )
+
+}
+*/
 //
 // The inner component also receives a handy onChange handler, which receives
 // an *event*, and sets the value at the reference. You can attach it directly

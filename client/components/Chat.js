@@ -11,11 +11,20 @@ const Nickname = ignite(
 
 const ChatMessage = ignite(
   ({value}) => {
+    console.log(value)
     if (!value) return null
-    const {from, body} = value
+    const {from, body, timestamp} = value
+    let realTime;
+    if (timestamp){
+      realTime = new Date(timestamp).toTimeString();
+      realTime = realTime.slice(0, 5)
+    } else {
+      realTime = "unknown time"
+    }
     return <div className='chat-message'>
       <Nickname fireRef={nickname(from)} />
-      <span className='chat-message-body'>{body}</span>
+      <span className='chat-message-body'>{` (${realTime})`}</span>
+      <span className='chat-message-body'>{`: ${body}`}</span>
     </div>
   }
 )
@@ -30,9 +39,18 @@ export default ignite(withAuth(class extends React.Component {
   sendMessage(event){
     event.preventDefault()
     if (!this.props.fireRef) return
+    let msg = event.target.body.value
     this.props.fireRef.push({
+      timestamp: Date.now(),
       from: firebaseAuth.currentUser.uid,
-      body: ` ${event.target.body.value}`
+      body: `${msg}`
+    })
+    .then(() => {
+      firebaseDb.ref('Users').child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).child('chat').push({
+        timestamp: Date.now(),
+        from: firebaseAuth.currentUser.uid,
+        body: `${msg}`
+      })
     })
   }
 

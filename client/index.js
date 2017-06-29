@@ -20,7 +20,7 @@ ReactDOM.render(
         <Route path="/waiting" component={Waiting}/>
         <Route path="/answer" component={Answer}/>
         <Route path="/random" component={Random}/>
-        <Route path="/chat/:room" component={Chat}/>
+        <Route path="/chat/:partnerId" component={Chat}/>
       </Route>
     </Router>,
     document.getElementById('app')
