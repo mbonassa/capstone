@@ -33,7 +33,7 @@ export default class DailyMatch extends React.Component {
         heartStatus: 0,
         numbers: `${numbersString}`,
         round1: {},
-        timestamp: Date.now()
+        timestamp: Date.now(),
         turnToAsk: true
       })
       .then(() => {
