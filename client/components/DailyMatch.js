@@ -105,47 +105,49 @@ export default class DailyMatch extends React.Component {
   render(){
     return (
     <div className="user-page">
-      <h1>Here's your match!</h1>
-        <div className="row default-container">
-      	</div>
-        <div>
-        <img className="profile-image"src={`${this.state.partnerInfo.imageUrl}`} />
+      <img className="logo-top" src="./img/sm-logo.png" />
+      <div id="profile-main">
+        <h1>Here's your match!</h1>
+          <div className="row default-container">
+        	</div>
+          <div>
+          <img className="profile-image"src={`${this.state.partnerInfo.imageUrl}`} />
+          </div>
+          <div>
+            {this.state.partnerInfo.name ? (<h3>{this.state.partnerInfo.name}, {this.state.partnerInfo.age}</h3>) : null}
+            <h5>{this.state.partnerInfo.bio}</h5>
+          </div>
+          <hr/>
+        {
+          this.state.partnerMatches && this.state.partnerMatches.filter(el => {
+             return el.key === firebaseAuth.currentUser.uid
+          }).length ?
+          <div>
+            <h5> Your partner also confirmed, let's do it! </h5>
+            <button
+            className="btn misc-btn"
+            onClick={this.enterQuiz}
+            >Go to your quiz...</button>
+          </div>
+          :
+          this.state.userObj && !this.state.userObj.active ?
+          <div>
+            <h4> Waiting on your partner's response </h4>
+            <Link to="profile"> Return to Profile </Link>
+          </div>
+          :
+          <div>
+            <button
+            className="btn misc-btn"
+            onClick={this.handleMatch}
+            >GET STARTED</button>
+            <button
+            className="btn misc-btn"
+            onClick={this.dismissMatch}
+            >LEAVE MATCH</button>
+          </div>
+        }
         </div>
-        <div>
-          {this.state.partnerInfo.name ? (<h3>{this.state.partnerInfo.name}, {this.state.partnerInfo.age}</h3>) : null}
-          <hr className="horizontal-line" />
-          <h5>{this.state.partnerInfo.bio}</h5>
-        </div>
-        <hr/>
-      {
-        this.state.partnerMatches && this.state.partnerMatches.filter(el => {
-           return el.key === firebaseAuth.currentUser.uid
-        }).length ?
-        <div>
-          <h5> Your partner also confirmed, let's do it! </h5>
-          <button
-          className="btn btn-misc"
-          onClick={this.enterQuiz}
-          >Go to your quiz...</button>
-        </div>
-        :
-        this.state.userObj && !this.state.userObj.active ?
-        <div>
-          <h4> Waiting on your partner's response... </h4>
-          <Link to="profile"> Return to Profile </Link>
-        </div>
-        :
-        <div>
-          <button
-          className="btn btn-misc"
-          onClick={this.handleMatch}
-          >GET STARTED</button>
-          <button
-          className="btn btn-misc"
-          onClick={this.dismissMatch}
-          >Run away...</button>
-        </div>
-      }
       </div>
     )
   }
