@@ -9,21 +9,15 @@ export default class Waiting extends React.Component {
             otherData: {},
             allMatches: {},
             myAnswers: [],
-            theirAnswers: []
+            theirAnswers: [],
+            heartStatus: 0
         }
     }
 
     componentDidMount () {
-        //To get theirAnswers:
-            //Get latest match key 
-            //Make database request for matched user's data. Set it to state as otherData
-            //Find latest match of matched user's data, whose key will be the current user's username
-            //Apply same logic to get answers. Set them to state as theirAnswers
-            //Compare answers and find heartStatus
-            //Update heartStatus on database for both users to result
 
-        //let user = firebaseAuth.currentUser.uid;
-        let data = firebaseUsersRef.child('User4')
+        let user = firebaseAuth.currentUser.uid;
+        let data = firebaseUsersRef.child(user)
 
         data.on('value',
             (snapshot) => {
@@ -33,7 +27,7 @@ export default class Waiting extends React.Component {
                 console.error('The read failed: ' + errorObject.code)
             })
 
-        let matchRef = firebaseUsersRef.child('User4').child('matches');
+        let matchRef = firebaseUsersRef.child(user).child('matches');
 
         //We obtain an object with all the user's matches from the database
         //We preserve this object to state on allMatches
@@ -56,6 +50,52 @@ export default class Waiting extends React.Component {
                     })
                     this.setState({myAnswers: myAnswers})
                     }
+                    //To get theirAnswers:
+                    //1) Find matched user. Latest match key is maxKey, which corresponds to the matched user's username
+                    //2) Find latest match of matched user's data, whose key will be the current user's username, and get data.
+                            //Set data to otherData
+                    //3) Apply same process to get answers. Set them to state as theirAnswers
+                    //4) Compare answers and find heartStatus. Set it to state as heartStatus, render page
+                    //5) Update database heartStatus for other user
+                    //6) Update database heartStatus for own user
+
+                    //1) 
+                        //let matchedUserRef = firebaseUsersRef.child(maxKey)
+                    //2)
+                    let user = firebaseAuth.currentUser.uid;
+                    let otherUserMatchRef = firebaseUsersRef.child(maxKey).child('matches').child(user)
+                    otherUserMatchRef.on('value', 
+                        (snapshot) => {
+                            this.setState({otherData: snapshot.val()});
+                            //3)
+                            let theirQuestions = snapshot.val() ? snapshot.val().round1 : null
+                            let theirAnswers = [];
+                            if (theirQuestions) {
+                                Object.keys(questions).forEach(question => {
+                                    theirAnswers.push(theirQuestions[question][0])
+                                })
+                                this.setState({theirAnswers: theirAnswers});
+                                let heartStatus = 0;
+                                //4)
+                                if (myAnswers.length && theirAnswers.length) {
+                                    for (let i = 0 ; i < myAnswers.length ; i++) {
+                                        if (myAnswers[i] == theirAnswers[i]) heartStatus++
+                                    }
+                                    this.setState({heartStatus: heartStatus})
+                                    //5
+                                    otherUserMatchRef.update({
+                                        'heartStatus': heartStatus
+                                    })
+                                    //6)
+                                    matchRef.child(maxKey).update({
+                                        heartStatus: heartStatus
+                                    })
+                                }
+                            }
+                        },
+                        (errorObject) => {
+                            console.error('The read failed: ' + errorObject.code)
+                        })
                 })
         },
         (errorObject) => {
@@ -67,10 +107,10 @@ export default class Waiting extends React.Component {
 
     render() {
         return (
-            this.state.userData.matches && this.state.userData.matches.User5.heartStatus ? 
+            this.state.userData.matches && this.state.heartStatus ? 
             <div>
-                <h1>You and Marianne have {this.state.userData.matches.m1.heartStatus} hearts</h1>
-                <h3>That means you had {this.state.userData.matches.m1.heartStatus} answers in common</h3>
+                <h1>You and Marianne have {this.state.heartStatus} {this.state.heartStatus == 1 ? 'heart' : 'hearts'}</h1>
+                <h3>That means you had {this.state.heartStatus} {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h3>
                 <a href='/pickquestion'><h3>Go to round 2</h3></a>
             </div> : 
             <div>
