@@ -31,7 +31,8 @@ export default class EditProfile extends React.Component {
           val: snapshot.val(),
           name: snapshot.val().name,
           bio: snapshot.val().bio,
-          genderPreference: snapshot.val().genderPreference,
+          gender: snapshot.val().gender,
+          genderPreference: snapshot.val().genderPreference || {male: false, female: false},
           agePreference: snapshot.val().agePreference,
           imageUrl: snapshot.val().imageUrl
         });
@@ -46,7 +47,6 @@ export default class EditProfile extends React.Component {
 
   handleSubmit(evt){
     evt.preventDefault();
-    console.log(this.state)
     firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
       name: this.state.name,
       gender: this.state.gender,
@@ -72,7 +72,6 @@ export default class EditProfile extends React.Component {
       let newStateObj = {};
       newStateObj[type] = evt.target.value
       this.setState(Object.assign({}, this.state, newStateObj))
-      console.log(evt.target.value)
     }
   }
 
@@ -93,6 +92,9 @@ export default class EditProfile extends React.Component {
         <div className="col-sm-10">
           <input onChange={this.onChange('name')} type="userName" className="form-control" id="userName" value={this.state.name} />
         </div>
+          <div className="col-sm-10">
+            <p className="control-label"> Gender: {this.state.gender} </p>
+          </div>
       </div>
       <div className="form-group">
         <label htmlFor="userBio" className="col-sm-2 control-label">Update Bio</label>

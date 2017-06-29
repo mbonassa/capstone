@@ -22,10 +22,10 @@ export default class DailyMatch extends React.Component {
     browserHistory.push('quiz')
   }
 
- handleMatch(){
-   firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
-     active: false
-   })
+  handleMatch(){
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+      active: false
+    })
    .then(() => {
      if (!this.state.partnerInfo.active) {
       let numbersString = randomize(120).join(",")
@@ -46,8 +46,6 @@ export default class DailyMatch extends React.Component {
       .then(() => {
         browserHistory.push('quiz')
       })
-     } else {
-       console.log("Not ready yet")
      }
    });
   }
@@ -94,12 +92,15 @@ export default class DailyMatch extends React.Component {
         })
       } else {
         alert("No partner loaded")
+        browserHistory.push('profile')
       }
     }
   }
 
   componentWillUnmount(){
     firebaseUsersRef.off('value');
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).off('value')
+    if (this.props.location.state) firebaseUsersRef.child(this.props.location.state.partnerId).off('value')
   }
 
   render(){

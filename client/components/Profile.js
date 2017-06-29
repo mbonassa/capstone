@@ -75,10 +75,8 @@ export default class UserView extends React.Component {
   }
 
   handleLogout(){
-    firebaseAuth.signOut()
-    .then(() => {
-      browserHistory.push('/login')
-    })
+    firebaseAuth.signOut();
+    browserHistory.push('/login');
   }
 
   componentDidMount(){

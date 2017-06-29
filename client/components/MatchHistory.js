@@ -26,28 +26,38 @@ export default class MatchHistory extends React.Component {
 
   componentWillUnmount(){
     firebaseUsersRef.child(firebaseAuth.currentUser.uid).off('value')
+    firebaseUsersRef.off('value')
   }
 
   render(){
     return (
       <div>
-      {this.state.userObj.matches && arrayifyWithKey(this.state.userObj.matches).map(match => {
+      {this.state.userObj.matches && arrayifyWithKey(this.state.userObj.matches).length ?
+        <div>
+        {
+        arrayifyWithKey(this.state.userObj.matches).map(match => {
         return (
-          <div key={match.key}>
-            <span> {this.state.allUsersObj && (this.state.allUsersObj[match.key]).name} </span>
-            <span>, matched on {new Date(match.timestamp).toDateString()}</span>
-            <img src={this.state.allUsersObj && `${(this.state.allUsersObj[match.key]).imageUrl}`}></img>
-            <Link to={
-              {
-                pathname:`/chat/${match.key}`,
-                state: {partnerInfo: this.state.allUsersObj[match.key]}
-              }
-            }> Go to chat </Link>
-              <hr />
+            <div key={match.key}>
+              <span> {this.state.allUsersObj && (this.state.allUsersObj[match.key]).name} </span>
+              <span>, matched on {new Date(match.timestamp).toDateString()}</span>
+              <img src={this.state.allUsersObj && `${(this.state.allUsersObj[match.key]).imageUrl}`}></img>
+              <Link to={
+                {
+                  pathname:`/chat/${match.key}`,
+                  state: {partnerInfo: this.state.allUsersObj[match.key]}
+                }
+              }> Go to chat </Link>
+                <hr />
 
-          </div>
-        )
-      })}
+            </div>
+            )
+          })
+        }
+      </div> :
+      <div>
+        <span> You have no matches yet. Go find some! </span>
+      </div>
+    }
       </div>
     )
   }
