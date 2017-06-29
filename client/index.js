@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 
-import { Profile, Login, EditProfile, DailyMatch, Signup, Quiz, PickQuestion, Waiting, Answer, Random } from './components';
+import { Profile, Login, EditProfile, DailyMatch, Signup, Quiz, PickQuestion, Waiting, Answer, Random, Chat } from './components';
 
 ReactDOM.render(
    <Router history={browserHistory}>
@@ -20,6 +20,7 @@ ReactDOM.render(
         <Route path="/waiting" component={Waiting}/>
         <Route path="/answer" component={Answer}/>
         <Route path="/random" component={Random}/>
+        <Route path="/chat/:room" component={Chat}/>
       </Route>
     </Router>,
     document.getElementById('app')

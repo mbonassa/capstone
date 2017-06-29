@@ -157,7 +157,8 @@ export default class UserView extends React.Component {
             disabled="disabled"
           >Finding your match...</button>
 
-          }
+        }
+        <Link to="/chat/5"> Chat </Link>
         </div>
        </div>
       </div>
