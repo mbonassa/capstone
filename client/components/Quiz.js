@@ -102,10 +102,10 @@ export default class Quiz extends React.Component {
             <div className="quiz">
                 <h1 id="question-title">{question ? question[0] : null}</h1>
                 <div id="answers">
-                    <a href='/waiting'><div className="answer"><h3 className="{1} answer-text">{question ? question[1] : null}</h3></div></a>
-                    <a href='/waiting'><div className="answer"><h3 className="{2} answer-text">{question ? question[2] : null}</h3></div></a>
-                    <a href='/waiting'><div className="answer"><h3 className="{3} answer-text">{question ? question[3] : null}</h3></div></a>
-                    <a href='/waiting'><div className="answer"><h3 className="{4} answer-text">{question ? question[4] : null}</h3></div></a>
+                    <Link to='waiting'><div className="answer"><h3 className="{1} answer-text">{question ? question[1] : null}</h3></div></Link>
+                    <Link to='/waiting'><div className="answer"><h3 className="{2} answer-text">{question ? question[2] : null}</h3></div></Link>
+                    <Link to='/waiting'><div className="answer"><h3 className="{3} answer-text">{question ? question[3] : null}</h3></div></Link>
+                    <Link to='/waiting'><div className="answer"><h3 className="{4} answer-text">{question ? question[4] : null}</h3></div></Link>
                 </div>
             </div>
             )
