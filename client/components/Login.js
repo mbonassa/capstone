@@ -64,7 +64,7 @@ handleFacebookLogin () {
   }
 
   handleSignUp (event) {
-    if (firebaseAuth){
+    if (firebaseAuth && this.state.signUpPassword.length >= 6){
       firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword)
       .then(() => {
         return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
@@ -82,7 +82,7 @@ handleFacebookLogin () {
         var errorMessage = error.message;
       })
     } else {
-      alert("Auth db not connected")
+      alert("Invalid Password: Must be at least six characters")
     }
   }
 
@@ -155,5 +155,3 @@ handleFacebookLogin () {
 }
 
           // <img src='img/logo.png' />
-
-
