@@ -1,7 +1,7 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase.js';
-import { browserHistory } from 'react-router';
-
+import { browserHistory, Link } from 'react-router';
+import { randomize } from '../../utils/helperFunctions'
 
 
 export default class DailyMatch extends React.Component {
@@ -28,17 +28,17 @@ export default class DailyMatch extends React.Component {
    })
    .then(() => {
      if (!this.state.partnerInfo.active) {
-      var q1 = Math.floor(Math.random() * 100)
+      let numbersString = randomize(120).split(", ")
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.partnerId).set({
         heartStatus: 0,
-        numbers: `${q1}, ${q1 + 1}, ${q1 - 1}, ${q1 + 2}, ${q1 - 2}`,
+        numbers: `${numbersString}`,
         round1: {},
         timestamp: Date.now()
       })
       .then(() => {
         return firebaseUsersRef.child(this.state.partnerId).child('matches').child(firebaseAuth.currentUser.uid).set({
           heartStatus: 0,
-          numbers: `${q1}, ${q1 + 1}, ${q1 - 1}, ${q1 + 2}, ${q1 - 2}`,
+          numbers: `${numbersString}`,
           round1: {},
           timestamp: Date.now()
         });
@@ -130,7 +130,10 @@ export default class DailyMatch extends React.Component {
         </div>
         :
         this.state.userObj && !this.state.userObj.active ?
-        <h4> Waiting on your partner's response... </h4>
+        <div>
+          <h4> Waiting on your partner's response... </h4>
+          <Link to="profile"> Return to Profile </Link>
+        </div>
         :
         <div>
           <button

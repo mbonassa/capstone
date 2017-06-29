@@ -12,3 +12,11 @@ export function arrayify(obj){
     return key
   })
 }
+
+export function randomize(numberOfQuestions) {
+  let arr = [];
+  while (arr.length < 5) {
+    let number = Math.floor(Math.random () * numberOfQuestions) + 1;
+    if (!arr.includes(number)) arr.push(number);
+  }
+}
