@@ -7,7 +7,6 @@ export default class Quiz extends React.Component {
         this.state = {
             questions: {},
             matchKey: '',
-            current: 0,
             randomNumbers: [],
             theirName: ''
         }
@@ -63,15 +62,12 @@ export default class Quiz extends React.Component {
         //let user = firebaseAuth.currentUser.uid;
         let userRef = firebaseUsersRef.child('User4')
         let matchKey = this.state.matchKey;
-        let current = this.state.current;
         let questionNumber = this.state.randomNumbers[n]
         //This is the database reference to the latest (current) match's match object
         firebaseUsersRef.child(matchKey).child('matches').child('User4').child('round2').update({
-            [current]: [questionNumber]
+            //We affix a timestamp to each question so later we can be sure to get the latest one
+            [questionNumber]: 'true,' + Date.now()
         })
-        current = current +1;
-        this.setState({current: current})
-        console.log('hey')
     }
 
     render() {
