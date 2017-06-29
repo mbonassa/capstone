@@ -161,7 +161,12 @@ export default class UserView extends React.Component {
         }
         {
           this.state.val.partnerId ?
-          <Link to={`/chat/${this.state.val.partnerId}`}> Chat </Link> : null
+          <Link to={
+            {
+            pathname:`/chat/${this.state.val.partnerId}`,
+            state: {partnerInfo: this.state.usersObj[this.state.val.partnerId]}
+            }
+          }> Chat </Link> : null
         }
         </div>
        </div>
