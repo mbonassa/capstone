@@ -41,6 +41,7 @@ export default class Quiz extends React.Component {
                         maxKey = key;
                     }
                 })
+                this.setState({latestMatchKey: maxKey})
                 let questionNumbers = snapshot.val().matches[maxKey] ? snapshot.val().matches[maxKey].numbers.split(',') : null;
                 this.setState({questionNumbers})
             },
@@ -57,19 +58,16 @@ export default class Quiz extends React.Component {
         let questionNumber = +this.state.questionNumbers[this.state.current];
         let answerNumber = Number(event.target.className);
 
-        matchRef.orderByValue().limitToFirst(1).on("value", function(snapshot) {
-            snapshot.forEach(function(data) {
-                matchRef.child(data.key).child('round1').update({
-                        [questionNumber]: [answerNumber]
-                })
-            });
-        });
-
-        let number = this.state.current + 1;
+        if (this.state.latestMatchKey.length) {
+            let latestMatchKey = this.state.latestMatchKey;
+        }
+        matchRef.child(latestMatchKey).round1.update({
+            [questionNumber]: [answerNumber]
+        })
+        let number = this.state.current +1;
         this.setState({
             current: number
         })
-
         
     }
 
