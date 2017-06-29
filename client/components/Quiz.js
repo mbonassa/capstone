@@ -57,18 +57,19 @@ export default class Quiz extends React.Component {
         let matchRef = firebaseUsersRef.child(user).child('matches');
         let questionNumber = +this.state.questionNumbers[this.state.current];
         let answerNumber = Number(event.target.className);
+        let latestMatchKey;
 
         if (this.state.latestMatchKey.length) {
-            let latestMatchKey = this.state.latestMatchKey;
+            latestMatchKey = this.state.latestMatchKey;
         }
-        matchRef.child(latestMatchKey).round1.update({
+        matchRef.child(latestMatchKey).child('round1').update({
             [questionNumber]: [answerNumber]
         })
         let number = this.state.current +1;
         this.setState({
             current: number
         })
-        
+
     }
 
     render() {
