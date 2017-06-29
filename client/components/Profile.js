@@ -103,6 +103,7 @@ export default class UserView extends React.Component {
 
   componentWillUnmount(){
     firebaseUsersRef.off('value')
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).off('value')
   }
 
   render() {
@@ -151,13 +152,17 @@ export default class UserView extends React.Component {
             }> See your Match </Link>
           </div> :
           <button
-             className="btn misc-btn"
+            className="btn misc-btn"
             title="Score"
             onClick={this.setActive}
             disabled="disabled"
           >Finding your match</button>
 
-          }
+        }
+        {
+          this.state.val.partnerId ?
+          <Link to={`/chat/${this.state.val.partnerId}`}> Chat </Link> : null
+        }
         </div>
        </div>
       </div>

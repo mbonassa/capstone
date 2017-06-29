@@ -1,6 +1,10 @@
 # Score
 
-Score is the innovative dating app where you get to know your matches through fun games.
+Score is an innovative dating app where you get to know your matches through fun games.
+
+## Website
+
+tbd.herokuapp.com
 
 ## Setup
 
