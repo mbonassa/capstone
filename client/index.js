@@ -3,13 +3,13 @@ import './index.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
-import { firebaseAuth, firebaseUsersRef } from '../utils/firebase';
+
 import { Profile, Login, EditProfile, DailyMatch, Signup, Quiz, PickQuestion, Waiting, Answer, Test, Load, MatchHistory, Random, Chat, ViewAnswer } from './components';
 
 
 ReactDOM.render(
    <Router history={browserHistory}>
-      <Route path="/">
+      <Route path="/" >
         <IndexRoute component={Login} />
         <Route path="/test" component={Test}/>
         <Route path="/load" component={Load}/>
