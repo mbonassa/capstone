@@ -109,12 +109,12 @@ export default class DailyMatch extends React.Component {
     return (
     <div className="user-page">
       <img className="logo-top" src="./img/sm-logo.png" />
-      <div id="profile-main">
-        <h1>Here's your match!</h1>
+      <div id="match-main">
+        <h1 id="your-match" className="center fancy-type caps">your match</h1>
           <div className="row default-container">
         	</div>
           <div>
-          <img className="profile-image"src={`${this.state.partnerInfo.imageUrl}`} />
+          <img id="match-photo" className="profile-image"src={`${this.state.partnerInfo.imageUrl}`} />
           </div>
           <div>
             {this.state.partnerInfo.name ? (<h3>{this.state.partnerInfo.name}, {this.state.partnerInfo.age}</h3>) : null}
@@ -126,16 +126,17 @@ export default class DailyMatch extends React.Component {
              return el.key === firebaseAuth.currentUser.uid
           }).length ?
           <div>
-            <h5> Your partner also confirmed, let's do it! </h5>
+            <h2 id="ready-one" className="fancy-type caps center"> Ready Player One? </h2>
             <button
-            className="btn misc-btn"
+            id="quiz-btn"
+            className="btn misc-btn caps"
             onClick={this.enterQuiz}
-            >Go to your quiz...</button>
+            >quiz</button>
           </div>
           :
           this.state.userObj && !this.state.userObj.active && this.state.partnerInfo.active ?
           <div>
-            <h4> Waiting on your partner's response </h4>
+            <h4> Waiting for {this.state.partnerInfo.name} </h4>
             <Link to="profile"> Return to Profile </Link>
           </div>
           :
