@@ -11,7 +11,8 @@ export default class Waiting extends React.Component {
             myAnswers: [],
             theirAnswers: [],
             heartStatus: 0,
-            theirName: ''
+            theirName: '',
+            finishedQuiz: false
         }
     }
 
@@ -98,6 +99,14 @@ export default class Waiting extends React.Component {
                                     matchRef.child(maxKey).update({
                                         heartStatus: heartStatus
                                     })
+                                    //Check in database the finishedQuiz status of both users
+                                    let theyFinishedQuiz = snapshot.val().finishedQuiz;
+                                    firebaseUsersRef.child(user).child('matches').child(maxKey).on('value',
+                                        (snapshot) => {
+                                            let iFinishedQuiz = snapshot.val().finishedQuiz;
+                                            let finishedQuiz = iFinishedQuiz && theyFinishedQuiz;
+                                            this.setState({finishedQuiz});
+                                        })
                                 }
                             }
                         },
@@ -122,7 +131,7 @@ export default class Waiting extends React.Component {
 
     render() {
         return (
-            this.state.userData.matches && this.state.heartStatus && this.state.theirName ?
+            this.state.userData.matches && this.state.heartStatus && this.state.theirName && this.state.finishedQuiz ?
             <div>
                 <h1>You and {this.state.theirName} have {this.state.heartStatus} {this.state.heartStatus == 1 ? 'heart' : 'hearts'}</h1>
                 <h3>That means you had {this.state.heartStatus} {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h3>
