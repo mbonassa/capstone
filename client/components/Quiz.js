@@ -1,7 +1,7 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
 import anime from 'animejs'
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 
 export default class Quiz extends React.Component {
     constructor(props) {
@@ -27,32 +27,36 @@ export default class Quiz extends React.Component {
             (errorObject) => {
                 console.error('The read failed: ' + errorObject.code)
             })
-
-        let user = firebaseAuth.currentUser.uid;
-        let data = firebaseUsersRef.child(user)
-        data.on('value',
-            (snapshot) => {
-                this.setState({userData: snapshot.val()})
-                let max = 0;
-                let latestMatchKey;
-                let matchKeys = Object.keys(snapshot.val().matches).forEach(key => {
-                    let timestamp = snapshot.val().matches[key].timestamp;
-                    if (timestamp > max) {
-                        max = timestamp;
-                        latestMatchKey = key;
-                    }
-                })
-                //Load finishedQuiz to state
-                data.child('matches').child(latestMatchKey).on('value',
-                    (snapshot) => {
-                        let finishedQuiz = snapshot.val().finishedQuiz;
-                        let questionNumbers = snapshot.val().numbers.split(',');
-                        this.setState({finishedQuiz, latestMatchKey, questionNumbers});
+        firebaseAuth.onAuthStateChanged((user) => {
+            let userRef = firebaseUsersRef.child(firebaseAuth.currentUser.uid)
+            if (user){
+            userRef.on('value',
+                (snapshot) => {
+                    this.setState({userData: snapshot.val()})
+                    let max = 0;
+                    let latestMatchKey;
+                    let matchKeys = Object.keys(snapshot.val().matches).forEach(key => {
+                        let timestamp = snapshot.val().matches[key].timestamp;
+                        if (timestamp > max) {
+                            max = timestamp;
+                            latestMatchKey = key;
+                        }
                     })
-            },
-            (errorObject) => {
-                console.error('The read failed: ' + errorObject.code)
-            })
+                    //Load finishedQuiz to state
+                    userRef.child('matches').child(latestMatchKey).on('value',
+                        (snapshot) => {
+                            let finishedQuiz = snapshot.val().finishedQuiz;
+                            let questionNumbers = snapshot.val().numbers.split(',');
+                            this.setState({finishedQuiz, latestMatchKey, questionNumbers});
+                        })
+                },
+                (errorObject) => {
+                    console.error('The read failed: ' + errorObject.code)
+                })
+            } else {
+                browserHistory.push('login')
+            }
+        });
 
         function swipe () {
             var el = document.querySelector('#question-title');
@@ -93,7 +97,7 @@ export default class Quiz extends React.Component {
         return (
             <div>
             {this.state.finishedQuiz ?
-            <h1 href='/pickquestion'>Go to Round 2</h1>
+            <Link to='pickquestion'>Go to Round 2</Link>
             :
             this.state.current < 4 ?
             <div className="quiz">
