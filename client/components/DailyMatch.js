@@ -69,9 +69,11 @@ export default class DailyMatch extends React.Component {
   }
 
   componentDidMount(){
-    if(firebaseAuth.currentUser){
-      firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value", (snapshot) => {
+    firebaseAuth.onAuthStateChanged((user) => {
+ +      if (user) {
+          firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value", (snapshot) => {
             this.setState({userObj: snapshot.val()})
+          }
       });
 
       if (this.props.location.state.partnerId){

@@ -80,13 +80,14 @@ export default class UserView extends React.Component {
   }
 
   componentDidMount(){
-      firebaseUsersRef.on("value", (snapshot) => {
-        this.setState({usersObj: snapshot.val()});
+     firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
+          firebaseUsersRef.on("value", (snapshot) => {
+          this.setState({usersObj: snapshot.val()});
       },
         (errorObject) => {
         console.log("The read failed: " + errorObject.code);
       })
-      if (firebaseAuth.currentUser){
           firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value",
             (snapshot) => {
             this.setState({val: snapshot.val()});
@@ -97,6 +98,7 @@ export default class UserView extends React.Component {
       } else {
         browserHistory.push('/login')
       }
+     });
   }
 
   componentWillUnmount(){
