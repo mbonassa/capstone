@@ -58,6 +58,8 @@ export default class Answer extends React.Component {
 
     componentDidMount () {
 
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
         let user = firebaseAuth.currentUser.uid;
         let userRef = firebaseUsersRef.child(user);
         userRef.on('value',
@@ -132,7 +134,10 @@ export default class Answer extends React.Component {
             (errorObject) => {
                 console.error('The read failed: ' + errorObject.code)
             })
-    }
+    } 
+});
+
+}
 
 
     render() {      

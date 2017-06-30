@@ -18,67 +18,72 @@ export default class Quiz extends React.Component {
 
 
     componentDidMount () {
-        firebaseQuestionsRef.on('value',
-            (snapshot) => {
-                this.setState({questions: snapshot.val()})
-                let arr = [];
-                while (arr.length < 4) {
-                    let random = Math.round(Math.random() * Object.keys(snapshot.val()).length) + 1;
-                    if (arr.indexOf(random) === -1) arr.push(random)
-                }
-                this.setState({randomNumbers: arr})
-            },
-            (errorObject) => {
-                console.error('The read failed: ' + errorObject.code)
-            })
-
-        let user = firebaseAuth.currentUser.uid;
-        let userRef = firebaseUsersRef.child(user)
-
-        //We obtain an object with all the user's matches from the database
-        //We preserve this object to state on allMatches
-        //Then, we find the most recent match by comparing timestamps
-        userRef.child('matches').on("value", (snapshot) => {
-            this.setState({allMatches: snapshot.val()})
-                let max = 0;
-                let matchKey;
-                let matchKeys = Object.keys(snapshot.val()).forEach(key => {
-                    let timestamp = snapshot.val()[key].timestamp;
-                    if (timestamp > max) {
-                        max = timestamp;
-                        matchKey = key;
-                    }})
-                    //Getting heartStatus with latest match
-                    //Finding out if it's your turn to ask with match
-                    userRef.child('matches').child(matchKey).on('value', (snapshot) => {
-                        let heartStatus = snapshot.val().heartStatus;
-                        let turnToAsk = snapshot.val().turnToAsk;
-                        let myAnsweredQuestions = Object.keys(snapshot.val().round2answers).length;
-                        //Getting name of match and number of answered questions
-                        firebaseUsersRef.child(matchKey).on('value', (snapshot) => {
-                            let user = firebaseAuth.currentUser.uid;
-                            let theirAnsweredQuestions = Object.keys(snapshot.val().matches[user].round2answers).length;
-                            let theirName = snapshot.val().name;
-                            let questionsAnswered = myAnsweredQuestions + theirAnsweredQuestions;
-                            //Make sure that if match is lost, that gets persisted to the db for both users
-                            if (questionsAnswered > 5 && heartStatus < 5) {
-                                userRef.child('matches').child(matchKey).update({
-                                    lost: true
-                                })
-                                let user = firebaseAuth.currentUser.uid;
-                                firebaseUsersRef.child(matchKey).child('matches').child(user).update({
-                                    lost: true
-                                })
-                            }
-                            this.setState({theirName, matchKey, heartStatus, turnToAsk, questionsAnswered})
-                        })
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                firebaseQuestionsRef.on('value',
+                    (snapshot) => {
+                        this.setState({questions: snapshot.val()})
+                        let arr = [];
+                        while (arr.length < 4) {
+                            let random = Math.round(Math.random() * Object.keys(snapshot.val()).length) + 1;
+                            if (arr.indexOf(random) === -1) arr.push(random)
+                        }
+                        this.setState({randomNumbers: arr})
+                    },
+                    (errorObject) => {
+                        console.error('The read failed: ' + errorObject.code)
                     })
 
+                let user = firebaseAuth.currentUser.uid;
+                let userRef = firebaseUsersRef.child(user)
 
-        },
-        (errorObject) => {
-            console.error('The read failed: ' + errorObject.code)
+                //We obtain an object with all the user's matches from the database
+                //We preserve this object to state on allMatches
+                //Then, we find the most recent match by comparing timestamps
+                userRef.child('matches').on("value", (snapshot) => {
+                    this.setState({allMatches: snapshot.val()})
+                        let max = 0;
+                        let matchKey;
+                        let matchKeys = Object.keys(snapshot.val()).forEach(key => {
+                            let timestamp = snapshot.val()[key].timestamp;
+                            if (timestamp > max) {
+                                max = timestamp;
+                                matchKey = key;
+                            }})
+                            //Getting heartStatus with latest match
+                            //Finding out if it's your turn to ask with match
+                            userRef.child('matches').child(matchKey).on('value', (snapshot) => {
+                                let heartStatus = snapshot.val().heartStatus;
+                                let turnToAsk = snapshot.val().turnToAsk;
+                                let myAnsweredQuestions = Object.keys(snapshot.val().round2answers).length;
+                                //Getting name of match and number of answered questions
+                                firebaseUsersRef.child(matchKey).on('value', (snapshot) => {
+                                    let user = firebaseAuth.currentUser.uid;
+                                    let theirAnsweredQuestions = Object.keys(snapshot.val().matches[user].round2answers).length;
+                                    let theirName = snapshot.val().name;
+                                    let questionsAnswered = myAnsweredQuestions + theirAnsweredQuestions;
+                                    //Make sure that if match is lost, that gets persisted to the db for both users
+                                    if (questionsAnswered > 5 && heartStatus < 5) {
+                                        userRef.child('matches').child(matchKey).update({
+                                            lost: true
+                                        })
+                                        let user = firebaseAuth.currentUser.uid;
+                                        firebaseUsersRef.child(matchKey).child('matches').child(user).update({
+                                            lost: true
+                                        })
+                                    }
+                                    this.setState({theirName, matchKey, heartStatus, turnToAsk, questionsAnswered})
+                                })
+                            })
+                },
+                (errorObject) => {
+                    console.error('The read failed: ' + errorObject.code)
+                });
+            } 
         });
+
+
+
 
     }
 
@@ -88,7 +93,7 @@ export default class Quiz extends React.Component {
         let matchKey = this.state.matchKey;
         let questionNumber = this.state.randomNumbers[n]
         //This is the database reference to the latest (current) match's match object
-        firebaseUsersRef.child(matchKey).child('matches').child('User4').child('round2').update({
+        firebaseUsersRef.child(matchKey).child('matches').child(user).child('round2').update({
             //We affix a timestamp to each question so later we can be sure to get the latest one
             [questionNumber]: 'true,' + Date.now()
         })
