@@ -13,7 +13,8 @@ export default class ViewAnswer extends React.Component {
             latestQuestionText: '',
             answer: null,
             heartStatus: 0,
-            disabled: false
+            disabled: false,
+            questionsAnswered: 0
         }
         this.handleClick = this.handleClick.bind(this);
     }

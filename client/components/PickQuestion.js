@@ -10,7 +10,8 @@ export default class Quiz extends React.Component {
             randomNumbers: [],
             theirName: '',
             heartStatus: 0,
-            turnToAsk: false
+            turnToAsk: false,
+            questionsAnswered: 0
         }
         this.handleClick = this.handleClick.bind(this);
     }
@@ -40,26 +41,30 @@ export default class Quiz extends React.Component {
         userRef.child('matches').on("value", (snapshot) => {
             this.setState({allMatches: snapshot.val()})
                 let max = 0;
-                let maxKey;
+                let matchKey;
                 let matchKeys = Object.keys(snapshot.val()).forEach(key => {
                     let timestamp = snapshot.val()[key].timestamp;
                     if (timestamp > max) {
                         max = timestamp;
-                        maxKey = key;
+                        matchKey = key;
                     }})
                     //Getting heartStatus with latest match
                     //Finding out if it's your turn to ask with match
-                    userRef.child('matches').child(maxKey).on('value', (snapshot) => {
+                    userRef.child('matches').child(matchKey).on('value', (snapshot) => {
                         let heartStatus = snapshot.val().heartStatus;
                         let turnToAsk = snapshot.val().turnToAsk;
-                        this.setState({matchKey: maxKey, heartStatus, turnToAsk});
+                        let myAnsweredQuestions = Object.keys(snapshot.val().round2answers).length;
+                        //Getting name of match and number of answered questions
+                        firebaseUsersRef.child(matchKey).on('value', (snapshot) => {
+                            //let user = firebaseAuth.currentUser.uid;
+                            let theirAnsweredQuestions = Object.keys(snapshot.val().matches['User4'].round2answers).length;
+                            let theirName = snapshot.val().name;
+                            let questionsAnswered = myAnsweredQuestions + theirAnsweredQuestions;
+                            this.setState({theirName, matchKey, heartStatus, turnToAsk, questionsAnswered})
+                        })
                     })
-                    //
-                    //Getting name of match
-                    firebaseUsersRef.child(maxKey).on('value', (snapshot) => {
-                        let name = snapshot.val().name;
-                        this.setState({theirName: name})
-                    })
+                    
+
         },
         (errorObject) => {
             console.error('The read failed: ' + errorObject.code)
@@ -87,6 +92,10 @@ export default class Quiz extends React.Component {
         //If your match's turnToAsk is false, that means that they have just picked a question, so link should appear to Answer
         return (
         <div>
+        {this.state.questionsAnswered == 6 && this.state.heartStatus < 5 ? 
+        <h1>You lost the match!</h1>
+        :
+        <div>
             {this.state.turnToAsk && this.state.heartStatus < 5 ? 
             <div>
                 <div>{this.state.theirName.length ? <h1>Pick a question to send to {this.state.theirName}!</h1> : null}</div>
@@ -109,6 +118,8 @@ export default class Quiz extends React.Component {
             </div>
         }
         </div>
+    }
+    </div>
     }
     </div>
     )

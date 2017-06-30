@@ -15,7 +15,8 @@ export default class Answer extends React.Component {
             latestQuestionText: '',
             answered: false,
             turnToAsk: false,
-            heartStatus: 0
+            heartStatus: 0,
+            questionsAnswered: 0
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
