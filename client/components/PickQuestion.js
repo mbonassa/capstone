@@ -68,16 +68,20 @@ export default class Quiz extends React.Component {
             //We affix a timestamp to each question so later we can be sure to get the latest one
             [questionNumber]: 'true,' + Date.now()
         })
+        //Update turnToAsk from true to false
+        userRef.child('matches').child(matchKey).update({
+            turnToAsk: false
+        })
     }
 
     render() {
-
+        //If your match's turnToAsk is false, that means that they have just picked a question, so link should appear to Answer
         return (
             <div>
                 {this.state.theirName.length ? <h1>Pick a question to send to {this.state.theirName}!</h1> : null}
-                <a><h3 onClick={() => this.handleClick(0)}>{this.state.questions[this.state.randomNumbers[0]]}</h3></a>
-                <a><h3 onClick={() => this.handleClick(1)}>{this.state.questions[this.state.randomNumbers[1]]}</h3></a>
-                <a><h3 onClick={() => this.handleClick(2)}>{this.state.questions[this.state.randomNumbers[2]]}</h3></a>
+                <a href='/viewanswer'><h3 onClick={() => this.handleClick(0)}>{this.state.questions[this.state.randomNumbers[0]]}</h3></a>
+                <a href='/viewanswer'><h3 onClick={() => this.handleClick(1)}>{this.state.questions[this.state.randomNumbers[1]]}</h3></a>
+                <a href='/viewanswer'><h3 onClick={() => this.handleClick(2)}>{this.state.questions[this.state.randomNumbers[2]]}</h3></a>
             </div>
         )
     }
