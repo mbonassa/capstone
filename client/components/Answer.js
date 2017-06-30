@@ -58,7 +58,7 @@ export default class Answer extends React.Component {
 
     componentDidMount () {
 
-firebase.auth().onAuthStateChanged(function(user) {
+firebaseAuth.onAuthStateChanged(function(user) {
     if (user) {
         let user = firebaseAuth.currentUser.uid;
         let userRef = firebaseUsersRef.child(user);

@@ -18,7 +18,7 @@ export default class Quiz extends React.Component {
 
 
     componentDidMount () {
-        firebase.auth().onAuthStateChanged(function(user) {
+        firebaseAuth.onAuthStateChanged(function(user) {
             if (user) {
                 firebaseQuestionsRef.on('value',
                     (snapshot) => {
