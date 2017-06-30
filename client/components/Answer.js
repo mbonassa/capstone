@@ -65,30 +65,45 @@ export default class Answer extends React.Component {
                 let userData = snapshot.val();
                 //Finding latest match
                 let max = 0;
-                let maxKey;
+                let latestMatchKey;
                 let matchKeys = Object.keys(userData.matches).forEach(key => {
                     let timestamp = snapshot.val().matches[key].timestamp;
                     if (timestamp > max) {
                         max = timestamp;
-                        maxKey = key;
+                        latestMatchKey = key;
                     }
                 })
                 //Finding whether it's user's turn to ask with that match
                 //Get heartStatus with match
-                userRef.child('matches').child(maxKey).on('value',
+                //Get number of questions answered
+                userRef.child('matches').child(latestMatchKey).on('value',
                     (snapshot) => {
                         let turnToAsk = snapshot.val().turnToAsk;
                         let heartStatus = snapshot.val().heartStatus;
-                        this.setState({turnToAsk, heartStatus})
-                    })
-                //Getting their name
-                firebaseUsersRef.child(maxKey).on('value', 
-                    (snapshot) => {
-                        let theirName = snapshot.val().name;
-                        this.setState({userData, latestMatchKey: maxKey, theirName});
+                        let myAnsweredQuestions = Object.keys(snapshot.val().round2answers).length;
+
+                        //Getting match's name and the number of questions they've answered
+                        firebaseUsersRef.child(latestMatchKey).on('value', 
+                            (snapshot) => {
+                                let theirName = snapshot.val().name;
+                                // let user = firebaseAuth.currentUser.uid;
+                                let theirAnsweredQuestions = Object.keys(snapshot.val().matches['User5'].round2answers).length;
+                                let questionsAnswered = myAnsweredQuestions + theirAnsweredQuestions;
+                                //Make sure that if match is lost, that gets persisted to the db for both users
+                                if (questionsAnswered > 5 && heartStatus < 5) {
+                                    userRef.child('matches').child(latestMatchKey).update({
+                                        lost: true
+                                    })
+                                    //let user = firebaseAuth.currentUser.uid;
+                                    firebaseUsersRef.child(latestMatchKey).child('matches').child('User4').update({
+                                        lost: true
+                                    })
+                                }
+                                this.setState({userData, latestMatchKey, theirName, turnToAsk, heartStatus, questionsAnswered});
+                            })
                     })
                 //Finding round2 object to get latest question number
-                userRef.child('matches').child(maxKey).child('round2').on('value',
+                userRef.child('matches').child(latestMatchKey).child('round2').on('value',
                     (snapshot) => {
                         let round2 = snapshot.val();
                         let max2 = 0;
@@ -120,8 +135,12 @@ export default class Answer extends React.Component {
     }
 
 
-    render() {
+    render() {      
         return (
+        <div>
+        {this.state.heartStatus < 5 && this.state.questionsAnswered === 6 ?
+        <h1>You lost the match!</h1>
+        :
         <div>
         {this.state.heartStatus < 5 ?
             <div>
@@ -148,6 +167,8 @@ export default class Answer extends React.Component {
                 <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
                 <a><h2>Go Chat!</h2></a> 
             </div>
+        }
+        </div>
         }
         </div>
         )

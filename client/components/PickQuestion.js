@@ -60,6 +60,16 @@ export default class Quiz extends React.Component {
                             let theirAnsweredQuestions = Object.keys(snapshot.val().matches['User4'].round2answers).length;
                             let theirName = snapshot.val().name;
                             let questionsAnswered = myAnsweredQuestions + theirAnsweredQuestions;
+                            //Make sure that if match is lost, that gets persisted to the db for both users
+                            if (questionsAnswered > 5 && heartStatus < 5) {
+                                userRef.child('matches').child(matchKey).update({
+                                    lost: true
+                                })
+                                //let user = firebaseAuth.currentUser.uid;
+                                firebaseUsersRef.child(matchKey).child('matches').child('User4').update({
+                                    lost: true
+                                })
+                            }
                             this.setState({theirName, matchKey, heartStatus, turnToAsk, questionsAnswered})
                         })
                     })
