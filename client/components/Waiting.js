@@ -114,7 +114,6 @@ export default class Waiting extends React.Component {
     }
 
     render() {
-        console.log(this.state.theirName)
         return (
             this.state.userData.matches && this.state.heartStatus && this.state.theirName ? 
             <div>

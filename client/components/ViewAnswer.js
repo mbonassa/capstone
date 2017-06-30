@@ -11,9 +11,10 @@ export default class ViewAnswer extends React.Component {
             latestQuestionKey: '',
             questions: {},
             latestQuestionText: '',
-            answer: ''
+            answer: null,
+            heartStatus: 0
         }
-
+        this.handleClick = this.handleClick.bind(this);
     }
 
     componentDidMount () {
@@ -34,6 +35,7 @@ export default class ViewAnswer extends React.Component {
                         latestMatchKey = key;
                     }
                 })
+                let heartStatus = userData.matches[latestMatchKey].heartStatus;
                 //Getting their name
                 firebaseUsersRef.child(latestMatchKey).on('value', 
                     (snapshot) => {
@@ -44,7 +46,7 @@ export default class ViewAnswer extends React.Component {
                         let max2 = 0;
                         let latestQuestionKey;
                         Object.keys(round2).forEach(questionKey => {
-                                let timestamp = round2[questionKey].split(',')[1]
+                                let timestamp = Number(round2[questionKey].split(',')[1]);
                                 if (timestamp > max2) {
                                     max2 = timestamp;
                                     latestQuestionKey = questionKey;
@@ -58,10 +60,11 @@ export default class ViewAnswer extends React.Component {
                                 //Finding answer to latest question
                                 let answerKey = latestQuestionKey + 'answer';
                                 // let user = firebaseAuth.currentUser.uid;
+                                this.setState({latestQuestionText, latestQuestionKey, questions, userData, theirName, latestMatchKey, heartStatus});
                                 firebaseUsersRef.child(latestMatchKey).child('matches').child('User4').child('round2answers').child(answerKey).on('value',
                                     (snapshot) => {
-                                        let answer = snapshot.val()[0]
-                                        this.setState({latestQuestionText, latestQuestionKey, questions, userData, theirName, latestMatchKey, answer});
+                                        let answer = snapshot.val()? snapshot.val() : null;
+                                        if (answer) this.setState({answer});
                                     })
                             },
                             (errorObject) => {
@@ -70,17 +73,56 @@ export default class ViewAnswer extends React.Component {
                     })
             })
 
-
     }
 
 
+    handleClick () {
+        //Increment heartStatus for both users
+
+            //For logged in user:
+            // let user = firebaseAuth.currentUser.uid;
+            let userRef = firebaseUsersRef.child('User4'); 
+            let latestMatchKey = this.state.latestMatchKey;
+            let heartStatus = this.state.heartStatus;
+            heartStatus++
+            userRef.child('matches').child(latestMatchKey).update({
+                heartStatus: heartStatus
+            })
+
+            //For matched user:
+            // let user = firebaseAuth.currentUser.uid;
+            firebaseUsersRef.child(latestMatchKey).child('matches').child('User4').update({
+                heartStatus: heartStatus
+            })
+
+            this.setState({heartStatus: heartStatus})
+    }
+
     render() {
+        let sassyMessage = Math.random() > 0.5 ? 'Go outside?' : 'Maybe they have a life?';
         return (
-            <div>
-                <h1>Here's {this.state.theirName}'s answer to your question</h1>
-                    <h3>{this.state.latestQuestionText}</h3>
-                    <h3>{this.state.answer}</h3>
-            </div> 
+            <div>{this.state.theirName.length && !this.state.answer
+                ? 
+                <div>
+                    <h1>{this.state.theirName} hasn't answered yet. {sassyMessage}</h1>
+                    <h3>Your question was "{this.state.latestQuestionText}"</h3>
+                    <h4>Your heart count: {this.state.heartStatus}</h4>
+                </div>
+                : 
+                <div>
+                    {this.state.theirName && this.state.heartStatus ? 
+                        <div>
+                            <h1>Here's {this.state.theirName}'s answer to your question</h1>
+                            <h2>"{this.state.latestQuestionText}"</h2>
+                            <h3>{this.state.answer}</h3>
+                            <h3>Like that? Give your match another heart</h3>
+                            <button onClick={this.handleClick}>Love</button>
+                            <h4>Your heart count: {this.state.heartStatus}</h4>
+                        </div> 
+                    : null}
+                </div>
+                }
+            </div>
         )
     }
 
