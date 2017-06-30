@@ -52,13 +52,14 @@ export default class Quiz extends React.Component {
                             }})
                             //Getting heartStatus with latest match
                             //Finding out if it's your turn to ask with match
-                            userRef.child('matches').child(matchKey).on('value', (snapshot) => {
-                                let heartStatus = snapshot.val().heartStatus;
-                                let turnToAsk = snapshot.val().turnToAsk;
-                                let myAnsweredQuestions = Object.keys(snapshot.val().round2answers).length;
+                            
+                            let matchData = snapshot.val()[matchKey];
+                            let heartStatus = matchData.heartStatus;
+                            let turnToAsk = matchData.turnToAsk;
+                            let myAnsweredQuestions = Object.keys(matchData.round2answers).length;
+                            //Getting name of match and number of answered questions
                                 //Getting name of match and number of answered questions
                                 firebaseUsersRef.child(matchKey).on('value', (snapshot) => {
-                                    let user = firebaseAuth.currentUser.uid;
                                     let theirAnsweredQuestions = Object.keys(snapshot.val().matches[user].round2answers).length;
                                     let theirName = snapshot.val().name;
                                     let questionsAnswered = myAnsweredQuestions + theirAnsweredQuestions;
@@ -74,7 +75,7 @@ export default class Quiz extends React.Component {
                                     }
                                     this.setState({theirName, matchKey, heartStatus, turnToAsk, questionsAnswered})
                                 })
-                            })
+
                 },
                 (errorObject) => {
                     console.error('The read failed: ' + errorObject.code)
@@ -104,6 +105,7 @@ export default class Quiz extends React.Component {
     }
 
     render() {
+        console.log('PickQuestion :', this.state)
         //If your match's turnToAsk is false, that means that they have just picked a question, so link should appear to Answer
         return (
         <div>
