@@ -32,32 +32,35 @@ export default class MatchHistory extends React.Component {
   render(){
     return (
       <div>
-      {this.state.userObj.matches && arrayifyWithKey(this.state.userObj.matches).length ?
-        <div>
-        {
-        arrayifyWithKey(this.state.userObj.matches).map(match => {
-        return (
-            <div key={match.key}>
-              <span> {this.state.allUsersObj && (this.state.allUsersObj[match.key]).name} </span>
-              <span>, matched on {new Date(match.timestamp).toDateString()}</span>
-              <img src={this.state.allUsersObj && `${(this.state.allUsersObj[match.key]).imageUrl}`}></img>
-              <Link to={
-                {
-                  pathname:`/chat/${match.key}`,
-                  state: {partnerInfo: this.state.allUsersObj[match.key]}
-                }
-              }> Go to chat </Link>
-                <hr />
+          {this.state.userObj.matches && arrayifyWithKey(this.state.userObj.matches).length ?
+            <div>
+            {
+            arrayifyWithKey(this.state.userObj.matches).map(match => {
+            return (
+                <div key={match.key}>
+                  <h4 className="inline-block"> {this.state.allUsersObj && (this.state.allUsersObj[match.key]).name} </h4>
+                  <p className="inline-block">, matched on {new Date(match.timestamp).toDateString()}</p>
+                  <img className="inline-block matches-img" src={this.state.allUsersObj && `${(this.state.allUsersObj[match.key]).imageUrl}`}></img>
+                  <Link to={
+                    {
+                      pathname:`/chat/${match.key}`,
+                      state: {partnerInfo: this.state.allUsersObj[match.key]}
+                    }
+                  }> <button
+                    className="btn misc-btn caps inline-block matches-chat"
+                    >chat</button></Link>
+                    <hr />
 
-            </div>
-            )
-          })
+                </div>
+                )
+              })
+            }
+          </div> :
+          <div>
+            <span>You have no matches yet. Go find some!</span>
+          </div>
         }
-      </div> :
-      <div>
-        <span> You have no matches yet. Go find some! </span>
-      </div>
-    }
+        <Link to="/profile"><p className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
       </div>
     )
   }

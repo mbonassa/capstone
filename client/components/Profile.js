@@ -1,7 +1,7 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
 import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase';
-import { arrayify, arrayifyWithKey} from '../../utils/helperFunctions'
+import { arrayify, arrayifyWithKey} from '../../utils/helperFunctions';
 import { Link } from 'react-router';
 import DailyMatch from './'
 
@@ -123,22 +123,13 @@ export default class UserView extends React.Component {
                 <Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className=''>(EDIT PROFILE)</p></Link>
               </div>) : null}
             <h5>{this.state.val.bio}</h5>
-              <Link to={
-            {
-              pathname: "matchHistory",
-            }
-            }> View Past Matches </Link>
-            <button
-              className="btn misc-btn"
-              title="Log out"
-              onClick={this.handleLogout}
-            >LOG OUT </button>
+
             {!this.state.val.partnerId ?
               <button
-              className="btn misc-btn"
+              className="btn misc-btn caps"
               title="Score"
               onClick={this.setActive}
-            >GO SCORE </button> :
+            >find a match</button> :
             !this.state.waiting ?
             <div>
              <Link to={
@@ -149,27 +140,35 @@ export default class UserView extends React.Component {
               }
             }
             }><button
+              id="see-match"
               className="btn misc-btn caps"
 
-            >See your match</button></Link>
+            >See my match</button></Link>
           </div> :
           <button
-            className="btn misc-btn"
+            className="btn misc-btn caps"
             title="Score"
             onClick={this.setActive}
             disabled="disabled"
           >Finding a match</button>
 
         }
-        {
-          this.state.val.partnerId ?
-          <Link to={
+        <Link to={
             {
-            pathname:`/chat/${this.state.val.partnerId}`,
-            state: {partnerInfo: this.state.usersObj[this.state.val.partnerId]}
+              pathname: "matchHistory",
             }
-          }> Chat </Link> : null
-        }
+            }> <button
+              id="past-matches"
+              className="btn misc-btn caps"
+              title="pastMatches"
+              onClick={this.handleLogout}
+            >my matches </button> </Link>
+
+        <button
+              className="btn misc-btn caps"
+              title="Log out"
+              onClick={this.handleLogout}
+            >LOG OUT </button>
         </div>
        </div>
       </div>

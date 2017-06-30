@@ -1,5 +1,6 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth, firebaseQuestionsRef } from '../../utils/firebase.js';
+import { Link } from 'react-router'
 
 export default class ViewAnswer extends React.Component {
     constructor(props) {
@@ -128,42 +129,43 @@ export default class ViewAnswer extends React.Component {
         let sassyMessage = Math.random() > 0.5 ? 'Go outside?' : 'Maybe they have a life?';
         return (
         <div>
-        {this.state.heartStatus < 5 && this.state.questionsAnswered === 6 ?
-        <h1>You lost the match!</h1>
-        :
-        <div>
-            {this.state.heartStatus < 5 ?
-            <div>{this.state.theirName.length && !this.state.answer
-                ?
-                <div>
-                    <h1>{this.state.theirName} hasn't answered yet. {sassyMessage}</h1>
-                    <h3>Your question was "{this.state.latestQuestionText}"</h3>
-                    <h4>Your heart count: {this.state.heartStatus}</h4>
+            {this.state.heartStatus < 5 && this.state.questionsAnswered === 6 ?
+            <h1>You lost the match!</h1>
+            :
+            <div>
+                {this.state.heartStatus < 5 ?
+                <div>{this.state.theirName.length && !this.state.answer
+                    ?
+                    <div>
+                        <h1>{this.state.theirName} hasn't answered yet. {sassyMessage}</h1>
+                        <h3>Your question was "{this.state.latestQuestionText}"</h3>
+                        <h4>Your heart count: {this.state.heartStatus}</h4>
+                    </div>
+                    :
+                    <div>
+                        {this.state.theirName && this.state.heartStatus ?
+                            <div>
+                                <h1>Here's {this.state.theirName}'s answer to your question</h1>
+                                <h2>"{this.state.latestQuestionText}"</h2>
+                                <h3>{this.state.answer}</h3>
+                                <h3>Like that? Give your match another heart</h3>
+                                <button disabled={this.state.disabled} onClick={this.handleClick}>Love</button>
+                                <h4>Your heart count: {this.state.heartStatus}</h4>
+                            </div>
+                        : null}
+                    </div>
+                    }
                 </div>
                 :
                 <div>
-                    {this.state.theirName && this.state.heartStatus ?
-                        <div>
-                            <h1>Here's {this.state.theirName}'s answer to your question</h1>
-                            <h2>"{this.state.latestQuestionText}"</h2>
-                            <h3>{this.state.answer}</h3>
-                            <h3>Like that? Give your match another heart</h3>
-                            <button disabled={this.state.disabled} onClick={this.handleClick}>Love</button>
-                            <h4>Your heart count: {this.state.heartStatus}</h4>
-                        </div>
-                    : null}
+                    <h1>You and {this.state.theirName} have accumulated {this.state.heartStatus} hearts!</h1>
+                    <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
+                    <a><h2>Go Chat!</h2></a>
                 </div>
-                }
+            }
             </div>
-            :
-            <div>
-                <h1>You and {this.state.theirName} have accumulated {this.state.heartStatus} hearts!</h1>
-                <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
-                <a><h2>Go Chat!</h2></a>
-            </div>
-        }
-        </div>
-        }
+            }
+            <Link to="/profile"><p className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
         </div>
         )
     }

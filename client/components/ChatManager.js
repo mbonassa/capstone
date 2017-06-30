@@ -1,6 +1,7 @@
-import React from 'react'
-import { Route } from 'react-router'
-import { firebaseDb, firebaseAuth} from '../../utils/firebase'
+import React from 'react';
+import { Route } from 'react-router';
+import { firebaseDb, firebaseAuth} from '../../utils/firebase';
+import { Link } from 'react-router';
 
 const db = firebaseDb
     , auth = firebaseAuth
@@ -27,6 +28,7 @@ export default (props) => {
           fireRef={db.ref('Users').child(auth.currentUser.uid).child('matches').child(partnerId).child('chat')}
           partnerId={partnerId}
         />
+        <Link to="/profile"><p className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
       </div>
   )
 }

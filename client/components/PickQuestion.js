@@ -1,5 +1,6 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseQuestionsRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
+import { Link } from 'react-router'
 
 export default class Quiz extends React.Component {
     constructor(props) {
@@ -101,38 +102,39 @@ export default class Quiz extends React.Component {
     render() {
         //If your match's turnToAsk is false, that means that they have just picked a question, so link should appear to Answer
         return (
-        <div>
-            <img className="logo-top" src="./img/sm-logo.png" />
-            {this.state.questionsAnswered == 6 && this.state.heartStatus < 5 ?
-            <h1>You lost the match!</h1>
-            :
             <div>
-                {this.state.turnToAsk && this.state.heartStatus < 5 ?
-                <div>
-                    <div>{this.state.theirName.length ? <h1>Pick a question to send to {this.state.theirName}!</h1> : null}</div>
-                    <a href='/viewanswer'><h3 onClick={() => this.handleClick(0)}>{this.state.questions[this.state.randomNumbers[0]]}</h3></a>
-                    <a href='/viewanswer'><h3 onClick={() => this.handleClick(1)}>{this.state.questions[this.state.randomNumbers[1]]}</h3></a>
-                    <a href='/viewanswer'><h3 onClick={() => this.handleClick(2)}>{this.state.questions[this.state.randomNumbers[2]]}</h3></a>
-                </div>
+                <img className="logo-top" src="./img/sm-logo.png" />
+                {this.state.questionsAnswered == 6 && this.state.heartStatus < 5 ?
+                <h1>You lost the match!</h1>
                 :
                 <div>
-                {this.state.heartStatus >= 5 ?
-                <div>
-                    <h1>You and {this.state.theirName} have accumulated {this.state.heartStatus} hearts!</h1>
-                    <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
-                    <a><h2>Go Chat!</h2></a>
-                </div>
-                :
-                <div>
-                    <h1>It's not your turn to pick a question!</h1>
-                    <a href='/answer'><h2>Go answer one instead</h2></a>
+                    {this.state.turnToAsk && this.state.heartStatus < 5 ?
+                    <div>
+                        <div>{this.state.theirName.length ? <h1>Pick a question to send to {this.state.theirName}!</h1> : null}</div>
+                        <a href='/viewanswer'><h3 onClick={() => this.handleClick(0)}>{this.state.questions[this.state.randomNumbers[0]]}</h3></a>
+                        <a href='/viewanswer'><h3 onClick={() => this.handleClick(1)}>{this.state.questions[this.state.randomNumbers[1]]}</h3></a>
+                        <a href='/viewanswer'><h3 onClick={() => this.handleClick(2)}>{this.state.questions[this.state.randomNumbers[2]]}</h3></a>
+                    </div>
+                    :
+                    <div>
+                    {this.state.heartStatus >= 5 ?
+                    <div>
+                        <h1>You and {this.state.theirName} have accumulated {this.state.heartStatus} hearts!</h1>
+                        <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
+                        <a><h2>Go Chat!</h2></a>
+                    </div>
+                    :
+                    <div>
+                        <h1>It's not your turn to pick a question!</h1>
+                        <a href='/answer'><h2>Go answer one instead</h2></a>
+                    </div>
+                }
                 </div>
             }
             </div>
-        }
+            }
+            <Link to="/profile"><p className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
         </div>
-        }
-    </div>
     )
     }
 

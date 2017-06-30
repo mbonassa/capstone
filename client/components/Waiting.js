@@ -1,5 +1,6 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
+import { Link } from 'react-router'
 
 export default class Waiting extends React.Component {
     constructor(props) {
@@ -140,6 +141,7 @@ export default class Waiting extends React.Component {
             <div>
                 <h1>{this.state.theirName} is still answering</h1>
                 <h3>We'll let you know when she's done</h3>
+                <Link to="/profile"><p className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
             </div>
         )
     }

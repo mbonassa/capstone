@@ -128,18 +128,19 @@ handleFacebookLogin () {
               }}
               placeholder="password"
             />
-            <button className="btn login-btn"
+            <button className="btn signup-btn"
               title="Sign up"
               onClick={this.handleSignUp}
               color="white"
             > Sign up </button>
           </div>)}
             <button
-              className="btn toggle-btn center"
+              id="fb-login"
+              className="btn toggle-btn"
               title="Sign in with Facebook"
               onClick={this.handleFacebookLogin}
-          > Sign in thru Facebook </button>
-          <button className="btn toggle-btn center"  onClick={()=>{this.setState({toggleLogin: !this.state.toggleLogin})}} >
+          > Sign in with Facebook </button>
+          <button id={!this.state.toggleLogin ? "returning" : "new"} className="btn toggle-btn center"  onClick={()=>{this.setState({toggleLogin: !this.state.toggleLogin})}} >
           {!this.state.toggleLogin ? "Returning? Login" : "New here? Sign up"}
           </button>
         </div>
