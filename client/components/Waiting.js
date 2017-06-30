@@ -43,6 +43,12 @@ export default class Waiting extends React.Component {
                         max = timestamp;
                         maxKey = key;
                     }})
+                    
+                    //Update finishedQuiz to true
+                    data.child('matches').child(maxKey).update({
+                        finishedQuiz: true
+                    });
+                
                     let questions = snapshot.val()[maxKey] ? snapshot.val()[maxKey].round1 : null
                     let myAnswers = [];
                     if (questions) {
