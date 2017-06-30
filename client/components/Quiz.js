@@ -12,7 +12,8 @@ export default class Quiz extends React.Component {
             current: 0,
             questionNumbers: [],
             latestMatchKey: '',
-            finishedQuiz: false
+            finishedQuiz: false,
+            quizData: {}
         }
         this.handleClick = this.handleClick.bind(this);
     }
@@ -47,6 +48,13 @@ export default class Quiz extends React.Component {
                         (snapshot) => {
                             let finishedQuiz = snapshot.val().finishedQuiz;
                             let questionNumbers = snapshot.val().numbers.split(',');
+                            //
+                            firebaseQuizRef.on('value', 
+                                (snapshot) => {
+                                    let quizData = snapshot.val();
+                                    this.setState({finishedQuiz, latestMatchKey, questionNumbers, quizData});
+                                })
+                            //
                             this.setState({finishedQuiz, latestMatchKey, questionNumbers});
                         })
                 },
@@ -88,17 +96,12 @@ export default class Quiz extends React.Component {
         let current = this.state.current +1;
         this.setState({current});
 
-        //Update questionCount and specific answer count for current question being shown
-        firebaseQuizRef.child(questionNumber).on('value',
-            (snapshot) => {
-                //Update questionCount
-                let questionCount = snapshot.val().questionCount ? +snapshot.val().questionCount +1 : 1;
-                //Update answer count (1a, 2a, ...)
-                let answerCountKey = answerNumber.toString() + 'a';
-                let answerCount = snapshot.val()[answerCountKey] ? +snapshot.val()[answerCountKey] +1 : 1;
-                console.log(questionCount, answerCount)
-                firebaseQuizRef.child(questionNumber).update({questionCount, [answerCountKey]: answerCount});
-            })
+        //Update database with new question count and answer count
+        let questionData = this.state.quizData[questionNumber];
+        let questionCount = questionData.questionCount ? questionData.questionCount + 1 : 1;
+        let answerCountKey = answerNumber.toString() + 'a';
+        let answerCount = questionData[answerCountKey] ? questionData[answerCountKey] + 1 : 1;
+        firebaseQuizRef.child(questionNumber).update({questionCount, [answerCountKey]: answerCount});
 
     }
 
