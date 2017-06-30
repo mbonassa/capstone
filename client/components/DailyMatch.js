@@ -97,6 +97,7 @@ export default class DailyMatch extends React.Component {
       alert("No partner loaded")
       browserHistory.push('profile')
     }
+
   }
 
   componentWillUnmount(){
@@ -152,6 +153,7 @@ export default class DailyMatch extends React.Component {
           </div>
         }
         </div>
+        <Link to="/profile"><p className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
       </div>
     )
   }
