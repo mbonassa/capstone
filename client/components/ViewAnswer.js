@@ -42,6 +42,29 @@ export default class ViewAnswer extends React.Component {
                 firebaseUsersRef.child(latestMatchKey).on('value', 
                     (snapshot) => {
                         let theirName = snapshot.val().name;
+
+                        //Getting their number of questions answered
+                            //Finding number of questions match has answered
+                            // let user = firebaseAuth.currentUser.uid;
+                            let theirAnsweredQuestions = Object.keys(snapshot.val().matches['User4'].round2answers).length;
+                            //Finding number of questions user has answered with match
+                            userRef.child('matches').child(latestMatchKey).child('round2answers').on('value',
+                                snapshot => {
+                                    let myAnsweredQuestions = Object.keys(snapshot.val()).length;
+                                    let questionsAnswered = myAnsweredQuestions + theirAnsweredQuestions;
+                                    //Make sure that if match is lost, that gets persisted to db for both users
+                                        if (questionsAnswered > 5 && heartStatus < 5) {
+                                            userRef.child('matches').child(latestMatchKey).update({
+                                                lost: true
+                                            })
+                                            //let user = firebaseAuth.currentUser.uid;
+                                            firebaseUsersRef.child(latestMatchKey).child('matches').child('User4').update({
+                                                lost: true
+                                            })
+                                        }
+                                    this.setState({questionsAnswered})
+                                })
+
                         //Getting their question number (key)
                         // let user = firebaseAuth.currentUser.uid;
                         let round2 = snapshot.val()['matches']['User4'].round2
@@ -101,8 +124,13 @@ export default class ViewAnswer extends React.Component {
     }
 
     render() {
+        console.log(this.state.heartStatus, this.state.questionsAnswered)
         let sassyMessage = Math.random() > 0.5 ? 'Go outside?' : 'Maybe they have a life?';
         return (
+        <div>
+        {this.state.heartStatus < 5 && this.state.questionsAnswered === 6 ?
+        <h1>You lost the match!</h1>
+        :
         <div>
             {this.state.heartStatus < 5 ?
             <div>{this.state.theirName.length && !this.state.answer
@@ -133,6 +161,8 @@ export default class ViewAnswer extends React.Component {
                 <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
                 <a><h2>Go Chat!</h2></a> 
             </div>
+        }
+        </div>
         }
         </div>
         )
