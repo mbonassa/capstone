@@ -88,6 +88,18 @@ export default class Quiz extends React.Component {
         let current = this.state.current +1;
         this.setState({current});
 
+        //Update questionCount and specific answer count for current question being shown
+        firebaseQuizRef.child(questionNumber).on('value',
+            (snapshot) => {
+                //Update questionCount
+                let questionCount = snapshot.val().questionCount ? +snapshot.val().questionCount +1 : 1;
+                //Update answer count (1a, 2a, ...)
+                let answerCountKey = answerNumber.toString() + 'a';
+                let answerCount = snapshot.val()[answerCountKey] ? +snapshot.val()[answerCountKey] +1 : 1;
+                console.log(questionCount, answerCount)
+                firebaseQuizRef.child(questionNumber).update({questionCount, [answerCountKey]: answerCount});
+            })
+
     }
 
     render() {
