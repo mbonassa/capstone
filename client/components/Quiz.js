@@ -48,14 +48,11 @@ export default class Quiz extends React.Component {
                         (snapshot) => {
                             let finishedQuiz = snapshot.val().finishedQuiz;
                             let questionNumbers = snapshot.val().numbers.split(',');
-                            //
                             firebaseQuizRef.on('value', 
                                 (snapshot) => {
                                     let quizData = snapshot.val();
                                     this.setState({finishedQuiz, latestMatchKey, questionNumbers, quizData});
                                 })
-                            //
-                            this.setState({finishedQuiz, latestMatchKey, questionNumbers});
                         })
                 },
                 (errorObject) => {
@@ -87,12 +84,12 @@ export default class Quiz extends React.Component {
         let answerNumber = Number(event.target.id);
         let latestMatchKey;
 
-        if (this.state.latestMatchKey.length) {
+        if (this.state.latestMatchKey.length && answerNumber) {
             latestMatchKey = this.state.latestMatchKey;
+            matchRef.child(latestMatchKey).child('round1').update({
+                [questionNumber]: [answerNumber]
+            })
         }
-        matchRef.child(latestMatchKey).child('round1').update({
-            [questionNumber]: [answerNumber]
-        })
 
         //Update database with new question count and answer count
         let questionData = this.state.quizData[questionNumber];
@@ -129,10 +126,10 @@ export default class Quiz extends React.Component {
             <div className="quiz">
                 <h1 id="question-title">{question ? question[0] : null}</h1>
                 <div id="answers">
-                    <Link to='/waiting' className="answer-text"><div className="answer"><h3 className="answer-text" id="1">{question ? question[1] : null}</h3></div></Link>
-                    <Link to='/waiting' className="answer-text"><div className="answer"><h3 className="answer-text" id="2">{question ? question[2] : null}</h3></div></Link>
-                    <Link to='/waiting' className="answer-text"><div className="answer"><h3 className="answer-text" id="3">{question ? question[3] : null}</h3></div></Link>
-                    <Link to='/waiting' className="answer-text"><div className="answer"><h3 className="answer-text" id="4">{question ? question[4] : null}</h3></div></Link>
+                    <Link to='/waiting' onClick={this.handleClick} className="answer-text"><div className="answer"><h3 className="answer-text" id="1">{question ? question[1] : null}</h3></div></Link>
+                    <Link to='/waiting' onClick={this.handleClick} className="answer-text"><div className="answer"><h3 className="answer-text" id="2">{question ? question[2] : null}</h3></div></Link>
+                    <Link to='/waiting' onClick={this.handleClick} className="answer-text"><div className="answer"><h3 className="answer-text" id="3">{question ? question[3] : null}</h3></div></Link>
+                    <Link to='/waiting' onClick={this.handleClick} className="answer-text"><div className="answer"><h3 className="answer-text" id="4">{question ? question[4] : null}</h3></div></Link>
                 </div>
             </div>
             }
