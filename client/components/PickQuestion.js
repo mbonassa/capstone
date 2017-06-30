@@ -8,7 +8,9 @@ export default class Quiz extends React.Component {
             questions: {},
             matchKey: '',
             randomNumbers: [],
-            theirName: ''
+            theirName: '',
+            heartStatus: 0,
+            turnToAsk: false
         }
         this.handleClick = this.handleClick.bind(this);
     }
@@ -45,7 +47,14 @@ export default class Quiz extends React.Component {
                         max = timestamp;
                         maxKey = key;
                     }})
-                    this.setState({matchKey: maxKey});
+                    //Getting heartStatus with latest match
+                    //Finding out if it's your turn to ask with match
+                    userRef.child('matches').child(maxKey).on('value', (snapshot) => {
+                        let heartStatus = snapshot.val().heartStatus;
+                        let turnToAsk = snapshot.val().turnToAsk;
+                        this.setState({matchKey: maxKey, heartStatus, turnToAsk});
+                    })
+                    //
                     //Getting name of match
                     firebaseUsersRef.child(maxKey).on('value', (snapshot) => {
                         let name = snapshot.val().name;
@@ -77,13 +86,34 @@ export default class Quiz extends React.Component {
     render() {
         //If your match's turnToAsk is false, that means that they have just picked a question, so link should appear to Answer
         return (
+        <div>
+            {this.state.turnToAsk && this.state.heartStatus < 5 ? 
             <div>
-                {this.state.theirName.length ? <h1>Pick a question to send to {this.state.theirName}!</h1> : null}
+                <div>{this.state.theirName.length ? <h1>Pick a question to send to {this.state.theirName}!</h1> : null}</div>
                 <a href='/viewanswer'><h3 onClick={() => this.handleClick(0)}>{this.state.questions[this.state.randomNumbers[0]]}</h3></a>
                 <a href='/viewanswer'><h3 onClick={() => this.handleClick(1)}>{this.state.questions[this.state.randomNumbers[1]]}</h3></a>
                 <a href='/viewanswer'><h3 onClick={() => this.handleClick(2)}>{this.state.questions[this.state.randomNumbers[2]]}</h3></a>
             </div>
-        )
+            : 
+            <div>
+            {this.state.heartStatus >= 5 ?
+            <div>
+                <h1>You and {this.state.theirName} have accumulated {this.state.heartStatus} hearts!</h1>
+                <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
+                <a><h2>Go Chat!</h2></a> 
+            </div>
+            :
+            <div>
+                <h1>It's not your turn to pick a question!</h1>
+                <a href='/answer'><h2>Go answer one instead</h2></a>
+            </div>
+        }
+        </div>
+    }
+    </div>
+    )
     }
 
 }
+
+
