@@ -83,7 +83,7 @@ export default class Answer extends React.Component {
                         let myAnsweredQuestions = Object.keys(snapshot.val().round2answers).length;
 
                         //Getting match's name and the number of questions they've answered
-                        firebaseUsersRef.child(latestMatchKey).on('value', 
+                        firebaseUsersRef.child(latestMatchKey).on('value',
                             (snapshot) => {
                                 let theirName = snapshot.val().name;
                                 let user = firebaseAuth.currentUser.uid;
@@ -117,7 +117,7 @@ export default class Answer extends React.Component {
                         })
                         this.setState({latestQuestionKey: maxKey2})
                         //Finding latest question text
-                        firebaseQuestionsRef.on('value', 
+                        firebaseQuestionsRef.on('value',
                             (snapshot) => {
                                 let questions = snapshot.val();
                                 let latestQuestionText = questions[maxKey2];
@@ -126,7 +126,7 @@ export default class Answer extends React.Component {
                             (errorObject) => {
                                 console.error('The read failed: ' + errorObject.code)
                             })
-                        
+
                     })
             },
             (errorObject) => {
@@ -135,7 +135,7 @@ export default class Answer extends React.Component {
     }
 
 
-    render() {      
+    render() {
         return (
         <div>
         {this.state.heartStatus < 5 && this.state.questionsAnswered === 6 ?
@@ -144,7 +144,7 @@ export default class Answer extends React.Component {
         <div>
         {this.state.heartStatus < 5 ?
             <div>
-            {!this.state.turnToAsk ? 
+            {!this.state.turnToAsk ?
             <div>
                 <h3>{this.state.theirName} {this.state.theirName && this.state.latestQuestionText ? 'asked' : null}</h3>
                 <h1>{this.state.latestQuestionText}</h1>
@@ -154,18 +154,18 @@ export default class Answer extends React.Component {
                         </label>
                         <input disabled={this.state.answered} type="submit" value="Submit" />
                     </form>
-                {this.state.answered && this.state.turnToAsk ? 
-                    <a href='/pickquestion'>Send {this.state.theirName} a question</a>
+                {this.state.answered && this.state.turnToAsk ?
+                    <Link to='/pickquestion'>Send {this.state.theirName} a question</Link>
                 : null}
-            </div> : 
-            <a href='/pickquestion'><h1>It's your turn to ask a question. Go do it!</h1></a>
-            } 
+            </div> :
+            <Link to='/pickquestion'><h1>It's your turn to ask a question. Go do it!</h1></Link>
+            }
             </div>
             :
             <div>
                 <h1>You and {this.state.theirName} have accumulated {this.state.heartStatus} hearts!</h1>
                 <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
-                <a><h2>Go Chat!</h2></a> 
+                <a><h2>Go Chat!</h2></a>
             </div>
         }
         </div>

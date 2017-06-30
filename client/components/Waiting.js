@@ -1,5 +1,6 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
+import { Link } from 'react-router';
 
 export default class Waiting extends React.Component {
     constructor(props) {
@@ -126,7 +127,7 @@ export default class Waiting extends React.Component {
             <div>
                 <h1>You and {this.state.theirName} have {this.state.heartStatus} {this.state.heartStatus == 1 ? 'heart' : 'hearts'}</h1>
                 <h3>That means you had {this.state.heartStatus} {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h3>
-                <a href='/pickquestion'><h3>Go to round 2</h3></a>
+                <Link to='/pickquestion'><h3>Go to round 2</h3></Link>
             </div> :
             <div>
                 <h1>{this.state.theirName} is still answering</h1>
