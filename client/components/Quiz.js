@@ -1,7 +1,7 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
 import anime from 'animejs'
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 
 export default class Quiz extends React.Component {
     constructor(props) {
@@ -19,38 +19,6 @@ export default class Quiz extends React.Component {
 
 
     componentDidMount () {
-        firebaseQuizRef.on('value',
-            (snapshot) => {
-                this.setState({
-                  data: snapshot.val()
-                })
-            },
-            (errorObject) => {
-                console.error('The read failed: ' + errorObject.code)
-            })
-
-        let user = firebaseAuth.currentUser.uid;
-        let data = firebaseUsersRef.child(user)
-        data.on('value',
-            (snapshot) => {
-                this.setState({userData: snapshot.val()})
-                let max = 0;
-                let maxKey;
-                let matchKeys = Object.keys(snapshot.val().matches).forEach(key => {
-                    let timestamp = snapshot.val().matches[key].timestamp;
-                    if (timestamp > max) {
-                        max = timestamp;
-                        maxKey = key;
-                    }
-                })
-                this.setState({latestMatchKey: maxKey})
-                let questionNumbers = snapshot.val().matches[maxKey] ? snapshot.val().matches[maxKey].numbers.split(',') : null;
-                this.setState({questionNumbers})
-            },
-            (errorObject) => {
-                console.error('The read failed: ' + errorObject.code)
-            })
-
         function swipe () {
             var el = document.querySelector('#question-title');
             var domNode = anime({
@@ -60,9 +28,44 @@ export default class Quiz extends React.Component {
               delay: 500
             });
         }
+
         swipe();
+        firebaseQuizRef.on('value',
+            (snapshot) => {
+                this.setState({
+                    data: snapshot.val()
+                })
+            },
+            (errorObject) => {
+                console.error('The read failed: ' + errorObject.code)
+        });
 
-
+        firebaseAuth.onAuthStateChanged((user) => {
+            if (user){
+                firebaseUsersRef.child(firebaseAuth.currentUser.uid).on('value',
+                    (snapshot) => {
+                        this.setState({userData: snapshot.val()})
+                        let max = 0;
+                        let maxKey;
+                        let matchKeys = Object.keys(snapshot.val().matches).forEach(key => {
+                            let timestamp = snapshot.val().matches[key].timestamp;
+                            if (timestamp > max) {
+                                max = timestamp;
+                                maxKey = key;
+                            }
+                        })
+                        this.setState({latestMatchKey: maxKey})
+                        let questionNumbers = snapshot.val().matches[maxKey] ? snapshot.val().matches[maxKey].numbers.split(',') : null;
+                        this.setState({questionNumbers})
+                    },
+                    (errorObject) => {
+                        console.error('The read failed: ' + errorObject.code)
+                    })
+            } else {
+                alert("You're not logged in")
+                browserHistory.push('login')
+            }
+        })
     }
 
     handleClick(event) {
