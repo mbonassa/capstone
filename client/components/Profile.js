@@ -75,10 +75,8 @@ export default class UserView extends React.Component {
   }
 
   handleLogout(){
-    firebaseAuth.signOut()
-    .then(() => {
-      browserHistory.push('/login')
-    })
+    firebaseAuth.signOut();
+    browserHistory.push('/login');
   }
 
   componentDidMount(){
@@ -123,6 +121,11 @@ export default class UserView extends React.Component {
                 <Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className='fancy-type'>(EDIT PROFILE)</p></Link>
               </div>) : null}
             <h5>{this.state.val.bio}</h5>
+              <Link to={
+            {
+              pathname: "matchHistory",
+            }
+            }> View Past Matches </Link>
             <button
               className="btn misc-btn"
               title="Log out"

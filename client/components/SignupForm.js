@@ -60,22 +60,6 @@ export default class Signup extends React.Component {
     }
   }
 
-  minAgeRange(){
-    let output = [];
-    for (var i = 18; i < 100; i++){
-      output.push(i)
-    }
-    return output
-  }
-
-  maxAgeRange(){
-    let output = [];
-    for (var i = 18; i < 100; i++){
-      output.push(i)
-    }
-    return output
-  }
-
   generateAgeDropdown(){
     let output = [];
     for (var i = 18; i < 100; i++){

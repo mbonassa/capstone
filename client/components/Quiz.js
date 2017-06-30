@@ -1,5 +1,7 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
+import anime from 'animejs'
+import { Link } from 'react-router';
 
 export default class Quiz extends React.Component {
     constructor(props) {
@@ -49,10 +51,22 @@ export default class Quiz extends React.Component {
                 console.error('The read failed: ' + errorObject.code)
             })
 
+        function swipe () {
+            var el = document.querySelector('#question-title');
+            var domNode = anime({
+              targets: el,
+              translateX: 250,
+              duration: 5000,
+              delay: 500
+            });
+        }
+        swipe();
+
 
     }
 
     handleClick(event) {
+        console.log(event, event.target.className)
         let user = firebaseAuth.currentUser.uid;
         let matchRef = firebaseUsersRef.child(user).child('matches');
         let questionNumber = +this.state.questionNumbers[this.state.current];
@@ -77,20 +91,24 @@ export default class Quiz extends React.Component {
         let question = questionNumbers ? this.state.data[questionNumbers[this.state.current]] : null;
 
         return (
-            this.state.current < 5 ?
-            <div>
-                <h1>{question ? question[0] : null}</h1>
-                <a onClick={this.handleClick}><h3 className={1}>{question ? question[1] : null}</h3></a>
-                <a onClick={this.handleClick}><h3 className={2}>{question ? question[2] : null}</h3></a>
-                <a onClick={this.handleClick}><h3 className={3}>{question ? question[3] : null}</h3></a>
-                <a onClick={this.handleClick}><h3 className={4}>{question ? question[4] : null}</h3></a>
+            this.state.current < 4 ?
+            <div className="quiz">
+                <h1 id="question-title">{question ? question[0] : null}</h1>
+                <div id="answers">
+                    <a className="answer-text" onClick={this.handleClick}><div className="answer"><h3 className="1">{question ? question[1] : null}</h3></div></a>
+                    <a className="answer-text" onClick={this.handleClick}><div className="answer"><h3 className="2">{question ? question[2] : null}</h3></div></a>
+                    <a className="answer-text" onClick={this.handleClick}><div className="answer"><h3 className="3">{question ? question[3] : null}</h3></div></a>
+                    <a className="answer-text" onClick={this.handleClick}><div className="answer"><h3 className="4">{question ? question[4] : null}</h3></div></a>
+                </div>
             </div> :
-            <div>
-                <h1>{question ? question[0] : null}</h1>
-                <a href='/waiting'><h3 className={1}>{question ? question[1] : null}</h3></a>
-                <a href='/waiting'><h3 className={2}>{question ? question[2] : null}</h3></a>
-                <a href='/waiting'><h3 className={3} >{question ? question[3] : null}</h3></a>
-                <a href='/waiting'><h3 className={4} >{question ? question[4] : null}</h3></a>
+            <div className="quiz">
+                <h1 id="question-title">{question ? question[0] : null}</h1>
+                <div id="answers">
+                    <Link to='/waiting' className="answer-text"><div className="answer"><h3 className="1">{question ? question[1] : null}</h3></div></Link>
+                    <Link to='/waiting' className="answer-text"><div className="answer"><h3 className="2">{question ? question[2] : null}</h3></div></Link>
+                    <Link to='/waiting' className="answer-text"><div className="answer"><h3 className="3">{question ? question[3] : null}</h3></div></Link>
+                    <Link to='/waiting' className="answer-text"><div className="answer"><h3 className="4">{question ? question[4] : null}</h3></div></Link>
+                </div>
             </div>
             )
     }
