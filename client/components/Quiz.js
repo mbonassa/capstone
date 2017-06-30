@@ -15,6 +15,7 @@ export default class Quiz extends React.Component {
             finishedQuiz: false,
             quizData: {}
         }
+        this.partnerId = "",
         this.handleClick = this.handleClick.bind(this);
     }
 
@@ -33,35 +34,29 @@ export default class Quiz extends React.Component {
             if (user){
             userRef.on('value',
                 (snapshot) => {
-                    this.setState({userData: snapshot.val()})
-                    let max = 0;
-                    let latestMatchKey;
-                    let matchKeys = Object.keys(snapshot.val().matches).forEach(key => {
-                        let timestamp = snapshot.val().matches[key].timestamp;
-                        if (timestamp > max) {
-                            max = timestamp;
-                            latestMatchKey = key;
-                        }
-                    })
-                    //Load finishedQuiz to state
-                    userRef.child('matches').child(latestMatchKey).on('value',
+                this.setState({userData: snapshot.val()}, () => {
+                    this.partnerId = this.state.userData.partnerId
+                    if (!this.dirty && this.partnerId){
+                        userRef.child('matches').child(this.partnerId).on('value',
                         (snapshot) => {
-                            let finishedQuiz = snapshot.val().finishedQuiz;
-                            let questionNumbers = snapshot.val().numbers.split(',');
-                            firebaseQuizRef.on('value', 
-                                (snapshot) => {
-                                    let quizData = snapshot.val();
-                                    this.setState({finishedQuiz, latestMatchKey, questionNumbers, quizData});
-                                })
-                        })
-                },
-                (errorObject) => {
-                    console.error('The read failed: ' + errorObject.code)
+                            this.setState({
+                                finishedQuiz: snapshot.val().finishedQuiz,
+                                questionNumbers: snapshot.val().numbers.split(',')
+                            })
+                        });
+                    }
                 })
-            } else {
-                browserHistory.push('login')
-            }
-        });
+            });
+                    firebaseQuizRef.on('value',
+                    (snapshot) => {
+                        let quizData = snapshot.val();
+                        this.setState({quizData});
+                    });
+                } else {
+                    browserHistory.push('login')
+                }
+            })
+
 
         function swipe () {
             var el = document.querySelector('#question-title');
@@ -84,8 +79,8 @@ export default class Quiz extends React.Component {
         let answerNumber = Number(event.target.id);
         let latestMatchKey;
 
-        if (this.state.latestMatchKey.length && answerNumber) {
-            latestMatchKey = this.state.latestMatchKey;
+        if (this.partnerId.length && answerNumber) {
+            latestMatchKey = this.partnerId;
             matchRef.child(latestMatchKey).child('round1').update({
                 [questionNumber]: [answerNumber]
             })
