@@ -36,12 +36,10 @@ export default class Quiz extends React.Component {
 
                 let user = firebaseAuth.currentUser.uid;
                 let userRef = firebaseUsersRef.child(user)
-
                 //We obtain an object with all the user's matches from the database
                 //We preserve this object to state on allMatches
                 //Then, we find the most recent match by comparing timestamps
                 userRef.child('matches').on("value", (snapshot) => {
-                    this.setState({allMatches: snapshot.val()})
                         let max = 0;
                         let matchKey;
                         let matchKeys = Object.keys(snapshot.val()).forEach(key => {
