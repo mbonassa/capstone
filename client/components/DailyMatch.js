@@ -34,7 +34,8 @@ export default class DailyMatch extends React.Component {
         numbers: `${numbersString}`,
         round1: {},
         timestamp: Date.now(),
-        turnToAsk: true
+        turnToAsk: true,
+        finishedQuiz: false
       })
       .then(() => {
         return firebaseUsersRef.child(this.state.partnerId).child('matches').child(firebaseAuth.currentUser.uid).set({
@@ -42,7 +43,8 @@ export default class DailyMatch extends React.Component {
           numbers: `${numbersString}`,
           round1: {},
           timestamp: Date.now(),
-          turnToAsk: true
+          turnToAsk: true,
+          finishedQuiz: false
         });
       })
       .then(() => {
@@ -69,10 +71,12 @@ export default class DailyMatch extends React.Component {
   }
 
   componentDidMount(){
-    if(firebaseAuth.currentUser){
+
+    firebaseAuth.onAuthStateChanged((user) => {
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value", (snapshot) => {
             this.setState({userObj: snapshot.val()})
       });
+    });
 
       if (this.props.location.state.partnerId){
           this.setState({partnerId: this.props.location.state.partnerId}, () => {
@@ -96,7 +100,7 @@ export default class DailyMatch extends React.Component {
         alert("No partner loaded")
         browserHistory.push('profile')
       }
-    }
+
   }
 
   componentWillUnmount(){
