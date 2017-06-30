@@ -74,6 +74,8 @@ export default class DailyMatch extends React.Component {
             this.setState({userObj: snapshot.val()})
       });
 
+
+
       if (this.props.location.state.partnerId){
           this.setState({partnerId: this.props.location.state.partnerId}, () => {
           firebaseUsersRef.child(this.props.location.state.partnerId).on("value",
