@@ -105,6 +105,7 @@ export default class Quiz extends React.Component {
     }
 
     render() {
+        console.log(this.state)
         let questionNumbers = this.state.questionNumbers;
         let question = questionNumbers ? this.state.data[questionNumbers[this.state.current]] : null;
 
