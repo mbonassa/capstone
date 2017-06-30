@@ -29,6 +29,7 @@ export default class Quiz extends React.Component {
             });
         }
 
+
         swipe();
         firebaseQuizRef.on('value',
             (snapshot) => {
