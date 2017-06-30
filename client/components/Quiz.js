@@ -93,8 +93,6 @@ export default class Quiz extends React.Component {
         matchRef.child(latestMatchKey).child('round1').update({
             [questionNumber]: [answerNumber]
         })
-        let current = this.state.current +1;
-        this.setState({current});
 
         //Update database with new question count and answer count
         let questionData = this.state.quizData[questionNumber];
@@ -102,6 +100,10 @@ export default class Quiz extends React.Component {
         let answerCountKey = answerNumber.toString() + 'a';
         let answerCount = questionData[answerCountKey] ? questionData[answerCountKey] + 1 : 1;
         firebaseQuizRef.child(questionNumber).update({questionCount, [answerCountKey]: answerCount});
+
+        let current = this.state.current +1;
+        this.setState({current});
+
 
     }
 
