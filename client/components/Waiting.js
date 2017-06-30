@@ -17,6 +17,7 @@ export default class Waiting extends React.Component {
 
     componentDidMount () {
 
+
         let user = firebaseAuth.currentUser.uid;
         let data = firebaseUsersRef.child(user)
 
@@ -43,12 +44,12 @@ export default class Waiting extends React.Component {
                         max = timestamp;
                         maxKey = key;
                     }})
-                    
+
                     //Update finishedQuiz to true
                     data.child('matches').child(maxKey).update({
                         finishedQuiz: true
                     });
-                
+
                     let questions = snapshot.val()[maxKey] ? snapshot.val()[maxKey].round1 : null
                     let myAnswers = [];
                     if (questions) {
@@ -66,12 +67,12 @@ export default class Waiting extends React.Component {
                     //5) Update database heartStatus for other user
                     //6) Update database heartStatus for own user
 
-                    //1) 
+                    //1)
                         //let matchedUserRef = firebaseUsersRef.child(maxKey)
                     //2)
                     let user = firebaseAuth.currentUser.uid;
                     let otherUserMatchRef = firebaseUsersRef.child(maxKey).child('matches').child(user)
-                    otherUserMatchRef.on('value', 
+                    otherUserMatchRef.on('value',
                         (snapshot) => {
                             this.setState({otherData: snapshot.val()});
                             //3)
@@ -121,12 +122,12 @@ export default class Waiting extends React.Component {
 
     render() {
         return (
-            this.state.userData.matches && this.state.heartStatus && this.state.theirName ? 
+            this.state.userData.matches && this.state.heartStatus && this.state.theirName ?
             <div>
                 <h1>You and {this.state.theirName} have {this.state.heartStatus} {this.state.heartStatus == 1 ? 'heart' : 'hearts'}</h1>
                 <h3>That means you had {this.state.heartStatus} {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h3>
                 <a href='/pickquestion'><h3>Go to round 2</h3></a>
-            </div> : 
+            </div> :
             <div>
                 <h1>{this.state.theirName} is still answering</h1>
                 <h3>We'll let you know when she's done</h3>

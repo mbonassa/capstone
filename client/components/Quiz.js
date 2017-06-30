@@ -28,8 +28,9 @@ export default class Quiz extends React.Component {
                 console.error('The read failed: ' + errorObject.code)
             })
         firebaseAuth.onAuthStateChanged((user) => {
+            let userRef = firebaseUsersRef.child(firebaseAuth.currentUser.uid)
             if (user){
-            firebaseUsersRef.child(firebaseAuth.currentUser.uid).on('value',
+            userRef.on('value',
                 (snapshot) => {
                     this.setState({userData: snapshot.val()})
                     let max = 0;
@@ -42,7 +43,7 @@ export default class Quiz extends React.Component {
                         }
                     })
                     //Load finishedQuiz to state
-                    data.child('matches').child(latestMatchKey).on('value',
+                    userRef.child('matches').child(latestMatchKey).on('value',
                         (snapshot) => {
                             let finishedQuiz = snapshot.val().finishedQuiz;
                             let questionNumbers = snapshot.val().numbers.split(',');
@@ -96,7 +97,7 @@ export default class Quiz extends React.Component {
         return (
             <div>
             {this.state.finishedQuiz ?
-            <h1 href='/pickquestion'>Go to Round 2</h1>
+            <Link to='pickquestion'>Go to Round 2</Link>
             :
             this.state.current < 4 ?
             <div className="quiz">

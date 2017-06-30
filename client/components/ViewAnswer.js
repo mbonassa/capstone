@@ -21,7 +21,7 @@ export default class ViewAnswer extends React.Component {
 
     componentDidMount () {
 
-         let user = firebaseAuth.currentUser.uid;
+        let user = firebaseAuth.currentUser.uid;
         let userRef = firebaseUsersRef.child(user);
         userRef.on('value',
             (snapshot) => {
@@ -39,7 +39,7 @@ export default class ViewAnswer extends React.Component {
                 })
                 let heartStatus = userData.matches[latestMatchKey].heartStatus;
                 //Getting their name
-                firebaseUsersRef.child(latestMatchKey).on('value', 
+                firebaseUsersRef.child(latestMatchKey).on('value',
                     (snapshot) => {
                         let theirName = snapshot.val().name;
 
@@ -78,7 +78,7 @@ export default class ViewAnswer extends React.Component {
                                 }
                         })
                         //Finding latest question text
-                        firebaseQuestionsRef.on('value', 
+                        firebaseQuestionsRef.on('value',
                             (snapshot) => {
                                 let questions = snapshot.val();
                                 let latestQuestionText = questions[latestQuestionKey];
@@ -106,7 +106,7 @@ export default class ViewAnswer extends React.Component {
 
             //For logged in user:
             let user = firebaseAuth.currentUser.uid;
-            let userRef = firebaseUsersRef.child(user); 
+            let userRef = firebaseUsersRef.child(user);
             let latestMatchKey = this.state.latestMatchKey;
             let heartStatus = this.state.heartStatus;
             heartStatus++
@@ -134,15 +134,15 @@ export default class ViewAnswer extends React.Component {
         <div>
             {this.state.heartStatus < 5 ?
             <div>{this.state.theirName.length && !this.state.answer
-                ? 
+                ?
                 <div>
                     <h1>{this.state.theirName} hasn't answered yet. {sassyMessage}</h1>
                     <h3>Your question was "{this.state.latestQuestionText}"</h3>
                     <h4>Your heart count: {this.state.heartStatus}</h4>
                 </div>
-                : 
+                :
                 <div>
-                    {this.state.theirName && this.state.heartStatus ? 
+                    {this.state.theirName && this.state.heartStatus ?
                         <div>
                             <h1>Here's {this.state.theirName}'s answer to your question</h1>
                             <h2>"{this.state.latestQuestionText}"</h2>
@@ -150,7 +150,7 @@ export default class ViewAnswer extends React.Component {
                             <h3>Like that? Give your match another heart</h3>
                             <button disabled={this.state.disabled} onClick={this.handleClick}>Love</button>
                             <h4>Your heart count: {this.state.heartStatus}</h4>
-                        </div> 
+                        </div>
                     : null}
                 </div>
                 }
@@ -159,7 +159,7 @@ export default class ViewAnswer extends React.Component {
             <div>
                 <h1>You and {this.state.theirName} have accumulated {this.state.heartStatus} hearts!</h1>
                 <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
-                <a><h2>Go Chat!</h2></a> 
+                <a><h2>Go Chat!</h2></a>
             </div>
         }
         </div>
