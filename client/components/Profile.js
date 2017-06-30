@@ -120,7 +120,7 @@ export default class UserView extends React.Component {
             {this.state.val.name ? (
               <div>
                 <h3>{this.state.val.name}, {this.state.val.age}</h3>
-                <Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className='fancy-type'>(EDIT PROFILE)</p></Link>
+                <Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className=''>(EDIT PROFILE)</p></Link>
               </div>) : null}
             <h5>{this.state.val.bio}</h5>
               <Link to={
@@ -141,27 +141,24 @@ export default class UserView extends React.Component {
             >GO SCORE </button> :
             !this.state.waiting ?
             <div>
-             <button
-              className="btn misc-btn"
-              title="Score"
-              onClick={this.setActive}
-              disabled="disabled"
-            >You already have a match!</button>
-              <Link to={
+             <Link to={
             {
               pathname: "match",
               state: {
                 partnerId: this.state.val.partnerId
               }
             }
-            }> See your Match </Link>
+            }><button
+              className="btn misc-btn caps"
+
+            >See your match</button></Link>
           </div> :
           <button
             className="btn misc-btn"
             title="Score"
             onClick={this.setActive}
             disabled="disabled"
-          >Finding your match</button>
+          >Finding a match</button>
 
         }
         {
