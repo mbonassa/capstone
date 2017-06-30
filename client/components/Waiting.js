@@ -19,7 +19,7 @@ export default class Waiting extends React.Component {
     }
 
     componentDidMount () {
-    firebaseAuth.onAuthStateChanged(function(user) {
+    firebaseAuth.onAuthStateChanged((user) => {
     if (user) {
             let user = firebaseAuth.currentUser.uid;
             let data = firebaseUsersRef.child(user)

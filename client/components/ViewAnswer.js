@@ -21,7 +21,7 @@ export default class ViewAnswer extends React.Component {
 
     componentDidMount () {
 
-firebaseAuth.onAuthStateChanged(function(user) {
+firebaseAuth.onAuthStateChanged((user) => {
     if (user) {
                 let user = firebaseAuth.currentUser.uid;
                 let userRef = firebaseUsersRef.child(user);
