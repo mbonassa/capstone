@@ -14,7 +14,8 @@ export default class Answer extends React.Component {
             theirName: '',
             latestQuestionText: '',
             answered: false,
-            turnToAsk: false
+            turnToAsk: false,
+            heartStatus: 0
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -72,10 +73,12 @@ export default class Answer extends React.Component {
                     }
                 })
                 //Finding whether it's user's turn to ask with that match
+                //Get heartStatus with match
                 userRef.child('matches').child(maxKey).on('value',
                     (snapshot) => {
                         let turnToAsk = snapshot.val().turnToAsk;
-                        this.setState({turnToAsk})
+                        let heartStatus = snapshot.val().heartStatus;
+                        this.setState({turnToAsk, heartStatus})
                     })
                 //Getting their name
                 firebaseUsersRef.child(maxKey).on('value', 
@@ -118,6 +121,8 @@ export default class Answer extends React.Component {
 
     render() {
         return (
+        <div>
+        {this.state.heartStatus < 5 ?
             <div>
             {!this.state.turnToAsk ? 
             <div>
@@ -136,6 +141,14 @@ export default class Answer extends React.Component {
             <a href='/pickquestion'><h1>It's your turn to ask a question. Go do it!</h1></a>
             } 
             </div>
+            :
+            <div>
+                <h1>You and {this.state.theirName} have accumulated {this.state.heartStatus} hearts!</h1>
+                <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
+                <a><h2>Go Chat!</h2></a> 
+            </div>
+        }
+        </div>
         )
     }
 

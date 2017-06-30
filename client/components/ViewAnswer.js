@@ -101,6 +101,8 @@ export default class ViewAnswer extends React.Component {
     render() {
         let sassyMessage = Math.random() > 0.5 ? 'Go outside?' : 'Maybe they have a life?';
         return (
+        <div>
+            {this.state.heartStatus < 5 ?
             <div>{this.state.theirName.length && !this.state.answer
                 ? 
                 <div>
@@ -123,6 +125,14 @@ export default class ViewAnswer extends React.Component {
                 </div>
                 }
             </div>
+            :
+            <div>
+                <h1>You and {this.state.theirName} have accumulated {this.state.heartStatus} hearts!</h1>
+                <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
+                <a><h2>Go Chat!</h2></a> 
+            </div>
+        }
+        </div>
         )
     }
 
