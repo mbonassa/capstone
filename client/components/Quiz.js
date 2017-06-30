@@ -11,7 +11,8 @@ export default class Quiz extends React.Component {
             userData: {},
             current: 0,
             questionNumbers: [],
-            latestMatchKey: ''
+            latestMatchKey: '',
+            finishedQuiz: false
         }
         this.handleClick = this.handleClick.bind(this);
     }
@@ -35,17 +36,21 @@ export default class Quiz extends React.Component {
             (snapshot) => {
                 this.setState({userData: snapshot.val()})
                 let max = 0;
-                let maxKey;
+                let latestMatchKey;
                 let matchKeys = Object.keys(snapshot.val().matches).forEach(key => {
                     let timestamp = snapshot.val().matches[key].timestamp;
                     if (timestamp > max) {
                         max = timestamp;
-                        maxKey = key;
+                        latestMatchKey = key;
                     }
                 })
-                this.setState({latestMatchKey: maxKey})
-                let questionNumbers = snapshot.val().matches[maxKey] ? snapshot.val().matches[maxKey].numbers.split(',') : null;
-                this.setState({questionNumbers})
+                //Load finishedQuiz to state
+                data.child('matches').child(latestMatchKey).on('value',
+                    (snapshot) => {
+                        let finishedQuiz = snapshot.val().finishedQuiz;
+                        let questionNumbers = snapshot.val().numbers.split(',');
+                        this.setState({finishedQuiz, latestMatchKey, questionNumbers});
+                    })
             },
             (errorObject) => {
                 console.error('The read failed: ' + errorObject.code)
@@ -78,10 +83,8 @@ export default class Quiz extends React.Component {
         matchRef.child(latestMatchKey).child('round1').update({
             [questionNumber]: [answerNumber]
         })
-        let number = this.state.current +1;
-        this.setState({
-            current: number
-        })
+        let current = this.state.current +1;
+        this.setState({current});
 
     }
 
@@ -90,6 +93,10 @@ export default class Quiz extends React.Component {
         let question = questionNumbers ? this.state.data[questionNumbers[this.state.current]] : null;
 
         return (
+            <div>
+            {this.state.finishedQuiz ?
+            <h1 href='/pickquestion'>Go to Round 2</h1>
+            :
             this.state.current < 4 ?
             <div className="quiz">
                 <h1 id="question-title">{question ? question[0] : null}</h1>
@@ -108,6 +115,8 @@ export default class Quiz extends React.Component {
                     <Link to='/waiting' className="answer-text"><div className="answer"><h3 className="3">{question ? question[3] : null}</h3></div></Link>
                     <Link to='/waiting' className="answer-text"><div className="answer"><h3 className="4">{question ? question[4] : null}</h3></div></Link>
                 </div>
+            </div>
+            }
             </div>
             )
     }
