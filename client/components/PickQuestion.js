@@ -18,20 +18,21 @@ export default class Quiz extends React.Component {
 
 
     componentDidMount () {
+        firebaseQuestionsRef.on('value',
+            (snapshot) => {
+                let arr = [];
+                while (arr.length < 4) {
+                    let random = Math.round(Math.random() * Object.keys(snapshot.val()).length) + 1;
+                    if (arr.indexOf(random) === -1) arr.push(random)
+                }
+                this.setState({randomNumbers: arr, questions: snapshot.val()})
+            },
+            (errorObject) => {
+                console.error('The read failed: ' + errorObject.code)
+            })
+
         firebaseAuth.onAuthStateChanged((user) => {
             if (user) {
-                firebaseQuestionsRef.on('value',
-                    (snapshot) => {
-                        let arr = [];
-                        while (arr.length < 4) {
-                            let random = Math.round(Math.random() * Object.keys(snapshot.val()).length) + 1;
-                            if (arr.indexOf(random) === -1) arr.push(random)
-                        }
-                        this.setState({randomNumbers: arr, questions: snapshot.val()})
-                    },
-                    (errorObject) => {
-                        console.error('The read failed: ' + errorObject.code)
-                    })
 
                 let user = firebaseAuth.currentUser.uid;
                 let userRef = firebaseUsersRef.child(user)
@@ -55,6 +56,7 @@ export default class Quiz extends React.Component {
                             let heartStatus = matchData.heartStatus;
                             let turnToAsk = matchData.turnToAsk;
                             let myAnsweredQuestions = Object.keys(matchData.round2answers).length;
+                            this.setState({heartStatus, turnToAsk, matchKey})
                             //Getting name of match and number of answered questions
                                 //Getting name of match and number of answered questions
                                 firebaseUsersRef.child(matchKey).on('value', (snapshot) => {
