@@ -29,8 +29,8 @@ export default class Answer extends React.Component {
     handleSubmit(event) {
         event.preventDefault();
         let response = this.state.response;
-        // let user = firebaseAuth.currentUser.uid;
-        let userRef = firebaseUsersRef.child('User5');
+        let user = firebaseAuth.currentUser.uid;
+        let userRef = firebaseUsersRef.child(user);
         let answerKey = this.state.latestQuestionKey + 'answer';
         //Checking whether answer to latest question already exists
         userRef.child('matches').child(this.state.latestMatchKey).child('round2answers').on('value',
@@ -58,8 +58,8 @@ export default class Answer extends React.Component {
 
     componentDidMount () {
 
-        // let user = firebaseAuth.currentUser.uid;
-        let userRef = firebaseUsersRef.child('User5');
+        let user = firebaseAuth.currentUser.uid;
+        let userRef = firebaseUsersRef.child(user);
         userRef.on('value',
             (snapshot) => {
                 let userData = snapshot.val();
@@ -86,8 +86,8 @@ export default class Answer extends React.Component {
                         firebaseUsersRef.child(latestMatchKey).on('value', 
                             (snapshot) => {
                                 let theirName = snapshot.val().name;
-                                // let user = firebaseAuth.currentUser.uid;
-                                let theirAnsweredQuestions = Object.keys(snapshot.val().matches['User5'].round2answers).length;
+                                let user = firebaseAuth.currentUser.uid;
+                                let theirAnsweredQuestions = Object.keys(snapshot.val().matches[user].round2answers).length;
                                 let questionsAnswered = myAnsweredQuestions + theirAnsweredQuestions;
                                 //Make sure that if match is lost, that gets persisted to the db for both users
                                 if (questionsAnswered > 5 && heartStatus < 5) {

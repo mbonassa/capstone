@@ -21,8 +21,8 @@ export default class ViewAnswer extends React.Component {
 
     componentDidMount () {
 
-        // let user = firebaseAuth.currentUser.uid;
-        let userRef = firebaseUsersRef.child('User4');
+         let user = firebaseAuth.currentUser.uid;
+        let userRef = firebaseUsersRef.child(user);
         userRef.on('value',
             (snapshot) => {
                 let userData = snapshot.val();
@@ -45,8 +45,8 @@ export default class ViewAnswer extends React.Component {
 
                         //Getting their number of questions answered
                             //Finding number of questions match has answered
-                            // let user = firebaseAuth.currentUser.uid;
-                            let theirAnsweredQuestions = Object.keys(snapshot.val().matches['User4'].round2answers).length;
+                            let user = firebaseAuth.currentUser.uid;
+                            let theirAnsweredQuestions = Object.keys(snapshot.val().matches[user].round2answers).length;
                             //Finding number of questions user has answered with match
                             userRef.child('matches').child(latestMatchKey).child('round2answers').on('value',
                                 snapshot => {
@@ -57,8 +57,8 @@ export default class ViewAnswer extends React.Component {
                                             userRef.child('matches').child(latestMatchKey).update({
                                                 lost: true
                                             })
-                                            //let user = firebaseAuth.currentUser.uid;
-                                            firebaseUsersRef.child(latestMatchKey).child('matches').child('User4').update({
+                                            let user = firebaseAuth.currentUser.uid;
+                                            firebaseUsersRef.child(latestMatchKey).child('matches').child(user).update({
                                                 lost: true
                                             })
                                         }
@@ -66,8 +66,8 @@ export default class ViewAnswer extends React.Component {
                                 })
 
                         //Getting their question number (key)
-                        // let user = firebaseAuth.currentUser.uid;
-                        let round2 = snapshot.val()['matches']['User4'].round2
+                        //Insert hardcoded user here if necessary instead of auth
+                        let round2 = snapshot.val()['matches'][user].round2
                         let max2 = 0;
                         let latestQuestionKey;
                         Object.keys(round2).forEach(questionKey => {
@@ -84,9 +84,9 @@ export default class ViewAnswer extends React.Component {
                                 let latestQuestionText = questions[latestQuestionKey];
                                 //Finding answer to latest question
                                 let answerKey = latestQuestionKey + 'answer';
-                                // let user = firebaseAuth.currentUser.uid;
+                                let user = firebaseAuth.currentUser.uid;
                                 this.setState({latestQuestionText, latestQuestionKey, questions, userData, theirName, latestMatchKey, heartStatus});
-                                firebaseUsersRef.child(latestMatchKey).child('matches').child('User4').child('round2answers').child(answerKey).on('value',
+                                firebaseUsersRef.child(latestMatchKey).child('matches').child(user).child('round2answers').child(answerKey).on('value',
                                     (snapshot) => {
                                         let answer = snapshot.val()? snapshot.val() : null;
                                         if (answer) this.setState({answer});
@@ -105,8 +105,8 @@ export default class ViewAnswer extends React.Component {
         //Increment heartStatus for both users
 
             //For logged in user:
-            // let user = firebaseAuth.currentUser.uid;
-            let userRef = firebaseUsersRef.child('User4'); 
+            let user = firebaseAuth.currentUser.uid;
+            let userRef = firebaseUsersRef.child(user); 
             let latestMatchKey = this.state.latestMatchKey;
             let heartStatus = this.state.heartStatus;
             heartStatus++
@@ -115,8 +115,8 @@ export default class ViewAnswer extends React.Component {
             })
 
             //For matched user:
-            // let user = firebaseAuth.currentUser.uid;
-            firebaseUsersRef.child(latestMatchKey).child('matches').child('User4').update({
+            //let user = firebaseAuth.currentUser.uid;
+            firebaseUsersRef.child(latestMatchKey).child('matches').child(user).update({
                 heartStatus: heartStatus
             })
 

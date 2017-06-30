@@ -66,7 +66,6 @@ export default class Quiz extends React.Component {
     }
 
     handleClick(event) {
-        console.log(event, event.target.className)
         let user = firebaseAuth.currentUser.uid;
         let matchRef = firebaseUsersRef.child(user).child('matches');
         let questionNumber = +this.state.questionNumbers[this.state.current];
