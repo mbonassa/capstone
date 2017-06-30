@@ -12,7 +12,8 @@ export default class ViewAnswer extends React.Component {
             questions: {},
             latestQuestionText: '',
             answer: null,
-            heartStatus: 0
+            heartStatus: 0,
+            disabled: false
         }
         this.handleClick = this.handleClick.bind(this);
     }
@@ -95,7 +96,7 @@ export default class ViewAnswer extends React.Component {
                 heartStatus: heartStatus
             })
 
-            this.setState({heartStatus: heartStatus})
+            this.setState({heartStatus: heartStatus, disabled: true})
     }
 
     render() {
@@ -118,7 +119,7 @@ export default class ViewAnswer extends React.Component {
                             <h2>"{this.state.latestQuestionText}"</h2>
                             <h3>{this.state.answer}</h3>
                             <h3>Like that? Give your match another heart</h3>
-                            <button onClick={this.handleClick}>Love</button>
+                            <button disabled={this.state.disabled} onClick={this.handleClick}>Love</button>
                             <h4>Your heart count: {this.state.heartStatus}</h4>
                         </div> 
                     : null}
