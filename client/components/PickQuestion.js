@@ -98,6 +98,12 @@ export default class Quiz extends React.Component {
                         <h1>You and {this.partnerInfo.name} have accumulated {this.matchObj.heartStatus} hearts!</h1>
                         <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
                         <a><h2>Go Chat!</h2></a>
+                         <Link to={
+                            {
+                            pathname:`/chat/${this.partnerId}`,
+                            state: {partnerInfo: this.partnerInfo}
+                            }
+                        }> Chat </Link>
                     </div>
                     :
                     <div>

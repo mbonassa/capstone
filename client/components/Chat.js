@@ -34,16 +34,12 @@ export default ignite(withAuth(class extends React.Component {
   constructor(props){
     super(props);
     this.sendMessage = this.sendMessage.bind(this)
-  }
-
-  componentDidMount(){
-    if (user){
-
-    } else {
-      alert("You're not logged in")
-      browserHistory.push('login')
+    this.state = {
+      userObj: '',
+      partnerObj: ''
     }
   }
+
 
   sendMessage(event){
     event.preventDefault()
