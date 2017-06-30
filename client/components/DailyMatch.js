@@ -69,33 +69,33 @@ export default class DailyMatch extends React.Component {
   }
 
   componentDidMount(){
-    if(firebaseAuth.currentUser){
-      firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value", (snapshot) => {
+      firebaseAuth.onAuthStateChanged((user) => {
+        firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value", (snapshot) => {
             this.setState({userObj: snapshot.val()})
       });
+    });
 
-      if (this.props.location.state.partnerId){
-          this.setState({partnerId: this.props.location.state.partnerId}, () => {
-          firebaseUsersRef.child(this.props.location.state.partnerId).on("value",
-            (snapshot) => {
-            this.setState({partnerInfo: snapshot.val()}, () => {
-              var partnerMatches = Object.keys(this.state.partnerInfo.matches).map(key => {
-                let objIdx = {};
-                objIdx = this.state.partnerInfo.matches[key];
-                objIdx.key = key;
-                return objIdx
-              });
-              this.setState({partnerMatches})
+    if (this.props.location.state.partnerId){
+        this.setState({partnerId: this.props.location.state.partnerId}, () => {
+        firebaseUsersRef.child(this.props.location.state.partnerId).on("value",
+          (snapshot) => {
+          this.setState({partnerInfo: snapshot.val()}, () => {
+            var partnerMatches = Object.keys(this.state.partnerInfo.matches).map(key => {
+              let objIdx = {};
+              objIdx = this.state.partnerInfo.matches[key];
+              objIdx.key = key;
+              return objIdx
             });
-          },
-            (errorObject) => {
-            console.log("The read failed: " + errorObject.code);
+            this.setState({partnerMatches})
           });
-        })
-      } else {
-        alert("No partner loaded")
-        browserHistory.push('profile')
-      }
+        },
+          (errorObject) => {
+          console.log("The read failed: " + errorObject.code);
+        });
+      })
+    } else {
+      alert("No partner loaded")
+      browserHistory.push('profile')
     }
   }
 

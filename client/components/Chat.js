@@ -1,6 +1,7 @@
 import React from 'react'
 import { firebaseDb, firebaseAuth } from '../../utils/firebase'
 import ignite, { withAuth, FireInput } from '../../utils/ignite'
+import { browserHistory } from 'react-router';
 
 const users = firebaseDb.ref('Users')
     , nickname = uid => users.child(uid).child('name')
@@ -33,6 +34,15 @@ export default ignite(withAuth(class extends React.Component {
   constructor(props){
     super(props);
     this.sendMessage = this.sendMessage.bind(this)
+  }
+
+  componentDidMount(){
+    if (user){
+
+    } else {
+      alert("You're not logged in")
+      browserHistory.push('login')
+    }
   }
 
   sendMessage(event){
