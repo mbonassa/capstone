@@ -100,6 +100,7 @@ export default class UserView extends React.Component {
         browserHistory.push('/login')
       }
     })
+
   }
 
   componentWillUnmount(){
