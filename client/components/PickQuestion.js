@@ -19,7 +19,7 @@ export default class Quiz extends React.Component {
 
 
     componentDidMount () {
-        firebaseQuestionsRef.on('value',
+            firebaseQuestionsRef.on('value',
             (snapshot) => {
                 this.setState({questions: snapshot.val()})
                 let arr = [];
@@ -54,11 +54,23 @@ export default class Quiz extends React.Component {
                     userRef.child('matches').child(matchKey).on('value', (snapshot) => {
                         let heartStatus = snapshot.val().heartStatus;
                         let turnToAsk = snapshot.val().turnToAsk;
-                        let myAnsweredQuestions = Object.keys(snapshot.val().round2answers).length;
+                        let myAnsweredQuestions;
+
+                        if (snapshot.val().round2answers){
+                        myAnsweredQuestions = Object.keys(snapshot.val().round2answers).length
+                        } else {
+                            myAnsweredQuestions = 0;
+                        }
+                        console.log(myAnsweredQuestions)
                         //Getting name of match and number of answered questions
                         firebaseUsersRef.child(matchKey).on('value', (snapshot) => {
                             let user = firebaseAuth.currentUser.uid;
-                            let theirAnsweredQuestions = Object.keys(snapshot.val().matches[user].round2answers).length;
+                            let theirAnsweredQuestions;
+                            if (snapshot.val().matches[user].round2answers){
+                            theirAnsweredQuestions =  Object.keys(snapshot.val().round2answers).length;
+                        } else {
+                            theirAnsweredQuestions = 0;
+                        }
                             let theirName = snapshot.val().name;
                             let questionsAnswered = myAnsweredQuestions + theirAnsweredQuestions;
                             //Make sure that if match is lost, that gets persisted to the db for both users
@@ -80,7 +92,6 @@ export default class Quiz extends React.Component {
         (errorObject) => {
             console.error('The read failed: ' + errorObject.code)
         });
-
     }
 
     handleClick (n) {
@@ -89,7 +100,7 @@ export default class Quiz extends React.Component {
         let matchKey = this.state.matchKey;
         let questionNumber = this.state.randomNumbers[n]
         //This is the database reference to the latest (current) match's match object
-        firebaseUsersRef.child(matchKey).child('matches').child('User4').child('round2').update({
+        firebaseUsersRef.child(matchKey).child('matches').child(firebaseAuth.currentUser.uid).child('round2').update({
             //We affix a timestamp to each question so later we can be sure to get the latest one
             [questionNumber]: 'true,' + Date.now()
         })
@@ -100,6 +111,7 @@ export default class Quiz extends React.Component {
     }
 
     render() {
+        console.log(this.state)
         //If your match's turnToAsk is false, that means that they have just picked a question, so link should appear to Answer
         return (
             <div>
