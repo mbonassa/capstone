@@ -15,6 +15,8 @@ export default class MatchHistory extends React.Component {
   }
 
   componentDidMount(){
+     firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
     firebaseUsersRef.child(firebaseAuth.currentUser.uid).on('value', snapshot => {
       this.setState({userObj: snapshot.val()}, () => {
         firebaseUsersRef.on('value', snapshot => {
@@ -22,6 +24,8 @@ export default class MatchHistory extends React.Component {
         })
       })
     });
+      }
+     });
   }
 
   componentWillUnmount(){

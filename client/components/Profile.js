@@ -67,7 +67,6 @@ export default class UserView extends React.Component {
         })
       } else {
          console.log("no match found")
-         alert("no matches yet!")
       }
     });
     this.setState({'waiting': false})
@@ -168,7 +167,6 @@ export default class UserView extends React.Component {
               id="past-matches"
               className="btn misc-btn caps"
               title="pastMatches"
-              onClick={this.handleLogout}
             >my matches </button> </Link>
 
         <button

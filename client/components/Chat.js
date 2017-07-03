@@ -45,6 +45,7 @@ export default ignite(withAuth(class extends React.Component {
     this.renderAnswerForm = this.renderAnswerForm.bind(this);
     this.answerQuestion = this.answerQuestion.bind(this)
     this.handleJudge = this.handleJudge.bind(this)
+    this.currentMatch = null;
 
   }
 
@@ -57,7 +58,12 @@ export default ignite(withAuth(class extends React.Component {
 
       if (user){
         firebaseUsersRef.child(firebaseAuth.currentUser.uid).on('value', snapshot => {
-          this.setState({userInfo: snapshot.val()})
+          this.setState({userInfo: snapshot.val()}, () => {
+            this.currentMatch = this.state.userInfo.matches[this.props.partnerId]
+            if (this.props.partnerId === this.state.userInfo.partnerId && this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 5){
+              this.unmatch();
+            }
+          })
         });
         firebaseUsersRef.child(this.props.partnerId).on('value', snapshot => {
           this.setState({partnerInfo: snapshot.val()})
@@ -66,6 +72,15 @@ export default ignite(withAuth(class extends React.Component {
         alert("You're not logged in")
         browserHistory.push('login')
       }
+    })
+  }
+
+  unmatch(){
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+      partnerId: ''
+    })
+    firebaseUsersRef.child(this.props.partnerId).update({
+      partnerId: ''
     })
   }
 
@@ -92,13 +107,13 @@ export default ignite(withAuth(class extends React.Component {
       })
     })
     .then(() => {
-      firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.userInfo.partnerId).update({
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.props.partnerId).update({
         selectedQuestion: 'Waiting...',
         isAsker: false,
         isAnswerer: false,
         isJudge: false
       })
-      firebaseUsersRef.child(this.state.userInfo.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
+      firebaseUsersRef.child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
         selectedQuestion: 'Waiting...',
         isAsker: false,
         isAnswerer: false,
@@ -163,7 +178,7 @@ export default ignite(withAuth(class extends React.Component {
 
   askQuestion(number){
     return () => {
-      console.log(this.state.questions[number])
+      console.log(this.state.questions[number], this.currentMatch)
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.userInfo.partnerId).update({
         selectedQuestion: this.state.questions[number],
         isAsker: false,
@@ -185,12 +200,14 @@ export default ignite(withAuth(class extends React.Component {
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.userInfo.partnerId).update({
         selectedQuestion: 'Waiting...',
         heartStatus: this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus + heartsToAdd,
+        askedQuestions: this.currentMatch.askedQuestions + 1,
         isAsker: false,
         isAnswerer: false,
         isJudge: false
       })
       firebaseUsersRef.child(this.state.userInfo.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
         selectedQuestion: 'Waiting...',
+        askedQuestions: this.currentMatch.askedQuestions + 1,
         heartStatus: this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus + heartsToAdd,
         isAsker: true,
         isAnswerer: false,
@@ -214,7 +231,18 @@ export default ignite(withAuth(class extends React.Component {
         }
         <hr />
       {
-        this.state.userInfo.matches && this.state.userInfo.matches[this.state.userInfo.partnerId].isAsker ?
+        this.currentMatch && this.currentMatch.heartStatus > 5 ?
+        <div>
+          <p> YOU WIN!!! Get chattin'! </p>
+          {this.renderSendMsg(user)}
+        </div>
+        :
+        this.currentMatch && (this.currentMatch.heartStatus < 0 || this.currentMatch.askedQuestions > 8) ?
+        <div>
+          <p> YOU LOSE </p>
+        </div>
+        :
+        this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isAsker ?
       <div>
         <p> YOU'RE ASKING! </p>
         {
@@ -224,11 +252,11 @@ export default ignite(withAuth(class extends React.Component {
         }
       </div>
       :
-      this.state.userInfo.matches && this.state.userInfo.matches[this.state.userInfo.partnerId].isAnswerer ?
+      this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isAnswerer ?
       <div>
       <p> YOU'RE ANSWERING </p>
         <p> Your question: </p>
-        <p> { this.state.userInfo.matches[this.state.userInfo.partnerId].selectedQuestion } </p>
+        <p> { this.state.userInfo.matches[this.props.partnerId].selectedQuestion } </p>
         <div className='chat-log'>
         </div>
         <div>
@@ -236,17 +264,17 @@ export default ignite(withAuth(class extends React.Component {
         </div>
     </div>
     :
-     this.state.userInfo.matches && this.state.userInfo.matches[this.state.userInfo.partnerId].isJudge ?
+     this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isJudge ?
     <div>
     <p> YOU'RE JUDGING </p>
       <button onClick={this.handleJudge(1)}>LIKE</button>
-      <button onClick={this.handleJudge(0)}>DON'T LIKE</button>
+      <button onClick={this.handleJudge(-1)}>DON'T LIKE</button>
     </div>
       :
       <p> Waiting on the next question... </p>
       }
       <div>
-      <p> You have {this.state.userInfo.partnerId ? this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus : 0} hearts </p>
+      <p> You have {this.state.userInfo.matches ? this.state.userInfo.matches[this.props.partnerId].heartStatus : 0} hearts </p>
       </div>
       </div>
       )

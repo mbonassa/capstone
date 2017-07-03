@@ -6,6 +6,7 @@ export default class Waiting extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            usersObj: {},
             userData: {},
             otherData: {},
             allMatches: {},
@@ -22,9 +23,12 @@ export default class Waiting extends React.Component {
      firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
         let user = firebaseAuth.currentUser.uid;
-        let data = firebaseUsersRef.child(user)
 
-        data.on('value',
+        firebaseUsersRef.on('value', snapshot => {
+            this.setState({usersObj: snapshot.val()})
+        })
+
+        firebaseUsersRef.child(user).on('value',
             (snapshot) => {
                 this.setState({userData: snapshot.val()});
             },
@@ -51,6 +55,7 @@ export default class Waiting extends React.Component {
                     //Update finishedQuiz to true
                     data.child('matches').child(maxKey).update({
                         finishedQuiz: true,
+                        askedQuestions: 0,
                         isAsker: true,
                         isAnswerer: false,
                         isJudge: false,
@@ -146,7 +151,12 @@ export default class Waiting extends React.Component {
             <div>
                 <h1>You and {this.state.theirName} have {this.state.heartStatus} {this.state.heartStatus == 1 ? 'heart' : 'hearts'}</h1>
                 <h3>That means you had {this.state.heartStatus} {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h3>
-                <Link to='/pickquestion'><h3>Go to round 2</h3></Link>
+                  <Link to={
+                    {
+                      pathname:`/chat/${this.state.userData.partnerId}`,
+                      state: {partnerInfo: this.state.usersObj[this.state.userData.partnerId]}
+                    }
+                  }> Round 2 </Link>
             </div> :
             <div>
                 <h1>{this.state.theirName} is still answering</h1>
