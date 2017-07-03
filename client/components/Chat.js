@@ -50,16 +50,23 @@ export default ignite(withAuth(class extends React.Component {
   }
 
   componentDidMount(){
-    firebaseDb.ref('Questions').on('value', snapshot => {
-      this.setState({questions: snapshot.val()})
-    })
-    this.setState({randomNumbers: randomize(20).slice(2)})
-    firebaseAuth.onAuthStateChanged((user) => {
-    if (user){
+     firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
+
+      this.setState({randomNumbers: randomize(20).slice(2)})
+
+      firebaseDb.ref('Questions').on('value', snapshot => {
+        this.setState({questions: snapshot.val()})
+      })
+
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).on('value', snapshot => {
         this.setState({userInfo: snapshot.val()}, () => {
           this.currentMatch = this.state.userInfo.matches[this.props.partnerId]
-          if (this.props.partnerId === this.state.userInfo.partnerId && this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 5){
+          if (
+            this.props.partnerId === this.state.userInfo.partnerId &&
+            (
+              this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 4 || this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus < 0)
+          ){
             this.unmatch();
           }
         })
@@ -72,7 +79,7 @@ export default ignite(withAuth(class extends React.Component {
       alert("You're not logged in")
       browserHistory.push('login')
     }
-  })
+    })
   }
 
   unmatch(){
@@ -178,7 +185,6 @@ export default ignite(withAuth(class extends React.Component {
 
   askQuestion(number){
     return () => {
-      console.log(this.state.questions[number], this.currentMatch)
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.props.partnerId).update({
         selectedQuestion: this.state.questions[number],
         isAsker: false,
@@ -218,7 +224,6 @@ export default ignite(withAuth(class extends React.Component {
   }
 
   render() {
-    console.log(this.state)
     const {user, snapshot, asEntries} = this.props
         , messages = asEntries(snapshot)
     return (
@@ -230,7 +235,7 @@ export default ignite(withAuth(class extends React.Component {
         }
         <hr />
       {
-        this.currentMatch && this.currentMatch.heartStatus > 5 ?
+        this.currentMatch && this.currentMatch.heartStatus > 4 ?
         <div>
           <p> YOU WIN!!! Get chattin'! </p>
           {this.renderSendMsg(user)}
@@ -246,7 +251,7 @@ export default ignite(withAuth(class extends React.Component {
         <p> YOU'RE ASKING! </p>
         {
           this.state.randomNumbers.map(number => {
-            return <p onClick={this.askQuestion(number)}> {this.state.questions[number]} </p>
+            return <p key={number} onClick={this.askQuestion(number)}> {this.state.questions[number]} </p>
           })
         }
       </div>

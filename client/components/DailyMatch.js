@@ -34,7 +34,11 @@ export default class DailyMatch extends React.Component {
         numbers: `${numbersString}`,
         round1: {},
         timestamp: Date.now(),
-        turnToAsk: true
+        turnToAsk: true,
+        askedQuestions: 0,
+        isAsker: true,
+        isAnswerer: false,
+        isJudge: false,
       })
       .then(() => {
         return firebaseUsersRef.child(this.state.partnerId).child('matches').child(firebaseAuth.currentUser.uid).set({
@@ -42,7 +46,11 @@ export default class DailyMatch extends React.Component {
           numbers: `${numbersString}`,
           round1: {},
           timestamp: Date.now(),
-          turnToAsk: true
+          turnToAsk: true,
+          askedQuestions: 0,
+          isAsker: true,
+          isAnswerer: false,
+          isJudge: false,
         });
       })
       .then(() => {
@@ -80,12 +88,15 @@ export default class DailyMatch extends React.Component {
         firebaseUsersRef.child(this.props.location.state.partnerId).on("value",
           (snapshot) => {
           this.setState({partnerInfo: snapshot.val()}, () => {
-            var partnerMatches = Object.keys(this.state.partnerInfo.matches).map(key => {
-              let objIdx = {};
-              objIdx = this.state.partnerInfo.matches[key];
-              objIdx.key = key;
-              return objIdx
-            });
+            let partnerMatches = [];
+            if (this.state.partnerInfo.matches){
+              partnerMatches = Object.keys(this.state.partnerInfo.matches).map(key => {
+                let objIdx = {};
+                objIdx = this.state.partnerInfo.matches[key];
+                objIdx.key = key;
+                return objIdx
+              });
+            }
             this.setState({partnerMatches})
           });
         },
@@ -101,9 +112,9 @@ export default class DailyMatch extends React.Component {
   }
 
   componentWillUnmount(){
-    firebaseUsersRef.off('value');
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).off('value')
-    if (this.props.location.state) firebaseUsersRef.child(this.props.location.state.partnerId).off('value')
+    firebaseUsersRef.off();
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
+    if (this.props.location.state) firebaseUsersRef.child(this.props.location.state.partnerId).off()
   }
 
   render(){
