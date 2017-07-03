@@ -24,11 +24,11 @@ export default class Waiting extends React.Component {
       if (user) {
         let user = firebaseAuth.currentUser.uid;
         let data = firebaseUsersRef.child(user)
-        firebaseUsersRef.on('value', snapshot => {
+        firebaseUsersRef.once('value', snapshot => {
             this.setState({usersObj: snapshot.val()})
         })
 
-        data.on('value',
+        data.once('value',
             (snapshot) => {
                 this.setState({userData: snapshot.val()});
             },
@@ -85,7 +85,7 @@ export default class Waiting extends React.Component {
                     //2)
                     let user = firebaseAuth.currentUser.uid;
                     let otherUserMatchRef = firebaseUsersRef.child(maxKey).child('matches').child(user)
-                    otherUserMatchRef.on('value',
+                    otherUserMatchRef.once('value',
                         (snapshot) => {
                             this.setState({otherData: snapshot.val()});
                             //3)
@@ -130,7 +130,7 @@ export default class Waiting extends React.Component {
                         })
                     //Getting name of matched user
                     let otherUserRef = firebaseUsersRef.child(maxKey)
-                    otherUserRef.on('value',
+                    otherUserRef.once('value',
                         (snapshot) => {
                             let theirName = snapshot.val().name;
                             this.setState({theirName: theirName})
@@ -143,6 +143,13 @@ export default class Waiting extends React.Component {
       }
       })
 
+    }
+
+    componentWillUnmount(){
+        firebaseUsersRef.off('value');
+        firebaseUsersRef.child(user).child('matches').off('value')
+        firebaseUsersRef.child(firebaseAuth.currentUser.uid).off('value')
+        firebaseQuizRef.off('value')
     }
 
     render() {

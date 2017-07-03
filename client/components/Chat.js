@@ -179,13 +179,13 @@ export default ignite(withAuth(class extends React.Component {
   askQuestion(number){
     return () => {
       console.log(this.state.questions[number], this.currentMatch)
-      firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.userInfo.partnerId).update({
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.props.partnerId).update({
         selectedQuestion: this.state.questions[number],
         isAsker: false,
         isAnswerer: false,
         isJudge: false
       })
-      firebaseUsersRef.child(this.state.userInfo.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
+      firebaseUsersRef.child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
         selectedQuestion: this.state.questions[number],
         isAsker: false,
         isAnswerer: true,
@@ -197,18 +197,18 @@ export default ignite(withAuth(class extends React.Component {
 
   handleJudge(heartsToAdd){
     return () => {
-      firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.userInfo.partnerId).update({
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.props.partnerId).update({
         selectedQuestion: 'Waiting...',
-        heartStatus: this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus + heartsToAdd,
+        heartStatus: this.state.userInfo.matches[this.props.partnerId].heartStatus + heartsToAdd,
         askedQuestions: this.currentMatch.askedQuestions + 1,
         isAsker: false,
         isAnswerer: false,
         isJudge: false
       })
-      firebaseUsersRef.child(this.state.userInfo.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
+      firebaseUsersRef.child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
         selectedQuestion: 'Waiting...',
         askedQuestions: this.currentMatch.askedQuestions + 1,
-        heartStatus: this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus + heartsToAdd,
+        heartStatus: this.state.userInfo.matches[this.props.partnerId].heartStatus + heartsToAdd,
         isAsker: true,
         isAnswerer: false,
         isJudge: false
