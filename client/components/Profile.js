@@ -101,8 +101,8 @@ export default class UserView extends React.Component {
   }
 
   componentWillUnmount(){
-    firebaseUsersRef.off('value')
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).off('value')
+    firebaseUsersRef.off()
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
   }
 
   render() {

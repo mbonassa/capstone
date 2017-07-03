@@ -154,13 +154,13 @@ export default class Waiting extends React.Component {
     }
 
     componentWillUnmount(){
-        if (this.usersRef) firebaseUsersRef.off('value', this.usersRef);
-        firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').off('value')
-        if (this.dataRef) firebaseUsersRef.child(firebaseAuth.currentUser.uid).off('value', this.dataRef)
-        firebaseQuizRef.off('value')
-        if (this.otherUser) this.otherUser.off('value')
-        if (this.otherUserMatch) this.otherUserMatch.off('value')
-        if (this.matchRef) this.matchRef.off('value')
+        firebaseUsersRef.off();
+        firebaseQuizRef.off()
+        firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').off()
+        if (this.dataRef) firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
+        if (this.otherUser) this.otherUser.off()
+        if (this.otherUserMatch) this.otherUserMatch.off()
+        if (this.matchRef) this.matchRef.off()
      }
 
     render() {
