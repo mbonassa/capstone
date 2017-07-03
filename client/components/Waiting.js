@@ -23,8 +23,8 @@ export default class Waiting extends React.Component {
      firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
         let user = firebaseAuth.currentUser.uid;
-
-        firebaseUsersRef.on('value', snapshot => {
+        let data = firebaseUsersRef.child(user)
+        data.on('value', snapshot => {
             this.setState({usersObj: snapshot.val()})
         })
 
