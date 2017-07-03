@@ -41,6 +41,9 @@ export default ignite(withAuth(class extends React.Component {
       questions: []
     }
     this.sendMessage = this.sendMessage.bind(this)
+    this.askQuestion = this.askQuestion.bind(this)
+    this.handleLike = this.handleLike.bind(this)
+
   }
 
   componentDidMount(){
@@ -64,10 +67,15 @@ export default ignite(withAuth(class extends React.Component {
     })
   }
 
-  sendMessage(event){
-    event.preventDefault()
+  sendMessage(event, text){
     if (!this.props.fireRef) return
-    let msg = event.target.body.value
+    let msg;
+    if (text) {
+      msg = text
+    } else {
+      event.preventDefault()
+      msg = event.target.body.value
+    }
     this.props.fireRef.push({
       timestamp: Date.now(),
       from: firebaseAuth.currentUser.uid,
@@ -109,7 +117,25 @@ export default ignite(withAuth(class extends React.Component {
         isAnswerer: true,
         isJudge: false
       })
+      this.sendMessage(null, this.state.questions[number])
     }
+  }
+
+  handleLike(){
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.userInfo.partnerId).update({
+        selectedQuestion: 'Waiting...',
+        heartStatus: this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus + 1,
+        isAsker: false,
+        isAnswerer: false,
+        isJudge: false
+      })
+      firebaseUsersRef.child(this.state.userInfo.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
+        selectedQuestion: 'Waiting...',
+        heartStatus: this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus + 1,
+        isAsker: true,
+        isAnswerer: false,
+        isJudge: false
+      })
   }
 
   render() {
@@ -147,10 +173,18 @@ export default ignite(withAuth(class extends React.Component {
         </div>
     </div>
     :
+     this.state.userInfo.matches && this.state.userInfo.matches[this.state.userInfo.partnerId].isJudge ?
     <div>
     <p> YOU'RE JUDGING </p>
+      <button onClick={this.handleLike}>LIKE</button>
+      <button onClick={this.handleDisllke}>DON'T LIKE</button>
     </div>
+      :
+      <p> Waiting on the next question... </p>
       }
+      <div>
+      <p> You have {this.state.userInfo.partnerId ? this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus : 0} hearts </p>
+      </div>
       </div>
       )
   }
