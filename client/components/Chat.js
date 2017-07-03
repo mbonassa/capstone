@@ -217,8 +217,6 @@ export default ignite(withAuth(class extends React.Component {
     }
   }
 
-
-
   render() {
     console.log(this.state)
     const {user, snapshot, asEntries} = this.props

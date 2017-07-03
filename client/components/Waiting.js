@@ -48,7 +48,7 @@ export default class Waiting extends React.Component {
         //We obtain an object with all the user's matches from the database
         //We preserve this object to state on allMatches
         //Then, we find the most recent match by comparing timestamps
-        matchRef.once("value", (snapshot) => {
+        matchRef.on("value", (snapshot) => {
             this.setState({allMatches: snapshot.val()})
                 let max = 0;
                 let maxKey;
@@ -93,7 +93,7 @@ export default class Waiting extends React.Component {
                     let user = firebaseAuth.currentUser.uid;
                     let otherUserMatchRef = firebaseUsersRef.child(maxKey).child('matches').child(user)
                     this.otherUserMatch = otherUserMatchRef
-                    otherUserMatchRef.once('value',
+                    otherUserMatchRef.on('value',
                         (snapshot) => {
                             this.setState({otherData: snapshot.val()});
                             //3)
@@ -116,6 +116,7 @@ export default class Waiting extends React.Component {
                                             console.log(this.state.heartStatus, myAnswers, theirAnswers)
                                         })
                                         //5
+                                        console.log('RESETTING THE HEART STATUS')
                                         otherUserMatchRef.update({
                                             'heartStatus': heartStatus
                                         })
@@ -141,7 +142,7 @@ export default class Waiting extends React.Component {
                     //Getting name of matched user
                     let otherUserRef = firebaseUsersRef.child(maxKey)
                     this.otherUser = otherUserRef
-                    otherUserRef.once('value',
+                    otherUserRef.on('value',
                         (snapshot) => {
                             let theirName = snapshot.val().name;
                             this.setState({theirName: theirName})
