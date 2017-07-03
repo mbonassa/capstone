@@ -59,7 +59,11 @@ export default ignite(withAuth(class extends React.Component {
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).on('value', snapshot => {
         this.setState({userInfo: snapshot.val()}, () => {
           this.currentMatch = this.state.userInfo.matches[this.props.partnerId]
-          if (this.props.partnerId === this.state.userInfo.partnerId && this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 5){
+          if (
+            this.props.partnerId === this.state.userInfo.partnerId &&
+            (
+              this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 5 || this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus < 0)
+          ){
             this.unmatch();
           }
         })
@@ -230,7 +234,7 @@ export default ignite(withAuth(class extends React.Component {
         }
         <hr />
       {
-        this.currentMatch && this.currentMatch.heartStatus > 5 ?
+        this.currentMatch && this.currentMatch.heartStatus > 4 ?
         <div>
           <p> YOU WIN!!! Get chattin'! </p>
           {this.renderSendMsg(user)}
