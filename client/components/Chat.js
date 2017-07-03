@@ -130,6 +130,8 @@ export default ignite(withAuth(class extends React.Component {
   }
 
   sendMessage(event, text){
+    //we call this directly and from two other functions. if it is called from another function we only care about the text. otherwise let's use the event value
+
     let msg;
     if (event){
       event.preventDefault()
@@ -137,7 +139,7 @@ export default ignite(withAuth(class extends React.Component {
     }
     if (!this.props.fireRef) return
     if (text) {
-     msg = text
+      msg = text
     }
     this.props.fireRef.push({
       timestamp: Date.now(),
@@ -197,7 +199,8 @@ export default ignite(withAuth(class extends React.Component {
         isAnswerer: true,
         isJudge: false
       })
-      this.sendMessage(null, this.state.questions[number])
+      let msg = `Question ${this.state.userInfo.matches[this.props.partnerId].askedQuestions}: ${this.state.questions[number]}`
+      this.sendMessage(null, msg)
     }
   }
 
@@ -220,6 +223,8 @@ export default ignite(withAuth(class extends React.Component {
         isAnswerer: false,
         isJudge: false
       })
+      let msg = `${this.state.userInfo.name} changed the heartstatus by ${heartsToAdd}!`
+      this.sendMessage(null, msg)
     }
   }
 

@@ -157,7 +157,7 @@ export default class Waiting extends React.Component {
         firebaseUsersRef.off();
         firebaseQuizRef.off()
         firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').off()
-        if (this.dataRef) firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
+        firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
         if (this.otherUser) this.otherUser.off()
         if (this.otherUserMatch) this.otherUserMatch.off()
         if (this.matchRef) this.matchRef.off()

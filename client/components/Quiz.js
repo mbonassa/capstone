@@ -126,8 +126,8 @@ export default class Quiz extends React.Component {
         return (
             <div>
             {this.state.finishedQuiz ?
-            <Link to='pickquestion'>You finished your quiz already. Go to round 2!</Link>
-            :
+            <Link to={`/chat/${this.state.userData.partnerId}`
+                  }> Round 2 </Link>            :
             <div className="quiz">
                 <h1 id="question-title">{question ? question[0] : null}</h1>
                 <div id="answers">
