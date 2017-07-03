@@ -19,7 +19,8 @@ export default class Waiting extends React.Component {
 
     componentDidMount () {
 
-
+     firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
         let user = firebaseAuth.currentUser.uid;
         let data = firebaseUsersRef.child(user)
 
@@ -36,7 +37,7 @@ export default class Waiting extends React.Component {
         //We obtain an object with all the user's matches from the database
         //We preserve this object to state on allMatches
         //Then, we find the most recent match by comparing timestamps
-        matchRef.on("value", (snapshot) => {
+        matchRef.once("value", (snapshot) => {
             this.setState({allMatches: snapshot.val()})
                 let max = 0;
                 let maxKey;
@@ -56,7 +57,9 @@ export default class Waiting extends React.Component {
                     let myAnswers = [];
                     if (questions) {
                     Object.keys(questions).forEach(question => {
-                        myAnswers.push(questions[question][0]);
+                        console.log(question)
+                        console.log(questions[question])
+                        myAnswers.push(questions[question]);
                     })
                     this.setState({myAnswers: myAnswers})
                     }
@@ -78,11 +81,12 @@ export default class Waiting extends React.Component {
                         (snapshot) => {
                             this.setState({otherData: snapshot.val()});
                             //3)
+                            console.log("other user", snapshot.val())
                             let theirQuestions = snapshot.val() ? snapshot.val().round1 : null
                             let theirAnswers = [];
                             if (theirQuestions) {
                                 Object.keys(questions).forEach(question => {
-                                    theirAnswers.push(theirQuestions[question][0])
+                                    if (question) theirAnswers.push(theirQuestions[question])
                                 })
                                 this.setState({theirAnswers: theirAnswers});
                                 let heartStatus = 0;
@@ -91,7 +95,9 @@ export default class Waiting extends React.Component {
                                     for (let i = 0 ; i < myAnswers.length ; i++) {
                                         if (myAnswers[i] == theirAnswers[i]) heartStatus++
                                     }
-                                    this.setState({heartStatus: heartStatus})
+                                    this.setState({heartStatus: heartStatus}, () => {
+                                        console.log(this.state.heartStatus, myAnswers, theirAnswers)
+                                    })
                                     //5
                                     otherUserMatchRef.update({
                                         'heartStatus': heartStatus
@@ -126,7 +132,8 @@ export default class Waiting extends React.Component {
         (errorObject) => {
             console.error('The read failed: ' + errorObject.code)
         });
-
+      }
+      })
 
     }
 
@@ -136,7 +143,7 @@ export default class Waiting extends React.Component {
             <div>
                 <h1>You and {this.state.theirName} have {this.state.heartStatus} {this.state.heartStatus == 1 ? 'heart' : 'hearts'}</h1>
                 <h3>That means you had {this.state.heartStatus} {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h3>
-                <a href='/pickquestion'><h3>Go to round 2</h3></a>
+                <Link to='/pickquestion'><h3>Go to round 2</h3></Link>
             </div> :
             <div>
                 <h1>{this.state.theirName} is still answering</h1>

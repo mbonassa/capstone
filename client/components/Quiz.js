@@ -80,10 +80,21 @@ export default class Quiz extends React.Component {
         let latestMatchKey;
 
         if (this.partnerId.length && answerNumber) {
+            console.log('firing with', answerNumber)
             latestMatchKey = this.partnerId;
             matchRef.child(latestMatchKey).child('round1').update({
-                [questionNumber]: [answerNumber]
+                [questionNumber]: answerNumber
             })
+            .then(() => {
+                let current = this.state.current +1;
+                this.setState({current}, () => {
+                    console.log("current is", this.state.current)
+                    if (this.state.current > 4){
+                        browserHistory.push('waiting')
+                    }
+                });
+            })
+            .catch(console.log.bind.console)
         }
 
         //Update database with new question count and answer count
@@ -93,9 +104,13 @@ export default class Quiz extends React.Component {
         let answerCount = questionData[answerCountKey] ? questionData[answerCountKey] + 1 : 1;
         firebaseQuizRef.child(questionNumber).update({questionCount, [answerCountKey]: answerCount});
 
-        let current = this.state.current +1;
-        this.setState({current});
-
+        // let current = this.state.current +1;
+        // this.setState({current}, () => {
+        //     console.log("current is", this.state.current)
+        //     if (this.state.current > 4){
+        //         browserHistory.push('waiting')
+        //     }
+        // });
 
     }
 
@@ -106,9 +121,8 @@ export default class Quiz extends React.Component {
         return (
             <div>
             {this.state.finishedQuiz ?
-            <Link to='pickquestion'>Go to Round 2</Link>
+            <Link to='pickquestion'>You finished your quiz already. Go to round 2!</Link>
             :
-            this.state.current < 4 ?
             <div className="quiz">
                 <h1 id="question-title">{question ? question[0] : null}</h1>
                 <div id="answers">
@@ -116,15 +130,6 @@ export default class Quiz extends React.Component {
                     <a onClick={this.handleClick}><div className="answer"><h3 className="answer-text" id="2">{question ? question[2] : null}</h3></div></a>
                     <a onClick={this.handleClick}><div className="answer"><h3 className="answer-text" id="3">{question ? question[3] : null}</h3></div></a>
                     <a onClick={this.handleClick}><div className="answer"><h3 className="answer-text" id="4">{question ? question[4] : null}</h3></div></a>
-                </div>
-            </div> :
-            <div className="quiz">
-                <h1 id="question-title">{question ? question[0] : null}</h1>
-                <div id="answers">
-                    <Link to='/waiting' onClick={this.handleClick} className="answer-text"><div className="answer"><h3 className="answer-text" id="1">{question ? question[1] : null}</h3></div></Link>
-                    <Link to='/waiting' onClick={this.handleClick} className="answer-text"><div className="answer"><h3 className="answer-text" id="2">{question ? question[2] : null}</h3></div></Link>
-                    <Link to='/waiting' onClick={this.handleClick} className="answer-text"><div className="answer"><h3 className="answer-text" id="3">{question ? question[3] : null}</h3></div></Link>
-                    <Link to='/waiting' onClick={this.handleClick} className="answer-text"><div className="answer"><h3 className="answer-text" id="4">{question ? question[4] : null}</h3></div></Link>
                 </div>
             </div>
             }
