@@ -37,7 +37,7 @@ export default class Waiting extends React.Component {
         //We obtain an object with all the user's matches from the database
         //We preserve this object to state on allMatches
         //Then, we find the most recent match by comparing timestamps
-        matchRef.on("value", (snapshot) => {
+        matchRef.once("value", (snapshot) => {
             this.setState({allMatches: snapshot.val()})
                 let max = 0;
                 let maxKey;
@@ -86,7 +86,7 @@ export default class Waiting extends React.Component {
                             let theirAnswers = [];
                             if (theirQuestions) {
                                 Object.keys(questions).forEach(question => {
-                                    if (question) theirAnswers.push(theirQuestions[question][0])
+                                    if (question) theirAnswers.push(theirQuestions[question])
                                 })
                                 this.setState({theirAnswers: theirAnswers});
                                 let heartStatus = 0;
