@@ -44,45 +44,57 @@ export default ignite(withAuth(class extends React.Component {
     this.askQuestion = this.askQuestion.bind(this)
     this.renderAnswerForm = this.renderAnswerForm.bind(this);
     this.answerQuestion = this.answerQuestion.bind(this)
-    this.handleJudge = this.handleJudge.bind(this)
+    this.judgeQuestion = this.judgeQuestion.bind(this)
     this.currentMatch = null;
 
   }
 
+  //---------------- LIFECYCLE HOOKS  ----------- //
+
+
   componentDidMount(){
      firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
+        this.setState({randomNumbers: randomize(20).slice(2)})
 
-      this.setState({randomNumbers: randomize(20).slice(2)})
+        //grabbing question data, current user data, and all user data
 
-      firebaseDb.ref('Questions').on('value', snapshot => {
-        this.setState({questions: snapshot.val()})
-      })
-
-      firebaseUsersRef.child(firebaseAuth.currentUser.uid).on('value', snapshot => {
-        this.setState({userInfo: snapshot.val()}, () => {
-          this.currentMatch = this.state.userInfo.matches[this.props.partnerId]
-          if (
-            this.props.partnerId === this.state.userInfo.partnerId &&
-            (
-              this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 4 || this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus < 0 ||
-              this.state.userInfo.matches[this.state.userInfo.partnerId].askedQuestions < 8
-            )
-          ){
-            this.unmatch();
-          }
+        firebaseDb.ref('Questions').on('value', snapshot => {
+          this.setState({questions: snapshot.val()})
         })
-      });
 
-      firebaseUsersRef.child(this.props.partnerId).on('value', snapshot => {
-        this.setState({partnerInfo: snapshot.val()})
-      });
-    } else {
-      alert("You're not logged in")
-      browserHistory.push('login')
-    }
+        firebaseUsersRef.child(firebaseAuth.currentUser.uid).on('value', snapshot => {
+          this.setState({userInfo: snapshot.val()}, () => {
+            this.currentMatch = this.state.userInfo.matches[this.props.partnerId]
+            if (
+              this.props.partnerId === this.state.userInfo.partnerId &&
+              (
+                this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 4 || this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus < 0 ||
+                this.state.userInfo.matches[this.state.userInfo.partnerId].askedQuestions < 8
+              )
+            ){
+              this.unmatch();
+            }
+          })
+        });
+
+        firebaseUsersRef.child(this.props.partnerId).on('value', snapshot => {
+          this.setState({partnerInfo: snapshot.val()})
+        });
+      } else {
+        alert("You're not logged in")
+        browserHistory.push('login')
+      }
     })
   }
+
+  componentWillUnmount(){
+    firebaseDb.ref('Questions').off()
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).off();
+    firebaseUsersRef.child(this.props.partnerId).off();
+  }
+
+  //---------------- UTILITY FUNCTIONS  ----------- //
 
   unmatch(){
     firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
@@ -90,44 +102,6 @@ export default ignite(withAuth(class extends React.Component {
     })
     firebaseUsersRef.child(this.props.partnerId).update({
       partnerId: ''
-    })
-  }
-
-  answerQuestion(event, text){
-    let msg;
-    if (event){
-      event.preventDefault()
-      msg = event.target.body.value
-    }
-    if (!this.props.fireRef) return
-    if (text) {
-    msg = text
-    }
-    this.props.fireRef.push({
-      timestamp: Date.now(),
-      from: firebaseAuth.currentUser.uid,
-      body: `${msg}`
-    })
-    .then(() => {
-      firebaseDb.ref('Users').child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).child('chat').push({
-        timestamp: Date.now(),
-        from: firebaseAuth.currentUser.uid,
-        body: `${msg}`
-      })
-    })
-    .then(() => {
-      firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.props.partnerId).update({
-        selectedQuestion: 'Waiting...',
-        isAsker: false,
-        isAnswerer: false,
-        isJudge: false
-      })
-      firebaseUsersRef.child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
-        selectedQuestion: 'Waiting...',
-        isAsker: false,
-        isAnswerer: false,
-        isJudge: true
-      })
     })
   }
 
@@ -187,6 +161,13 @@ export default ignite(withAuth(class extends React.Component {
     )
   }
 
+  //---------------- ROLE FUNCTIONS ----------- //
+
+// these functions define each role, so there are three (waiters dont have anything to do)
+
+
+// pick from four predefined questions. at the start both players are the asker, and when one player picks, the other player becomes the answerer
+
   askQuestion(number){
     return () => {
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.props.partnerId).update({
@@ -206,7 +187,49 @@ export default ignite(withAuth(class extends React.Component {
     }
   }
 
-  handleJudge(heartsToAdd){
+
+//sends one message. better be a good one
+
+  answerQuestion(event, text){
+    let msg;
+    if (event){
+      event.preventDefault()
+      msg = event.target.body.value
+    }
+    if (text) msg = text
+    if (!this.props.fireRef) return
+    this.props.fireRef.push({
+      timestamp: Date.now(),
+      from: firebaseAuth.currentUser.uid,
+      body: `${msg}`
+    })
+    .then(() => {
+      firebaseDb.ref('Users').child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).child('chat').push({
+        timestamp: Date.now(),
+        from: firebaseAuth.currentUser.uid,
+        body: `${msg}`
+      })
+    })
+    .then(() => {
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.props.partnerId).update({
+        selectedQuestion: 'Waiting...',
+        isAsker: false,
+        isAnswerer: false,
+        isJudge: false
+      })
+      firebaseUsersRef.child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
+        selectedQuestion: 'Waiting...',
+        isAsker: false,
+        isAnswerer: false,
+        isJudge: true
+      })
+    })
+  }
+
+
+//curried function. returns a function that changes the heartstatus by whatever heartsToAdd is set at
+
+  judgeQuestion(heartsToAdd){
     return () => {
       let newHearts = this.state.userInfo.matches[this.props.partnerId].heartStatus + heartsToAdd
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.props.partnerId).update({
@@ -229,6 +252,11 @@ export default ignite(withAuth(class extends React.Component {
       this.sendMessage(null, msg)
     }
   }
+
+
+// chat renders message history all the time.
+// after that it sees if the match is won or lost. if either it just displays that.
+// after that it checks to see your state in the game. there are four states you can be in. it checks questioner -> answerer -> judge -> waiter, and renders one of these four states
 
   render() {
     const {user, snapshot, asEntries} = this.props
@@ -278,11 +306,11 @@ export default ignite(withAuth(class extends React.Component {
      this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isJudge ?
     <div>
     <p> YOU'RE JUDGING </p>
-      <button onClick={this.handleJudge(1)}>LIKE</button>
-      <button onClick={this.handleJudge(-1)}>DON'T LIKE</button>
+      <button onClick={this.judgeQuestion(1)}>LIKE</button>
+      <button onClick={this.judgeQuestion(-1)}>DON'T LIKE</button>
     </div>
       :
-      <p> Waiting on the next question... </p>
+      <p> Waiting on your partner's response... </p>
       }
       <div>
       <p> You have {this.state.userInfo.matches ? this.state.userInfo.matches[this.props.partnerId].heartStatus : 0} hearts </p>
