@@ -36,6 +36,7 @@ export default class MatchHistory extends React.Component {
             <div>
             {
             arrayifyWithKey(this.state.userObj.matches).map(match => {
+            console.log(match)
             return (
                 <div key={match.key}>
                   <h4 className="inline-block"> {this.state.allUsersObj && (this.state.allUsersObj[match.key]).name} </h4>

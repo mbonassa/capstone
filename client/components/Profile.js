@@ -126,6 +126,7 @@ export default class UserView extends React.Component {
 
             {!this.state.val.partnerId ?
               <button
+              id="find-match"
               className="btn misc-btn caps"
               title="Score"
               onClick={this.setActive}
