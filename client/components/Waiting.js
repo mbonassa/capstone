@@ -57,7 +57,9 @@ export default class Waiting extends React.Component {
                     let myAnswers = [];
                     if (questions) {
                     Object.keys(questions).forEach(question => {
-                        myAnswers.push(questions[question][0]);
+                        console.log(question)
+                        console.log(questions[question])
+                        myAnswers.push(questions[question]);
                     })
                     this.setState({myAnswers: myAnswers})
                     }
@@ -79,6 +81,7 @@ export default class Waiting extends React.Component {
                         (snapshot) => {
                             this.setState({otherData: snapshot.val()});
                             //3)
+                            console.log("other user", snapshot.val())
                             let theirQuestions = snapshot.val() ? snapshot.val().round1 : null
                             let theirAnswers = [];
                             if (theirQuestions) {
@@ -92,7 +95,9 @@ export default class Waiting extends React.Component {
                                     for (let i = 0 ; i < myAnswers.length ; i++) {
                                         if (myAnswers[i] == theirAnswers[i]) heartStatus++
                                     }
-                                    this.setState({heartStatus: heartStatus})
+                                    this.setState({heartStatus: heartStatus}, () => {
+                                        console.log(this.state.heartStatus, myAnswers, theirAnswers)
+                                    })
                                     //5
                                     otherUserMatchRef.update({
                                         'heartStatus': heartStatus
