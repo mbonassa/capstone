@@ -36,6 +36,7 @@ export default class MatchHistory extends React.Component {
   render(){
     return (
       <div>
+      <img className="logo-top" src="./img/sm-logo.png" />
           {this.state.userObj.matches && arrayifyWithKey(this.state.userObj.matches).length ?
             <div>
             {

@@ -86,6 +86,7 @@ export default class EditProfile extends React.Component {
   render(){
     return(
       <div>
+      <img className="logo-top" src="./img/sm-logo.png" />
         <form className="form-horizontal">
       <div className="form-group">
         <label htmlFor="userName" className="col-sm-2 control-label">Update Name</label>

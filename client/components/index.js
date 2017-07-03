@@ -13,3 +13,4 @@ export { default as Chat } from './ChatManager';
 export { default as Test } from './Test';
 export { default as Load } from './Load';
 export { default as ViewAnswer } from './ViewAnswer';
+export { default as MatchSummary } from './MatchSummary';
