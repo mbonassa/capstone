@@ -55,24 +55,24 @@ export default ignite(withAuth(class extends React.Component {
     })
     this.setState({randomNumbers: randomize(20).slice(2)})
     firebaseAuth.onAuthStateChanged((user) => {
+    if (user){
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).on('value', snapshot => {
+        this.setState({userInfo: snapshot.val()}, () => {
+          this.currentMatch = this.state.userInfo.matches[this.props.partnerId]
+          if (this.props.partnerId === this.state.userInfo.partnerId && this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 5){
+            this.unmatch();
+          }
+        })
+      });
 
-      if (user){
-        firebaseUsersRef.child(firebaseAuth.currentUser.uid).on('value', snapshot => {
-          this.setState({userInfo: snapshot.val()}, () => {
-            this.currentMatch = this.state.userInfo.matches[this.props.partnerId]
-            if (this.props.partnerId === this.state.userInfo.partnerId && this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 5){
-              this.unmatch();
-            }
-          })
-        });
-        firebaseUsersRef.child(this.props.partnerId).on('value', snapshot => {
-          this.setState({partnerInfo: snapshot.val()})
-        });
-      } else {
-        alert("You're not logged in")
-        browserHistory.push('login')
-      }
-    })
+      firebaseUsersRef.child(this.props.partnerId).on('value', snapshot => {
+        this.setState({partnerInfo: snapshot.val()})
+      });
+    } else {
+      alert("You're not logged in")
+      browserHistory.push('login')
+    }
+  })
   }
 
   unmatch(){
@@ -197,9 +197,10 @@ export default ignite(withAuth(class extends React.Component {
 
   handleJudge(heartsToAdd){
     return () => {
+      let newHearts = this.state.userInfo.matches[this.props.partnerId].heartStatus + heartsToAdd
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.props.partnerId).update({
         selectedQuestion: 'Waiting...',
-        heartStatus: this.state.userInfo.matches[this.props.partnerId].heartStatus + heartsToAdd,
+        heartStatus: newHearts,
         askedQuestions: this.currentMatch.askedQuestions + 1,
         isAsker: false,
         isAnswerer: false,
@@ -208,7 +209,7 @@ export default ignite(withAuth(class extends React.Component {
       firebaseUsersRef.child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
         selectedQuestion: 'Waiting...',
         askedQuestions: this.currentMatch.askedQuestions + 1,
-        heartStatus: this.state.userInfo.matches[this.props.partnerId].heartStatus + heartsToAdd,
+        heartStatus: newHearts,
         isAsker: true,
         isAnswerer: false,
         isJudge: false
