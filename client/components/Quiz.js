@@ -72,6 +72,11 @@ export default class Quiz extends React.Component {
 
     }
 
+    componentDidMount(){
+        firebaseQuizRef.off()
+        firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
+    }
+
     handleClick(event) {
         let user = firebaseAuth.currentUser.uid;
         let matchRef = firebaseUsersRef.child(user).child('matches');
