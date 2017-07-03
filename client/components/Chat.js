@@ -42,7 +42,9 @@ export default ignite(withAuth(class extends React.Component {
     }
     this.sendMessage = this.sendMessage.bind(this)
     this.askQuestion = this.askQuestion.bind(this)
-    this.handleLike = this.handleLike.bind(this)
+    this.renderAnswerForm = this.renderAnswerForm.bind(this);
+    this.answerQuestion = this.answerQuestion.bind(this)
+    this.handleJudge = this.handleJudge.bind(this)
 
   }
 
@@ -67,14 +69,53 @@ export default ignite(withAuth(class extends React.Component {
     })
   }
 
-  sendMessage(event, text){
-    if (!this.props.fireRef) return
+  answerQuestion(event, text){
     let msg;
-    if (text) {
-      msg = text
-    } else {
+    if (event){
       event.preventDefault()
       msg = event.target.body.value
+    }
+    if (!this.props.fireRef) return
+    if (text) {
+    msg = text
+    }
+    this.props.fireRef.push({
+      timestamp: Date.now(),
+      from: firebaseAuth.currentUser.uid,
+      body: `${msg}`
+    })
+    .then(() => {
+      firebaseDb.ref('Users').child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).child('chat').push({
+        timestamp: Date.now(),
+        from: firebaseAuth.currentUser.uid,
+        body: `${msg}`
+      })
+    })
+    .then(() => {
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.userInfo.partnerId).update({
+        selectedQuestion: 'Waiting...',
+        isAsker: false,
+        isAnswerer: false,
+        isJudge: false
+      })
+      firebaseUsersRef.child(this.state.userInfo.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
+        selectedQuestion: 'Waiting...',
+        isAsker: false,
+        isAnswerer: false,
+        isJudge: true
+      })
+    })
+  }
+
+  sendMessage(event, text){
+    let msg;
+    if (event){
+      event.preventDefault()
+      msg = event.target.body.value
+    }
+    if (!this.props.fireRef) return
+    if (text) {
+     msg = text
     }
     this.props.fireRef.push({
       timestamp: Date.now(),
@@ -95,7 +136,25 @@ export default ignite(withAuth(class extends React.Component {
       return <span>You must be logged in to send messages.</span>
     }
     return (
-      <form onSubmit={this.sendMessage}>
+      <form onSubmit={(evt) =>{
+        this.sendMessage(evt)
+      }
+    }>
+        <input name='body'/>
+        <input type='submit'/>
+      </form>
+    )
+  }
+
+  renderAnswerForm(user) {
+    if (!user) {
+      return <span>You must be logged in to send messages.</span>
+    }
+    return (
+      <form onSubmit={(evt) =>{
+        this.answerQuestion(evt)
+      }
+    }>
         <input name='body'/>
         <input type='submit'/>
       </form>
@@ -109,7 +168,7 @@ export default ignite(withAuth(class extends React.Component {
         selectedQuestion: this.state.questions[number],
         isAsker: false,
         isAnswerer: false,
-        isJudge: true
+        isJudge: false
       })
       firebaseUsersRef.child(this.state.userInfo.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
         selectedQuestion: this.state.questions[number],
@@ -121,22 +180,26 @@ export default ignite(withAuth(class extends React.Component {
     }
   }
 
-  handleLike(){
+  handleJudge(heartsToAdd){
+    return () => {
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.userInfo.partnerId).update({
         selectedQuestion: 'Waiting...',
-        heartStatus: this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus + 1,
+        heartStatus: this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus + heartsToAdd,
         isAsker: false,
         isAnswerer: false,
         isJudge: false
       })
       firebaseUsersRef.child(this.state.userInfo.partnerId).child('matches').child(firebaseAuth.currentUser.uid).update({
         selectedQuestion: 'Waiting...',
-        heartStatus: this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus + 1,
+        heartStatus: this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus + heartsToAdd,
         isAsker: true,
         isAnswerer: false,
         isJudge: false
       })
+    }
   }
+
+
 
   render() {
     console.log(this.state)
@@ -169,15 +232,15 @@ export default ignite(withAuth(class extends React.Component {
         <div className='chat-log'>
         </div>
         <div>
-        {this.renderSendMsg(user)}
+        {this.renderAnswerForm(user)}
         </div>
     </div>
     :
      this.state.userInfo.matches && this.state.userInfo.matches[this.state.userInfo.partnerId].isJudge ?
     <div>
     <p> YOU'RE JUDGING </p>
-      <button onClick={this.handleLike}>LIKE</button>
-      <button onClick={this.handleDisllke}>DON'T LIKE</button>
+      <button onClick={this.handleJudge(1)}>LIKE</button>
+      <button onClick={this.handleJudge(0)}>DON'T LIKE</button>
     </div>
       :
       <p> Waiting on the next question... </p>
