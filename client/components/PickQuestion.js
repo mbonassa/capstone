@@ -106,7 +106,12 @@ export default class Quiz extends React.Component {
         })
         //Update turnToAsk from true to false
         userRef.child('matches').child(matchKey).update({
-            turnToAsk: false
+            turnToAsk: false,
+            turnToAnswer: false
+        })
+        firebaseUsersRef.child(matchKey).child('matches').child(user).update({
+            turnToAsk: false,
+            turnToAnswer: true
         })
     }
 

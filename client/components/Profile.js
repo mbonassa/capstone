@@ -67,7 +67,6 @@ export default class UserView extends React.Component {
         })
       } else {
          console.log("no match found")
-         alert("no matches yet!")
       }
     });
     this.setState({'waiting': false})
@@ -117,9 +116,16 @@ export default class UserView extends React.Component {
             <img className="profile-image"src={`${this.state.val.imageUrl}`} />
           </div>
           <div >
+
             {this.state.val.name ? (
               <div>
                 <h3>{this.state.val.name}, {this.state.val.age}</h3>
+                    <Link to={
+                    {
+                      pathname:`/chat/${this.state.val.partnerId}`,
+                      state: {partnerInfo: this.state.usersObj[this.state.val.partnerId]}
+                    }
+                  }> Chat </Link>
                 <Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className=''>(EDIT PROFILE)</p></Link>
               </div>) : null}
             <h5>{this.state.val.bio}</h5>
@@ -161,7 +167,6 @@ export default class UserView extends React.Component {
               id="past-matches"
               className="btn misc-btn caps"
               title="pastMatches"
-              onClick={this.handleLogout}
             >my matches </button> </Link>
 
         <button

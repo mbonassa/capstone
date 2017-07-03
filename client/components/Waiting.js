@@ -6,6 +6,7 @@ export default class Waiting extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            usersObj: {},
             userData: {},
             otherData: {},
             allMatches: {},
@@ -15,16 +16,26 @@ export default class Waiting extends React.Component {
             theirName: '',
             finishedQuiz: false
         }
+        this.otherUser = null;
+        this.matchRef = null;
+        this.otherUserMatch = null;
+        this.dataRef = null;
+        this.usersRef = null;
     }
 
     componentDidMount () {
 
      firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
+
+        this.usersRef = firebaseUsersRef.on('value', snapshot => {
+            this.setState({usersObj: snapshot.val()})
+        })
+
         let user = firebaseAuth.currentUser.uid;
         let data = firebaseUsersRef.child(user)
 
-        data.on('value',
+        this.dataRef = data.on('value',
             (snapshot) => {
                 this.setState({userData: snapshot.val()});
             },
@@ -33,11 +44,11 @@ export default class Waiting extends React.Component {
             })
 
         let matchRef = firebaseUsersRef.child(user).child('matches');
-
+        this.matchRef = matchRef
         //We obtain an object with all the user's matches from the database
         //We preserve this object to state on allMatches
         //Then, we find the most recent match by comparing timestamps
-        matchRef.once("value", (snapshot) => {
+        matchRef.on("value", (snapshot) => {
             this.setState({allMatches: snapshot.val()})
                 let max = 0;
                 let maxKey;
@@ -50,7 +61,11 @@ export default class Waiting extends React.Component {
 
                     //Update finishedQuiz to true
                     data.child('matches').child(maxKey).update({
-                        finishedQuiz: true
+                        finishedQuiz: true,
+                        askedQuestions: 0,
+                        isAsker: true,
+                        isAnswerer: false,
+                        isJudge: false,
                     });
 
                     let questions = snapshot.val()[maxKey] ? snapshot.val()[maxKey].round1 : null
@@ -77,6 +92,7 @@ export default class Waiting extends React.Component {
                     //2)
                     let user = firebaseAuth.currentUser.uid;
                     let otherUserMatchRef = firebaseUsersRef.child(maxKey).child('matches').child(user)
+                    this.otherUserMatch = otherUserMatchRef
                     otherUserMatchRef.on('value',
                         (snapshot) => {
                             this.setState({otherData: snapshot.val()});
@@ -95,17 +111,20 @@ export default class Waiting extends React.Component {
                                     for (let i = 0 ; i < myAnswers.length ; i++) {
                                         if (myAnswers[i] == theirAnswers[i]) heartStatus++
                                     }
-                                    this.setState({heartStatus: heartStatus}, () => {
-                                        console.log(this.state.heartStatus, myAnswers, theirAnswers)
-                                    })
-                                    //5
-                                    otherUserMatchRef.update({
-                                        'heartStatus': heartStatus
-                                    })
-                                    //6)
-                                    matchRef.child(maxKey).update({
-                                        heartStatus: heartStatus
-                                    })
+                                    if(this.state.heartStatus === 0){
+                                        this.setState({heartStatus: heartStatus}, () => {
+                                            console.log(this.state.heartStatus, myAnswers, theirAnswers)
+                                        })
+                                        //5
+                                        console.log('RESETTING THE HEART STATUS')
+                                        otherUserMatchRef.update({
+                                            'heartStatus': heartStatus
+                                        })
+                                        //6)
+                                        matchRef.child(maxKey).update({
+                                            heartStatus: heartStatus
+                                        })
+                                    }
                                     //Check in database the finishedQuiz status of both users
                                     let theyFinishedQuiz = snapshot.val().finishedQuiz;
                                     firebaseUsersRef.child(user).child('matches').child(maxKey).on('value',
@@ -122,6 +141,7 @@ export default class Waiting extends React.Component {
                         })
                     //Getting name of matched user
                     let otherUserRef = firebaseUsersRef.child(maxKey)
+                    this.otherUser = otherUserRef
                     otherUserRef.on('value',
                         (snapshot) => {
                             let theirName = snapshot.val().name;
@@ -137,13 +157,28 @@ export default class Waiting extends React.Component {
 
     }
 
+    componentWillUnmount(){
+        if (this.usersRef) firebaseUsersRef.off('value', this.usersRef);
+        firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').off('value')
+        if (this.dataRef) firebaseUsersRef.child(firebaseAuth.currentUser.uid).off('value', this.dataRef)
+        firebaseQuizRef.off('value')
+        if (this.otherUser) this.otherUser.off('value')
+        if (this.otherUserMatch) this.otherUserMatch.off('value')
+        if (this.matchRef) this.matchRef.off('value')
+     }
+
     render() {
         return (
             this.state.userData.matches && this.state.heartStatus && this.state.theirName && this.state.finishedQuiz ?
             <div>
                 <h1>You and {this.state.theirName} have {this.state.heartStatus} {this.state.heartStatus == 1 ? 'heart' : 'hearts'}</h1>
                 <h3>That means you had {this.state.heartStatus} {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h3>
-                <Link to='/pickquestion'><h3>Go to round 2</h3></Link>
+                  <Link to={
+                    {
+                      pathname:`/chat/${this.state.userData.partnerId}`,
+                      state: {partnerInfo: this.state.usersObj[this.state.userData.partnerId]}
+                    }
+                  }> Round 2 </Link>
             </div> :
             <div>
                 <h1>{this.state.theirName} is still answering</h1>
