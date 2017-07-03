@@ -19,7 +19,8 @@ export default class Waiting extends React.Component {
 
     componentDidMount () {
 
-
+     firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
         let user = firebaseAuth.currentUser.uid;
         let data = firebaseUsersRef.child(user)
 
@@ -82,7 +83,7 @@ export default class Waiting extends React.Component {
                             let theirAnswers = [];
                             if (theirQuestions) {
                                 Object.keys(questions).forEach(question => {
-                                    theirAnswers.push(theirQuestions[question][0])
+                                    if (question) theirAnswers.push(theirQuestions[question][0])
                                 })
                                 this.setState({theirAnswers: theirAnswers});
                                 let heartStatus = 0;
@@ -126,7 +127,8 @@ export default class Waiting extends React.Component {
         (errorObject) => {
             console.error('The read failed: ' + errorObject.code)
         });
-
+      }
+      })
 
     }
 

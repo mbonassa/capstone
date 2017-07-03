@@ -80,10 +80,21 @@ export default class Quiz extends React.Component {
         let latestMatchKey;
 
         if (this.partnerId.length && answerNumber) {
+            console.log('firing with', answerNumber)
             latestMatchKey = this.partnerId;
             matchRef.child(latestMatchKey).child('round1').update({
-                [questionNumber]: [answerNumber]
+                [questionNumber]: answerNumber
             })
+            .then(() => {
+                let current = this.state.current +1;
+                this.setState({current}, () => {
+                    console.log("current is", this.state.current)
+                    if (this.state.current > 4){
+                        browserHistory.push('waiting')
+                    }
+                });
+            })
+            .catch(console.log.bind.console)
         }
 
         //Update database with new question count and answer count
@@ -93,10 +104,14 @@ export default class Quiz extends React.Component {
         let answerCount = questionData[answerCountKey] ? questionData[answerCountKey] + 1 : 1;
         firebaseQuizRef.child(questionNumber).update({questionCount, [answerCountKey]: answerCount});
 
-        let current = this.state.current +1;
-        this.setState({current}, () => {
-            if (this.state.current > 4) browserHistory.push('waiting')
-        })
+        // let current = this.state.current +1;
+        // this.setState({current}, () => {
+        //     console.log("current is", this.state.current)
+        //     if (this.state.current > 4){
+        //         browserHistory.push('waiting')
+        //     }
+        // });
+
     }
 
     render() {
