@@ -22,6 +22,8 @@ export default class ViewAnswer extends React.Component {
 
     componentDidMount () {
 
+    firebaseAuth.onAuthStateChanged((user) => {
+        if (user) {
         let user = firebaseAuth.currentUser.uid;
         let userRef = firebaseUsersRef.child(user);
         userRef.on('value',
@@ -47,11 +49,17 @@ export default class ViewAnswer extends React.Component {
                         //Getting their number of questions answered
                             //Finding number of questions match has answered
                             let user = firebaseAuth.currentUser.uid;
-                            let theirAnsweredQuestions = Object.keys(snapshot.val().matches[user].round2answers).length;
+                            let theirAnsweredQuestions = 0;
+                            if (snapshot.val().matches[user].round2answers){
+                                theirAnsweredQuestions = Object.keys(snapshot.val().matches[user].round2answers).length
+                            }
                             //Finding number of questions user has answered with match
                             userRef.child('matches').child(latestMatchKey).child('round2answers').on('value',
                                 snapshot => {
-                                    let myAnsweredQuestions = Object.keys(snapshot.val()).length;
+                                    let myAnsweredQuestions = 0
+                                    if (snapshot.val()){
+                                        myAnsweredQuestions = Object.keys(snapshot.val()).length;
+                                    }
                                     let questionsAnswered = myAnsweredQuestions + theirAnsweredQuestions;
                                     //Make sure that if match is lost, that gets persisted to db for both users
                                         if (questionsAnswered > 5 && heartStatus < 5) {
@@ -98,6 +106,10 @@ export default class ViewAnswer extends React.Component {
                             })
                     })
             })
+        } else {
+            console.log("no user")
+        }
+    });
 
     }
 
