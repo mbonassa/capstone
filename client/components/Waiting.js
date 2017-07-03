@@ -62,10 +62,6 @@ export default class Waiting extends React.Component {
                     //Update finishedQuiz to true
                     data.child('matches').child(maxKey).update({
                         finishedQuiz: true,
-                        askedQuestions: 0,
-                        isAsker: true,
-                        isAnswerer: false,
-                        isJudge: false,
                     });
 
                     let questions = snapshot.val()[maxKey] ? snapshot.val()[maxKey].round1 : null
