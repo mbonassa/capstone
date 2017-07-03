@@ -65,7 +65,7 @@ export default ignite(withAuth(class extends React.Component {
           if (
             this.props.partnerId === this.state.userInfo.partnerId &&
             (
-              this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 5 || this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus < 0)
+              this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 4 || this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus < 0)
           ){
             this.unmatch();
           }
