@@ -169,11 +169,7 @@ export default class Waiting extends React.Component {
             <div>
                 <h1>You and {this.state.theirName} have {this.state.heartStatus} {this.state.heartStatus == 1 ? 'heart' : 'hearts'}</h1>
                 <h3>That means you had {this.state.heartStatus} {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h3>
-                  <Link to={
-                    {
-                      pathname:`/chat/${this.state.userData.partnerId}`,
-                      state: {partnerInfo: this.state.usersObj[this.state.userData.partnerId]}
-                    }
+                  <Link to={`/chat/${this.state.userData.partnerId}`
                   }> Round 2 </Link>
             </div> :
             <div>

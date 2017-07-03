@@ -72,7 +72,7 @@ export default class Quiz extends React.Component {
 
     }
 
-    componentDidMount(){
+    componentWillUnmount(){
         firebaseQuizRef.off()
         firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
     }
