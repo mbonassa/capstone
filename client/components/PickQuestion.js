@@ -123,9 +123,9 @@ export default class Quiz extends React.Component {
                     {this.state.turnToAsk && this.state.heartStatus < 5 ?
                     <div>
                         <div>{this.state.theirName.length ? <h1>Pick a question to send to {this.state.theirName}!</h1> : null}</div>
-                        <a href='/viewanswer'><h3 onClick={() => this.handleClick(0)}>{this.state.questions[this.state.randomNumbers[0]]}</h3></a>
-                        <a href='/viewanswer'><h3 onClick={() => this.handleClick(1)}>{this.state.questions[this.state.randomNumbers[1]]}</h3></a>
-                        <a href='/viewanswer'><h3 onClick={() => this.handleClick(2)}>{this.state.questions[this.state.randomNumbers[2]]}</h3></a>
+                        <Link to='/viewanswer'><h3 onClick={() => this.handleClick(0)}>{this.state.questions[this.state.randomNumbers[0]]}</h3></Link>
+                        <Link to='/viewanswer'><h3 onClick={() => this.handleClick(1)}>{this.state.questions[this.state.randomNumbers[1]]}</h3></Link>
+                        <Link to='/viewanswer'><h3 onClick={() => this.handleClick(2)}>{this.state.questions[this.state.randomNumbers[2]]}</h3></Link>
                     </div>
                     :
                     <div>
@@ -133,12 +133,12 @@ export default class Quiz extends React.Component {
                     <div>
                         <h1>You and {this.state.theirName} have accumulated {this.state.heartStatus} hearts!</h1>
                         <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
-                        <a><h2>Go Chat!</h2></a>
+                        <Link to="chat"><h2>Go Chat!</h2></Link>
                     </div>
                     :
                     <div>
                         <h1>It's not your turn to pick a question!</h1>
-                        <a href='/answer'><h2>Go answer one instead</h2></a>
+                        <Link to='/answer'><h2>Go answer one instead</h2></Link>
                     </div>
                 }
                 </div>

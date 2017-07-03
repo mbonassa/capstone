@@ -160,7 +160,7 @@ export default class ViewAnswer extends React.Component {
                 <div>
                     <h1>You and {this.state.theirName} have accumulated {this.state.heartStatus} hearts!</h1>
                     <h2>You've won the game, and the privilege to talk to your partner! What are you waiting for?!</h2>
-                    <a><h2>Go Chat!</h2></a>
+                    <Link to="insertproperchatlinklater"><h2>Go Chat!</h2></Link>
                 </div>
             }
             </div>
