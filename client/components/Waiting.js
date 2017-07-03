@@ -24,11 +24,11 @@ export default class Waiting extends React.Component {
       if (user) {
         let user = firebaseAuth.currentUser.uid;
         let data = firebaseUsersRef.child(user)
-        data.on('value', snapshot => {
+        firebaseUsersRef.on('value', snapshot => {
             this.setState({usersObj: snapshot.val()})
         })
 
-        firebaseUsersRef.child(user).on('value',
+        data.on('value',
             (snapshot) => {
                 this.setState({userData: snapshot.val()});
             },
