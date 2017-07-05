@@ -18,6 +18,23 @@ admin.initializeApp({
 
 module.exports = admin;
 
+app.get('/test/:tokenId', (req, res, next) => {
+  console.log("HI", req.params.tokenId)
+  let payload = {
+    notification: {message: "Hi!"},
+    data: {tweet: 'very nice!'}
+  };
+  return admin.messaging().sendToDevice(req.params.tokenId, payload)
+  .then(result => {
+    console.log("Success!", result)
+    res.sendStatus(200)
+  })
+  .catch(err => {
+    console.log("Error :(", err)
+  })
+})
+
+
 const createApp = () => app
   .use(morgan('dev'))
   .use(express.static(path.join(__dirname, '..', 'public')))
@@ -52,15 +69,3 @@ listenUp();
 // } else {
 //   createApp(app);
 // }
-
-app.get('/test/:tokenId', (req, res, next) => {
-  console.log("HI", req.params.tokenId)
-  let payload = {score: 'very nice!'};
-  return admin.messaging.sendToDevice(req.params.tokenId, payload)
-  .then(res => {
-    console.log("Success!", res)
-  })
-  .catch(err => {
-    console.log("Error :(", err)
-  })
-})
