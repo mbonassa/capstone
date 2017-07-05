@@ -62,10 +62,6 @@ export default class Waiting extends React.Component {
                     //Update finishedQuiz to true
                     data.child('matches').child(maxKey).update({
                         finishedQuiz: true,
-                        askedQuestions: 0,
-                        isAsker: true,
-                        isAnswerer: false,
-                        isJudge: false,
                     });
 
                     let questions = snapshot.val()[maxKey] ? snapshot.val()[maxKey].round1 : null
@@ -158,13 +154,13 @@ export default class Waiting extends React.Component {
     }
 
     componentWillUnmount(){
-        if (this.usersRef) firebaseUsersRef.off('value', this.usersRef);
-        firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').off('value')
-        if (this.dataRef) firebaseUsersRef.child(firebaseAuth.currentUser.uid).off('value', this.dataRef)
-        firebaseQuizRef.off('value')
-        if (this.otherUser) this.otherUser.off('value')
-        if (this.otherUserMatch) this.otherUserMatch.off('value')
-        if (this.matchRef) this.matchRef.off('value')
+        firebaseUsersRef.off();
+        firebaseQuizRef.off()
+        firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').off()
+        firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
+        if (this.otherUser) this.otherUser.off()
+        if (this.otherUserMatch) this.otherUserMatch.off()
+        if (this.matchRef) this.matchRef.off()
      }
 
     render() {
@@ -173,11 +169,7 @@ export default class Waiting extends React.Component {
             <div>
                 <h1>You and {this.state.theirName} have {this.state.heartStatus} {this.state.heartStatus == 1 ? 'heart' : 'hearts'}</h1>
                 <h3>That means you had {this.state.heartStatus} {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h3>
-                  <Link to={
-                    {
-                      pathname:`/chat/${this.state.userData.partnerId}`,
-                      state: {partnerInfo: this.state.usersObj[this.state.userData.partnerId]}
-                    }
+                  <Link to={`/chat/${this.state.userData.partnerId}`
                   }> Round 2 </Link>
             </div> :
             <div>

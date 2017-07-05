@@ -72,6 +72,11 @@ export default class Quiz extends React.Component {
 
     }
 
+    componentWillUnmount(){
+        firebaseQuizRef.off()
+        firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
+    }
+
     handleClick(event) {
         let user = firebaseAuth.currentUser.uid;
         let matchRef = firebaseUsersRef.child(user).child('matches');
@@ -122,8 +127,8 @@ export default class Quiz extends React.Component {
         return (
             <div>
             {this.state.finishedQuiz ?
-                browserHistory.push(chatRoute)
-            :
+            <Link to={`/chat/${this.state.userData.partnerId}`
+                  }> Round 2 </Link>            :
             <div className="quiz">
                 <h1 id="question-title">{question ? question[0] : null}</h1>
                 <div id="answers">
