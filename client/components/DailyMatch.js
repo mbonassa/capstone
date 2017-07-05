@@ -30,7 +30,7 @@ export default class DailyMatch extends React.Component {
      if (!this.state.partnerInfo.active) {
       let numbersString = randomize(120).join(",")
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.state.partnerId).set({
-        heartStatus: 0,
+        heartStatus: null,
         numbers: `${numbersString}`,
         round1: {},
         timestamp: Date.now(),
@@ -42,7 +42,7 @@ export default class DailyMatch extends React.Component {
       })
       .then(() => {
         return firebaseUsersRef.child(this.state.partnerId).child('matches').child(firebaseAuth.currentUser.uid).set({
-          heartStatus: 0,
+          heartStatus: null,
           numbers: `${numbersString}`,
           round1: {},
           timestamp: Date.now(),
