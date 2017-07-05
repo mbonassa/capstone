@@ -1,5 +1,6 @@
 import React from 'react';
-import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
+import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase';
+import { arrayify } from '../../utils/helperFunctions'
 import anime from 'animejs'
 import { Link, browserHistory } from 'react-router';
 
@@ -36,12 +37,17 @@ export default class Quiz extends React.Component {
                 (snapshot) => {
                 this.setState({userData: snapshot.val()}, () => {
                     this.partnerId = this.state.userData.partnerId
-                    if (!this.dirty && this.partnerId){
+                    console.log(this.state, snapshot.val())
+                    if (this.partnerId){
                         userRef.child('matches').child(this.partnerId).on('value',
                         (snapshot) => {
                             this.setState({
                                 finishedQuiz: snapshot.val().finishedQuiz,
+                                round1: snapshot.val().round1,
                                 questionNumbers: snapshot.val().numbers.split(',')
+                            }, () => {
+                                console.log(this.state)
+                                if (arrayify(this.state.round1).length === 5) browserHistory.push('waiting')
                             })
                         });
                     }
@@ -126,9 +132,6 @@ export default class Quiz extends React.Component {
 
         return (
             <div>
-            {this.state.finishedQuiz ?
-            <Link to={`/chat/${this.state.userData.partnerId}`
-                  }> Round 2 </Link>            :
             <div className="quiz">
                 <h1 id="question-title">{question ? question[0] : null}</h1>
                 <div id="answers">
@@ -138,7 +141,6 @@ export default class Quiz extends React.Component {
                     <a onClick={this.handleClick}><div className="answer"><h3 className="answer-text" id="4">{question ? question[4] : null}</h3></div></a>
                 </div>
             </div>
-            }
             </div>
             )
     }

@@ -70,9 +70,10 @@ export default ignite(withAuth(class extends React.Component {
               this.props.partnerId === this.state.userInfo.partnerId &&
               (
                 this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus > 4 || this.state.userInfo.matches[this.state.userInfo.partnerId].heartStatus < 0 ||
-                this.state.userInfo.matches[this.state.userInfo.partnerId].askedQuestions < 8
+                this.state.userInfo.matches[this.state.userInfo.partnerId].askedQuestions > 8
               )
             ){
+              console.log('UNMATCHING')
               this.unmatch();
             }
           })
