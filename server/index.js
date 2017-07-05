@@ -4,7 +4,19 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 8080;
 const app = express();
-module.exports = app;
+// module.exports = app;
+
+
+// let's bring our adminbot to life
+const admin = require("firebase-admin");
+const serviceAccount = require('../secrets.js');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://capstone-c9fe1.firebaseio.com"
+});
+
+module.exports = admin;
 
 const createApp = () => app
   .use(morgan('dev'))
@@ -25,9 +37,8 @@ const listenUp = () =>
   app.listen(PORT, () =>
     console.log(`Mixing it up on port ${PORT}`));
 
-createApp(app)
-
-listenUp()
+createApp(app);
+listenUp();
 // This evaluates as true when this file is run directly from the command line,
 // i.e. when we say 'node server/index.js' (or 'nodemon server/index.js', or 'nodemon server', etc)
 // It will evaluate false when this module is required by another module - for example,
@@ -41,3 +52,15 @@ listenUp()
 // } else {
 //   createApp(app);
 // }
+
+app.get('/test/:tokenId', (req, res, next) => {
+  console.log("HI", req.params.tokenId)
+  let payload = {score: 'very nice!'};
+  return admin.messaging.sendToDevice(req.params.tokenId, payload)
+  .then(res => {
+    console.log("Success!", res)
+  })
+  .catch(err => {
+    console.log("Error :(", err)
+  })
+})
