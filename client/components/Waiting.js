@@ -12,7 +12,7 @@ export default class Waiting extends React.Component {
             allMatches: {},
             myAnswers: [],
             theirAnswers: [],
-            heartStatus: 0,
+            heartStatus: null,
             theirName: '',
             finishedQuiz: false
         }
@@ -165,7 +165,7 @@ export default class Waiting extends React.Component {
 
     render() {
         return (
-            this.state.userData.matches && this.state.heartStatus && this.state.theirName && this.state.finishedQuiz ?
+            this.state.userData.matches && this.state.heartStatus !== null && this.state.theirName && this.state.finishedQuiz ?
             <div>
                 <h1>You and {this.state.theirName} have {this.state.heartStatus} {this.state.heartStatus == 1 ? 'heart' : 'hearts'}</h1>
                 <h3>That means you had {this.state.heartStatus} {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h3>
@@ -174,7 +174,7 @@ export default class Waiting extends React.Component {
             </div> :
             <div>
                 <h1>{this.state.theirName} is still answering</h1>
-                <h3>We'll let you know when she's done</h3>
+                <h3>We'll let you know when they're done</h3>
                 <Link to="/profile"><p className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
             </div>
         )

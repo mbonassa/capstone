@@ -120,8 +120,6 @@ export default class UserView extends React.Component {
             {this.state.val.name ? (
               <div>
                 <h3>{this.state.val.name}, {this.state.val.age}</h3>
-                    <Link to={`/chat/${this.state.val.partnerId}`
-                  }> Chat </Link>
                 <Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className=''>(EDIT PROFILE)</p></Link>
               </div>) : null}
             <h5>{this.state.val.bio}</h5>
