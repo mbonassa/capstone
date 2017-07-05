@@ -32,7 +32,13 @@
   .misc-btn:hover {
     background-color: rgba(255, 255, 255, 0.5);
   }
+  /* LOAD */
 
+  #load-img{
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 55%;
+  }
   /* LOGIN */
 
   #login-img {
@@ -182,10 +188,17 @@
     width: 50%;
   }
 
-  .matches-chat {
+  #matches-chat {
     vertical-align: center;
     margin-left: 15%;
     font-size: 1.5em;
+  }
+
+  #matches-chat-disabled {
+    vertical-align: center;
+    margin-left: 15%;
+    font-size: 1.5em;
+    background-color: rgba(255, 255, 255, 0.5)
   }
 
 }

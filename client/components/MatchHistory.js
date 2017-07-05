@@ -52,7 +52,9 @@ export default class MatchHistory extends React.Component {
                       state: {partnerInfo: this.state.allUsersObj[match.key]}
                     }
                   }> <button
-                    className="btn misc-btn caps inline-block matches-chat"
+                    id={match.heartStatus > 4 ? "matches-chat" : "matches-chat-disabled"}
+                    disabled={match.heartStatus > 4 ? "" : "disabled"}
+                    className="btn misc-btn caps inline-block"
                     >chat</button></Link>
                     <hr />
 

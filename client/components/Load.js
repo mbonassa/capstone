@@ -23,7 +23,7 @@ export default class Load extends React.Component {
     render() {
         return (
             <div id="load">
-              <img src="" id="load-img" />
+              <img src="img/logo-animated.gif" id="load-img" />
             </div>
             )
     }

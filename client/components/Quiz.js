@@ -122,6 +122,7 @@ export default class Quiz extends React.Component {
     render() {
         let questionNumbers = this.state.questionNumbers;
         let question = questionNumbers ? this.state.data[questionNumbers[this.state.current]] : null;
+        let chatRoute = '/chat/' + this.partnerId;
 
         return (
             <div>
