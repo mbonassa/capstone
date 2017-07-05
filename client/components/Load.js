@@ -14,9 +14,7 @@ export default class Load extends React.Component {
 
 
     componentDidMount () {
-      function time () {
         setTimeout(function(){ browserHistory.push('/login') }, 5000);
-      }
     }
 
 
