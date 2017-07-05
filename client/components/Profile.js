@@ -19,6 +19,7 @@ export default class UserView extends React.Component {
         age: '',
         bio: '',
         imageUrl: '',
+        active: ''
     }
   }
 
@@ -44,7 +45,6 @@ export default class UserView extends React.Component {
           el.partnerId === "" &&
           el.key !== firebaseAuth.currentUser.uid
           ){
-            console.log("EL", el)
             return el
           }
      })
@@ -109,6 +109,8 @@ export default class UserView extends React.Component {
         browserHistory.push('/login')
       }
      });
+
+     console.log(firebaseAuth.currentUser)
   }
 
   componentWillUnmount(){
@@ -130,42 +132,34 @@ export default class UserView extends React.Component {
 
             {this.state.val.name ? (
               <div>
-                <h3>{this.state.val.name}, {this.state.val.age}</h3>
-                <Link to={`/profile/edit`}><p style={{'color': '#ffffff'}}className=''>(EDIT PROFILE)</p></Link>
+                <h3 className="inline-block">{this.state.val.name}, {this.state.val.age}</h3>
+                <Link to={`/profile/edit`}><small style={{'color': '#ffffff'}} className='inline-block edit'>(EDIT PROFILE)</small></Link>
               </div>) : null}
-            <h5>{this.state.val.bio}</h5>
+            <h5 id="bio">{this.state.val.bio}</h5>
 
             {!this.state.val.partnerId ?
-              <button
-              id="find-match"
-              disabled={this.state.disabled}
-              className="btn misc-btn caps"
-              title="Score"
-              onClick={this.setActive}
-            >find a match</button> :
-            !this.state.waiting ?
-            <div>
-             <Link to={
-            {
-              pathname: "match",
-              state: {
-                partnerId: this.state.val.partnerId
+                <button
+                id="find-match"
+                disabled={this.state.val.active && !this.state.val.partnerId ? "disabled" : this.state.disabled}
+                className="btn misc-btn caps"
+                title="Score"
+                onClick={this.setActive}
+              >find a match</button> :
+              <div>
+               <Link to={
+              {
+                pathname: "match",
+                state: {
+                  partnerId: this.state.val.partnerId
+                }
               }
-            }
-            }><button
-              id="see-match"
-              className="btn misc-btn caps"
-
-            >See my match</button></Link>
-          </div> :
-          <button
-            className="btn misc-btn caps"
-            title="Score"
-            onClick={this.setActive}
-            disabled="disabled"
-          >Finding a match</button>
-
-        }
+              }><button
+                id="see-match"
+                className="btn misc-btn caps"
+              >See my match</button></Link>
+            </div>
+         }
+         {this.state.waiting && !this.state.val.partnerId ? browserHistory.push('/wait') : null}
         <Link to={
             {
               pathname: "matchHistory",
