@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 8080;
 const app = express();
 // module.exports = app;
+const MobileDetect = require('mobile-detect')
 
 
 // let's bring our adminbot to life

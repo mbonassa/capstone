@@ -55,7 +55,8 @@ export default class App extends React.Component {
       var errorMessage = error.message;
     })
     .then(() => {
-      return firebaseMessaging.getToken()
+      if (window.md.is('iPhone')) return firebaseMessaging.getToken();
+      else return firebaseMessaging.getToken()
     })
     .then(token => {
       return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
@@ -89,8 +90,8 @@ export default class App extends React.Component {
         });
       })
       .catch(function(error){
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        console.log(error)
+        alert("Looks like you got an error. Maybe turn your cookies on and allow notifications!")
       })
     } else {
       alert("Invalid Password: Must be at least six characters")

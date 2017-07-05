@@ -30,6 +30,7 @@ export default class UserView extends React.Component {
 
   componentDidMount(){
 
+    console.log("let's see the mobile status", window.md)
     //cloud messaging test!
 
     firebaseMessaging.onMessage(payload => {
