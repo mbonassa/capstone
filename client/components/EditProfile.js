@@ -100,7 +100,13 @@ export default class EditProfile extends React.Component {
         </div>
       </div>
       <div className="form-group">
-        <label htmlFor="genderPreference" className="col-sm-2 control-label">Looking for...</label>
+        <label htmlFor="imageUrl" className="col-sm-2 control-label">Update Photo</label>
+        <div className="col-sm-10">
+          <input onChange={this.onChange('imageUrl')} type="plaintext" className="form-control" id="imageUrl" value={this.state.imageUrl} />
+        </div>
+      </div>
+      <div className="form-group">
+        <label htmlFor="genderPreference" className="col-sm-2 control-label">Looking for:</label>
         <div className="col-sm-10">
           <label className="checkbox-inline">
             <input onChange={this.genderPreferenceChange} type="checkbox" id="inlineCheckbox1" value="male" /> men
@@ -111,35 +117,28 @@ export default class EditProfile extends React.Component {
           </div>
       </div>
 
-      <div>
-      <label htmlFor="minAge" className="age-range-title col-sm-2 control-label">Update Minimum Age</label>
-      <select onChange={this.onChange('minAge')} className="age-range col-sm-6 form-control" placeholder="min">
-        {this.generateAgeDropdown().map(el => {
-          return <option key={el}>{el}</option>
-        })
-      }
-      </select>
+      <div className="inline-block age-range-div">
+        <label htmlFor="minAge" className="age-range-title col-sm-2 control-label">Between ages</label>
+        <select onChange={this.onChange('minAge')} className="age-range col-sm-6 form-control" placeholder="min">
+          {this.generateAgeDropdown().map(el => {
+            return <option key={el}>{el}</option>
+          })
+        }
+        </select>
       </div>
 
-      <div>
-      <label htmlFor="maxAge" className="age-range-title col-sm-2 control-label">Update Maximum Age</label>
-      <select onChange={this.onChange('maxAge')} className="age-range col-sm-6 form-control" placeholder="max">
-        {this.generateAgeDropdown().map(el => {
-          return <option key={el}>{el}</option>
-        })
-      }
-      </select>
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="imageUrl" className="col-sm-2 control-label">Add New Photo URL</label>
-        <div className="col-sm-10">
-          <input onChange={this.onChange('imageUrl')} type="plaintext" className="form-control" id="imageUrl" value={this.state.imageUrl} />
-        </div>
+      <div className="inline-block age-range-div" id="and">
+        <label htmlFor="maxAge" className="age-range-title col-sm-2 inline-block control-label">and</label>
+        <select onChange={this.onChange('maxAge')} id="max-age" className="age-range inline-block col-sm-6 form-control" placeholder="max">
+          {this.generateAgeDropdown().map(el => {
+            return <option key={el}>{el}</option>
+          })
+        }
+        </select>
       </div>
       <div className="form-group">
         <div className="col-sm-offset-2 col-sm-10">
-          <button type="submit" onClick={this.handleSubmit} className="btn btn-default">Confirm</button>
+          <button type="submit" onClick={this.handleSubmit} id="signup-form-submit" className="btn btn-default caps fancy-type">update</button>
         </div>
       </div>
     </form>

@@ -1,6 +1,7 @@
 import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
 import { Link } from 'react-router'
+import { Wait } from './';
 
 export default class Waiting extends React.Component {
     constructor(props) {
@@ -14,7 +15,8 @@ export default class Waiting extends React.Component {
             theirAnswers: [],
             heartStatus: null,
             theirName: '',
-            finishedQuiz: false
+            finishedQuiz: false,
+            img: ''
         }
         this.otherUser = null;
         this.matchRef = null;
@@ -107,12 +109,9 @@ export default class Waiting extends React.Component {
                                     for (let i = 0 ; i < myAnswers.length ; i++) {
                                         if (myAnswers[i] == theirAnswers[i]) heartStatus++
                                     }
-                                    console.log(snapshot.val())
                                         this.setState({heartStatus: heartStatus}, () => {
-                                            console.log(this.state.heartStatus, myAnswers, theirAnswers)
                                         })
                                         //5
-                                        console.log('RESETTING THE HEART STATUS')
                                         otherUserMatchRef.update({
                                             heartStatus: heartStatus
                                         })
@@ -128,6 +127,23 @@ export default class Waiting extends React.Component {
                                             let finishedQuiz = iFinishedQuiz && theyFinishedQuiz;
                                             this.setState({finishedQuiz});
                                         })
+                                    console.log("heartStatus", this.state.heartStatus)
+                                            if (this.state.heartStatus == 0){
+                                                this.setState({img: '/img/no-hearts.gif'});
+                                            } else if (this.state.heartStatus == 1) {
+                                                this.setState({img: '/img/1-heart.gif'});
+                                            } else if (this.state.heartStatus == 2) {
+                                                this.setState({img: '/img/2-hearts.gif'});
+                                            } else if (this.state.heartStatus == 3) {
+                                                this.setState({img: '/img/3-hearts.gif'});
+                                            } else if (this.state.heartStatus == 4) {
+                                                this.setState({img: '/img/4-hearts.gif'});
+                                            } else if (this.state.heartStatus == 5) {
+                                                this.setState({img: '/img/5-hearts.gif'});
+                                            } else {
+                                                this.setState({img: '/img/5-hearts-loop.gif'});
+                                            }
+                                            console.log("img", this.state.img)
                                 }
                             }
                         },
@@ -150,6 +166,9 @@ export default class Waiting extends React.Component {
       }
       })
 
+
+
+        console.log("this.state.img", this.state.img, "heartStatus",this.state.heartStatus)
     }
 
     componentWillUnmount(){
@@ -166,16 +185,19 @@ export default class Waiting extends React.Component {
         return (
             this.state.userData.matches && this.state.heartStatus !== null && this.state.theirName && this.state.finishedQuiz && this.state.theirAnswers.length === 5 && this.state.myAnswers.length === 5 ?
             <div>
-                <h1>You and {this.state.theirName} have {this.state.heartStatus} {this.state.heartStatus == 1 ? 'heart' : 'hearts'}</h1>
-                <h3>That means you had {this.state.heartStatus} {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h3>
+                <Link to="/profile"><p id="waiting-back" className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
+                <img id="waiting-hearts" src={this.state.img} />
+                <h2 className='center'>You and {this.state.theirName} had {this.state.heartStatus}  {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h2>
+                <h1 className="fancy-type center caps ready-round2">Ready player one?</h1>
                   <Link to={`/chat/${this.state.userData.partnerId}`
-                  }> Round 2 </Link>
+                    }><button
+                    id="round2-btn"
+                    className="btn misc-btn caps"
+                    onClick={this.enterQuiz}
+                    >round 2</button>
+                </Link>
             </div> :
-            <div>
-                <h1>{this.state.theirName} is still answering</h1>
-                <h3>INSERT LOADING GRAPHIC HERE</h3>
-                <Link to="/profile"><p className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
-            </div>
+            <Wait />
         )
     }
 
