@@ -55,6 +55,15 @@ export default class MatchHistory extends React.Component {
                   }> <button
                     className="btn misc-btn caps inline-block matches-chat"
                     >chat</button></Link>
+
+                    <Link to={
+                      {
+                        pathname:`/matchsummary/${match.key}`,
+                        state: {partnerInfo: this.state.allUsersObj[match.key]}
+                      }
+                    }> <button
+                      className="btn misc-btn caps inline-block matches-chat"
+                      >cheat sheet</button></Link>
                     <hr />
 
                 </div>

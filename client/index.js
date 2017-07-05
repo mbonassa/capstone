@@ -26,7 +26,7 @@ ReactDOM.render(
         <Route path="/viewanswer" component={ViewAnswer}/>
         <Route path="/random" component={Random}/>
         <Route path="/chat/:partnerId" component={Chat}/>
-        <Route path="/matchsummary" component={MatchSummary} />
+        <Route path="/matchsummary/:partnerId" component={MatchSummary} />
       </Route>
     </Router>,
     document.getElementById('app')
