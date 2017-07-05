@@ -107,7 +107,7 @@ export default class Waiting extends React.Component {
                                     for (let i = 0 ; i < myAnswers.length ; i++) {
                                         if (myAnswers[i] == theirAnswers[i]) heartStatus++
                                     }
-                                    if(this.state.heartStatus === 0){
+                                    if(this.state.heartStatus === null){
                                         this.setState({heartStatus: heartStatus}, () => {
                                             console.log(this.state.heartStatus, myAnswers, theirAnswers)
                                         })
