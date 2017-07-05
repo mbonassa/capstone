@@ -1,11 +1,11 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
-import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase';
+import FireBaseTools, { firebaseUsersRef, firebaseAuth, firebaseMessaging } from '../../utils/firebase';
+import axios from 'axios';
 import { arrayify, arrayifyWithKey} from '../../utils/helperFunctions';
 import { Link } from 'react-router';
 import DailyMatch from './';
 import Wait from './';
-
 export default class UserView extends React.Component {
   constructor(props){
     super(props)
@@ -89,6 +89,14 @@ export default class UserView extends React.Component {
   }
 
   componentDidMount(){
+    firebaseMessaging.onMessage(payload => {
+        console.log(payload)
+    })
+    firebaseMessaging.getToken()
+      .then(token => {
+        axios.get(`/test/${token}`)
+      })
+
      firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
           firebaseUsersRef.on("value", (snapshot) => {

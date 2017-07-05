@@ -9,6 +9,24 @@ export const firebaseQuizRef = firebaseApp.database().ref('MCQuestions');
 export const firebaseQuestionsRef = firebaseApp.database().ref('Questions');
 
 
+// cloud messaging
+export const firebaseMessaging = firebaseApp.messaging();
+    firebaseMessaging.requestPermission()
+    .then(() => {
+        console.log("we're good")
+        return firebaseMessaging.getToken()
+    })
+    .then(token => {
+        console.log(token)
+    })
+    .catch(err => {
+        console.log(err)
+        console.log(`An error occurred. ${err.code}`)
+    })
+
+    firebaseMessaging.onMessage(payload => {
+        console.log(payload)
+    })
 
 const FireBaseTools = {
 
