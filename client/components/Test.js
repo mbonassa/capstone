@@ -46,13 +46,7 @@ export default class Test extends React.Component {
     render() {
         return (
             <div className="quiz">
-                <h1 id="question-title">What's your favorite reptile?</h1>
-                <div id="answers">
-                    <a onClick={this.handleClick}><div className="answer"><h3 className="answer-text">Lizards</h3></div></a>
-                    <a onClick={this.handleClick}><div className="answer"><h3 className="answer-text">Geckos</h3></div></a>
-                    <a onClick={this.handleClick}><div className="answer"><h3 className="answer-text">Argonians</h3></div></a>
-                    <a onClick={this.handleClick}><div className="answer"><h3 className="answer-text">Snakes</h3></div></a>
-                </div>
+                <img src="img/logo-animated.gif" />
             </div>
             )
     }

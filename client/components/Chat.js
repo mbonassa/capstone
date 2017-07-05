@@ -253,7 +253,7 @@ export default ignite(withAuth(class extends React.Component {
       :
       this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isAnswerer ?
       <div>
-      <p> YOU'RE ANSWERING </p>
+      <p>YOU'RE ANSWERING</p>
         <p> Your question: </p>
         <p> { this.state.userInfo.matches[this.props.partnerId].selectedQuestion } </p>
         <div className='chat-log'>
@@ -265,7 +265,7 @@ export default ignite(withAuth(class extends React.Component {
     :
      this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isJudge ?
     <div>
-    <p> YOU'RE JUDGING </p>
+    <p>YOU'RE JUDGING</p>
       <button onClick={this.handleJudge(1)}>LIKE</button>
       <button onClick={this.handleJudge(-1)}>DON'T LIKE</button>
     </div>

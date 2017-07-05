@@ -17,7 +17,7 @@ export default (props) => {
         let partner = props.location.state.partnerInfo;
     return (
       <div>
-        <h1>Your chat with {partner.name}</h1>
+        <h1 className="caps fancy-type">chat with {partner.name}</h1>
         {/* Here, we're passing in a Firebase reference to
             /scratchpads/$scratchpadTitle. This is where the scratchpad is
             stored in Firebase. Each scratchpad is just a string that the

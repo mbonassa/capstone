@@ -117,11 +117,12 @@ export default class Quiz extends React.Component {
     render() {
         let questionNumbers = this.state.questionNumbers;
         let question = questionNumbers ? this.state.data[questionNumbers[this.state.current]] : null;
+        let chatRoute = '/chat/' + this.partnerId;
 
         return (
             <div>
             {this.state.finishedQuiz ?
-            <Link to='pickquestion'>You finished your quiz already. Go to round 2!</Link>
+                browserHistory.push(chatRoute)
             :
             <div className="quiz">
                 <h1 id="question-title">{question ? question[0] : null}</h1>
