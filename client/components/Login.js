@@ -93,7 +93,7 @@ handleFacebookLogin () {
   render() {
     return (
       <div>
-      <img id="login-img" src='./img/logo.png' />
+      <img id="login-img" src='./img/logo-animated.gif' />
        <div>
         <div className="container">
          {this.state.toggleLogin ? ( <div>

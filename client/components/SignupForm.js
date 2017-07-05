@@ -118,24 +118,24 @@ export default class Signup extends React.Component {
           </div>
       </div>
 
-      <div>
-      <label htmlFor="minAge" className="col-sm-2 control-label"> Minimum Age</label>
-      <select onChange={this.onChange('minAge')} className="age-range col-sm-6 form-control">
-        {this.generateAgeDropdown().map(el => {
-          return <option key={el}>{el}</option>
-        })
-      }
-      </select>
+      <div className="inline-block age-range-div">
+        <label htmlFor="minAge" className="col-sm-2 control-label">Between ages</label>
+        <select onChange={this.onChange('minAge')} className="age-range col-sm-6 form-control">
+          {this.generateAgeDropdown().map(el => {
+            return <option key={el}>{el}</option>
+          })
+        }
+        </select>
       </div>
 
-      <div>
-      <label htmlFor="maxAge" className="col-sm-2 control-label">Maximum Age</label>
-      <select onChange={this.onChange('maxAge')} className="age-range col-sm-6 form-control">
-        {this.generateAgeDropdown().map(el => {
-          return <option key={el}>{el}</option>
-        })
-      }
-      </select>
+      <div className="inline-block age-range-div" id="and">
+        <label htmlFor="maxAge" className="col-sm-2 control-label">and</label>
+        <select id="max-age" onChange={this.onChange('maxAge')} className="age-range col-sm-6 form-control">
+          {this.generateAgeDropdown().map(el => {
+            return <option key={el}>{el}</option>
+          })
+        }
+        </select>
       </div>
 
       <div className="form-group">

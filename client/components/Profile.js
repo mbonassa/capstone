@@ -3,7 +3,8 @@ import { browserHistory } from 'react-router';
 import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase';
 import { arrayify, arrayifyWithKey} from '../../utils/helperFunctions';
 import { Link } from 'react-router';
-import DailyMatch from './'
+import DailyMatch from './';
+import Wait from './';
 
 export default class UserView extends React.Component {
   constructor(props){

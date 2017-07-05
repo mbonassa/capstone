@@ -42,7 +42,7 @@
   /* LOGIN */
 
   #login-img {
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     width: 60%;
     text-align: center;
     margin-top: 90px;
@@ -198,8 +198,46 @@
     vertical-align: center;
     margin-left: 15%;
     font-size: 1.5em;
-    background-color: rgba(255, 255, 255, 0.5)
+    background-color: rgba(255, 255, 255, 0.5);
   }
+
+  /* WAITING */
+
+  #five-hearts {
+    margin-top: 200px;
+    width: 80%;
+    margin-left: 10%;
+  }
+
+  #waiting-back {
+    margin-top: -5px;
+  }
+
+  /* SIGN UP FORM */
+
+.age-range {
+  width: 33%;
+  display: inline-block;
+}
+
+.age-range-title {
+  width: 100%;
+  display: inline-block;
+  text-align: left;
+}
+
+.age-range-div {
+  margin-left: -15px;
+  margin-bottom: 15px;
+}
+
+#and {
+  margin-left: 0px;
+}
+
+#max-age {
+  width: 53% !important;
+}
 
 }
 
@@ -238,16 +276,6 @@ img {
   overflow-x: hidden;
 }
 
-.age-range {
-  width: 35%;
-  display: inline-block;
-}
-
-.age-range-title {
-  width: 100%;
-  display: inline-block;
-  text-align: left;
-}
 
 .fancy-type {
   font-family: 'VT323', monospace;
