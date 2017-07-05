@@ -69,6 +69,7 @@ handleFacebookLogin () {
           email: this.state.signUpEmail,
           password: this.state.signUpPassword,
           imageUrl: `http://i.imgur.com/GGMIIKS.png`,
+          gender: 'male',
           age: 22,
           bio: "Fullstack rules"
         }, () => {

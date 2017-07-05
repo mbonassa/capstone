@@ -9,6 +9,7 @@ export default class UserView extends React.Component {
   constructor(props){
     super(props)
     this.state = {
+      disabled: true,
       partnerId: '',
       waiting: false,
       usersObj: [],
@@ -26,7 +27,10 @@ export default class UserView extends React.Component {
 
   setActive(){
 
-    this.setState({'waiting': true}, () => {
+    this.setState({
+              waiting: true,
+              disabled: true
+      }, () => {
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
         active: true
       })
@@ -44,32 +48,37 @@ export default class UserView extends React.Component {
           }
      })
       if (activeUsers.length){
-        let partnerId = activeUsers[0].key
-        return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+        let partnerId = activeUsers[0].key;
+        let userId = firebaseAuth.currentUser.uid;
+        console.log(partnerId, userId)
+        return firebaseUsersRef.child(userId).update({
             active: true,
             partnerId: partnerId
         })
         .then(() => {
-          firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('pastMatches').update({
+          firebaseUsersRef.child(userId).child('pastMatches').update({
             [partnerId]: true
           })
         })
         .then(() => {
           return firebaseUsersRef.child(partnerId).update({
             active: true,
-            partnerId: firebaseAuth.currentUser.uid
+            partnerId: userId
           });
         })
         .then(() => {
           firebaseUsersRef.child(partnerId).child('pastMatches').update({
-            [firebaseAuth.currentUser.uid]: true
+            [userId]: true
           })
         })
       } else {
          console.log("no match found")
       }
     });
-    this.setState({'waiting': false})
+    this.setState({
+          waiting: false,
+          disabled: false
+        })
     });
   }
 
@@ -94,6 +103,7 @@ export default class UserView extends React.Component {
             (errorObject) => {
             console.log("The read failed: " + errorObject.code);
           });
+        this.setState({disabled: false})
       } else {
         browserHistory.push('/login')
       }
@@ -127,6 +137,7 @@ export default class UserView extends React.Component {
             {!this.state.val.partnerId ?
               <button
               id="find-match"
+              disabled={this.state.disabled}
               className="btn misc-btn caps"
               title="Score"
               onClick={this.setActive}
