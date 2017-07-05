@@ -59,7 +59,6 @@ export default ignite(withAuth(class extends React.Component {
           this.setState({partnerInfo: snapshot.val()})
         });
       } else {
-        alert("You're not logged in")
         browserHistory.push('login')
       }
     })
@@ -131,12 +130,12 @@ export default ignite(withAuth(class extends React.Component {
       return <span>You must be logged in to send messages.</span>
     }
     return (
-      <form onSubmit={(evt) =>{
+      <form className="form-horizontal form-group" onSubmit={(evt) =>{
         submitFunc(evt)
       }
     }>
-        <input onChange={this.handleInput} value={this.state.input} name='body'/>
-        <input type='submit'/>
+        <input className="white chat-input" onChange={this.handleInput} value={this.state.input} name='body'/>
+        <input className="btn btn-msc chat-submit caps" value="send" type='submit'/>
       </form>
     )
   }
@@ -222,31 +221,40 @@ export default ignite(withAuth(class extends React.Component {
 
 
   render() {
+    let heartStatus;
+    this.state.userInfo.matches ? heartStatus = this.state.userInfo.matches[this.props.partnerId].heartStatus : null
     const { user, snapshot, asEntries } = this.props,
           messages = asEntries(snapshot)
 
     return (
       <div>
-        <div className="messageHistory" ref={ele => { this.container = ele; }}>
+        <div>
+          { heartStatus == 0 ? <img className="chat-hearts" src="/img/no-hearts.gif" /> : null }
+          { heartStatus == 1 ? <img className="chat-hearts" src="/img/1-heart.gif" /> : null }
+          { heartStatus == 2 ? <img className="chat-hearts" src="/img/2-hearts.gif" /> : null }
+          { heartStatus == 3 ? <img className="chat-hearts" src="/img/3-hearts.gif" /> : null }
+          { heartStatus == 4 ? <img className="chat-hearts" src="/img/4-hearts.gif" /> : null }
+          { heartStatus == 5 ?
+            <div>
+              <img className="chat-hearts" src="/img/5-hearts.gif" />
+              <p className="center"> Your HeartRate is maxed out, congrats! Get chatting! </p>
+            </div> : null }
+        </div>
+        <div className="messageHistory white" ref={ele => { this.container = ele; }}>
           {
             messages.map(({key, fireRef}) => {
               return <ChatMessage key={key} fireRef={fireRef}/>
             })
           }
         </div>
-        <hr />
         {
           this.currentMatch && this.currentMatch.heartStatus > 4 ?
           <div>
-            <p> Your HeartRate is maxed out! Get chattin'! </p>
             {this.renderSendMsg(user, this.sendMessage)}
           </div>
           :
           this.currentMatch && (this.currentMatch.heartStatus < 0 || this.currentMatch.askedQuestions > 8) ?
-          <div>
-            <p> You ran out of hearts... </p>
-            <Link to="profile"> Match again? </Link>
-          </div>
+            browserHistory.push("/lostmatch")
           :
           this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isAsker ?
           <div>
@@ -277,9 +285,7 @@ export default ignite(withAuth(class extends React.Component {
           :
           <p> Waiting on your partner's response... </p>
         }
-        <div>
-          <p> You have {this.state.userInfo.matches ? this.state.userInfo.matches[this.props.partnerId].heartStatus : 0} hearts </p>
-        </div>
+
       </div>
     )
   }

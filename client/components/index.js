@@ -14,3 +14,4 @@ export { default as Test } from './Test';
 export { default as Load } from './Load';
 export { default as ViewAnswer } from './ViewAnswer';
 export { default as Wait } from './Test';
+export { default as Lose } from './Lose';

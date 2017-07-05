@@ -7,7 +7,7 @@ import { randomize } from '../../utils/helperFunctions'
 const users = firebaseDb.ref('Users'), nickname = uid => users.child(uid).child('name')
 
 export const Nickname = ignite(
-  ({value}) => <span className='chat-message-nick'>{value}</span>
+  ({value}) => <span className='chat-message-nick white'>{value}</span>
 )
 
 export const ChatMessage = ignite(
@@ -21,10 +21,10 @@ export const ChatMessage = ignite(
     } else {
       realTime = "unknown time"
     }
-    return <div className='chat-message'>
-      <Nickname fireRef={nickname(from)} />
-      <span className='chat-message-body'>{` (${realTime})`}</span>
-      <span className='chat-message-body'>{`: ${body}`}</span>
+    return <div className='chat-message white'>
+      <Nickname className='white' fireRef={nickname(from)} />
+      <span className='chat-message-body white'>{` (${realTime})`}</span>
+      <span className='chat-message-body white'>{`: ${body}`}</span>
     </div>
   }
 )

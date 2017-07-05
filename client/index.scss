@@ -232,75 +232,113 @@
     margin-right: -5px;
   }
 
- #waiting-hearts {
+   #waiting-hearts {
+      width: 90%;
+      margin-left: 5%;
+      margin-top: 100px;
+    }
+
+    #round2-btn {
+      padding: 10px 25px;
+      font-size: 1.5em;
+      margin-left: 28%;
+    }
+
+    .ready-round2 {
+      margin-top: 100px;
+    }
+
+    /* SIGN UP FORM */
+
+  .age-range {
+    width: 33%;
+    display: inline-block;
+  }
+
+  .age-range-title {
+    display: inline-block;
+    text-align: left;
+  }
+
+  .age-range-div {
+    margin-left: -15px;
+    margin-bottom: 15px;
+  }
+
+  #and {
+    margin-left: 0px;
+  }
+
+  #max-age {
+    width: 53% ;
+  }
+
+  #signup-form-submit {
+      margin-top: 20px;
+      padding: 5px 20px;
+      font-size: 2.5em;
+      margin-left: 30%;
+      margin-bottom: 0px;
+      color: #fc5f5d;
+  }
+
+  .gender {
+    margin-top: -7px !important;
+  }
+
+  #age-drop{
+    width: 20%;
+    margin-bottom: 15px;
+  }
+
+  #looking-for{
+    margin-top: 10px;
+    font-size: 1.5em;
+  }
+
+  #about-me {
+    font-size: 1.5em;
+    margin-top: 0px;
+  }
+
+  /* LOST MATCH */
+
+  #lose-text {
     width: 90%;
     margin-left: 5%;
-    margin-top: 100px;
   }
 
-  #round2-btn {
-    padding: 10px 25px;
-    font-size: 1.5em;
-    margin-left: 28%;
-  }
+  /* CHAT */
 
-  .ready-round2 {
-    margin-top: 100px;
-  }
-
-  /* SIGN UP FORM */
-
-.age-range {
-  width: 33%;
-  display: inline-block;
-}
-
-.age-range-title {
-  display: inline-block;
-  text-align: left;
-}
-
-.age-range-div {
-  margin-left: -15px;
-  margin-bottom: 15px;
-}
-
-#and {
-  margin-left: 0px;
-}
-
-#max-age {
-  width: 53% ;
-}
-
-#signup-form-submit {
-    margin-top: 20px;
-    padding: 5px 20px;
-    font-size: 2.5em;
-    margin-left: 30%;
-    margin-bottom: 0px;
+  .messageHistory {
+    background-color: white !important;
     color: #fc5f5d;
-}
+    padding: 15px;
+    border-radius: 5px;
+  }
 
-.gender {
-  margin-top: -7px !important;
-}
+  .chat-hearts {
+    width: 90%;
+    margin-left: 5%;
+    margin-bottom: 5px;
+  }
 
-#age-drop{
-  width: 20%;
-  margin-bottom: 15px;
-}
+  .chat-input {
+    width:75%;
+    font-size: 1em;
+    margin-top: 5px;
+    border-radius: 5px;
+    padding: 10px;
+  }
 
-#looking-for{
-  margin-top: 10px;
-  font-size: 1.5em;
-}
+  .chat-submit {
+    width:25%;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #fc5f5d;
+    margin-top: 0px;
+    height: 44px;
 
-#about-me {
-  font-size: 1.5em;
-  margin-top: 0px;
-}
-
+  }
 }
 
 @media (max-width: 600px) and (min-width: 401px) {
@@ -353,4 +391,9 @@ img {
 
 .inline-block {
   display: inline-block;
+}
+
+.white {
+  background-color: white;
+  color: #fc5f5d;
 }
