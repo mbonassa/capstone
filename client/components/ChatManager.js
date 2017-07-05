@@ -56,12 +56,16 @@ export default class ChatManager extends React.Component {
         />
     }
 
+// renders the title of the chat
+// renders the chat itself
+// renders a link to profile on the bottom
+
     render(){
         return (
       <div>
-        <h1>Your chat with {this.state.partnerInfo.name ? this.state.partnerInfo.name : 'a mysterious stranger'}</h1>
+        <h3>{this.state.partnerInfo.name ? this.state.partnerInfo.name : 'a mysterious stranger'}</h3>
         {this.userId ? <div> {this.renderChat()} </div>: null}
-        <Link to="/profile"><p className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
+        <Link to="/profile"><p className="caps back"><span className="glyphicon glyphicon-chevron-left">PROFILE</span></p></Link>
       </div>
      )
     }

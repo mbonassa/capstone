@@ -1,52 +1,28 @@
 import React from 'react'
+import { browserHistory } from 'react-router';
 import { firebaseDb, firebaseAuth, firebaseUsersRef } from '../../utils/firebase'
 import ignite, { withAuth, FireInput } from '../../utils/ignite'
-import { browserHistory } from 'react-router';
 import { randomize } from '../../utils/helperFunctions'
-
-const users = firebaseDb.ref('Users')
-    , nickname = uid => users.child(uid).child('name')
-
-const Nickname = ignite(
-  ({value}) => <span className='chat-message-nick'>{value}</span>
-)
-
-const ChatMessage = ignite(
-  ({value}) => {
-    if (!value) return null
-    const {from, body, timestamp} = value
-    let realTime;
-    if (timestamp){
-      realTime = new Date(timestamp).toTimeString();
-      realTime = realTime.slice(0, 5)
-    } else {
-      realTime = "unknown time"
-    }
-    return <div className='chat-message'>
-      <Nickname fireRef={nickname(from)} />
-      <span className='chat-message-body'>{` (${realTime})`}</span>
-      <span className='chat-message-body'>{`: ${body}`}</span>
-    </div>
-  }
-)
+import { ChatMessage } from './ChatMessage'
 
 export default ignite(withAuth(class extends React.Component {
 
   constructor(props){
     super(props);
     this.state = {
+      input: '',
       userInfo: {},
       partnerInfo: {},
       randomNumbers: [],
       questions: []
     }
     this.sendMessage = this.sendMessage.bind(this)
+    this.handleInput = this.handleInput.bind(this)
     this.askQuestion = this.askQuestion.bind(this)
-    this.renderAnswerForm = this.renderAnswerForm.bind(this);
     this.answerQuestion = this.answerQuestion.bind(this)
     this.judgeQuestion = this.judgeQuestion.bind(this)
-    this.currentMatch = null;
 
+    this.currentMatch = null;
   }
 
   //---------------- LIFECYCLE HOOKS  ----------- //
@@ -66,6 +42,7 @@ export default ignite(withAuth(class extends React.Component {
         firebaseUsersRef.child(firebaseAuth.currentUser.uid).on('value', snapshot => {
           this.setState({userInfo: snapshot.val()}, () => {
             this.currentMatch = this.state.userInfo.matches[this.props.partnerId]
+            // if we have won or lost the match, let's... unmatch!
             if (
               this.props.partnerId === this.state.userInfo.partnerId &&
               (
@@ -73,7 +50,6 @@ export default ignite(withAuth(class extends React.Component {
                 this.state.userInfo.matches[this.state.userInfo.partnerId].askedQuestions > 8
               )
             ){
-              console.log('UNMATCHING')
               this.unmatch();
             }
           })
@@ -88,6 +64,19 @@ export default ignite(withAuth(class extends React.Component {
       }
     })
   }
+
+  // these two components grab the messageHistory container (holds every message) and whenever the component updates, set the scroll height to the bottom of that container. credit to patrick kim (https://github.com/ptrkkim/stackathon)
+
+  componentWillUpdate() {
+    const node = this.container;
+    this.shouldScroll = node.scrollTop + node.offsetHeight >= node.scrollHeight;
+  }
+
+  componentDidUpdate() {
+    const node = this.container;
+      node.scrollTop = node.scrollHeight;
+  }
+
 
   componentWillUnmount(){
     firebaseDb.ref('Questions').off()
@@ -106,25 +95,30 @@ export default ignite(withAuth(class extends React.Component {
     })
   }
 
-  sendMessage(event, text){
-    //we call this directly and from two other functions. if it is called from another function we only care about the text. otherwise let's use the event value
+  handleInput(evt){
+    this.setState({input: evt.target.value})
+  }
 
+
+  //we call this function directly from an onsubmit and through other functions. if it is called from another function we only care about the custom text passed in. otherwise let's use the state
+  sendMessage(event, text){
     let msg;
     if (event){
       event.preventDefault()
-      msg = event.target.body.value
+      msg = this.state.input
     }
     if (!this.props.fireRef) return
     if (text) {
       msg = text
     }
-    this.props.fireRef.push({
+    return this.props.fireRef.push({
       timestamp: Date.now(),
       from: firebaseAuth.currentUser.uid,
       body: `${msg}`
     })
     .then(() => {
-      firebaseDb.ref('Users').child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).child('chat').push({
+      this.setState({input: ''})
+      return firebaseDb.ref('Users').child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).child('chat').push({
         timestamp: Date.now(),
         from: firebaseAuth.currentUser.uid,
         body: `${msg}`
@@ -132,31 +126,16 @@ export default ignite(withAuth(class extends React.Component {
     })
   }
 
-  renderSendMsg(user) {
+  renderSendMsg(user, submitFunc) {
     if (!user) {
       return <span>You must be logged in to send messages.</span>
     }
     return (
       <form onSubmit={(evt) =>{
-        this.sendMessage(evt)
+        submitFunc(evt)
       }
     }>
-        <input name='body'/>
-        <input type='submit'/>
-      </form>
-    )
-  }
-
-  renderAnswerForm(user) {
-    if (!user) {
-      return <span>You must be logged in to send messages.</span>
-    }
-    return (
-      <form onSubmit={(evt) =>{
-        this.answerQuestion(evt)
-      }
-    }>
-        <input name='body'/>
+        <input onChange={this.handleInput} value={this.state.input} name='body'/>
         <input type='submit'/>
       </form>
     )
@@ -189,28 +168,10 @@ export default ignite(withAuth(class extends React.Component {
   }
 
 
-//sends one message. better be a good one
+//sends one message. better be a good one (really this is just sendmessage with a db update afterward)
 
   answerQuestion(event, text){
-    let msg;
-    if (event){
-      event.preventDefault()
-      msg = event.target.body.value
-    }
-    if (text) msg = text
-    if (!this.props.fireRef) return
-    this.props.fireRef.push({
-      timestamp: Date.now(),
-      from: firebaseAuth.currentUser.uid,
-      body: `${msg}`
-    })
-    .then(() => {
-      firebaseDb.ref('Users').child(this.props.partnerId).child('matches').child(firebaseAuth.currentUser.uid).child('chat').push({
-        timestamp: Date.now(),
-        from: firebaseAuth.currentUser.uid,
-        body: `${msg}`
-      })
-    })
+    this.sendMessage(event, text)
     .then(() => {
       firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').child(this.props.partnerId).update({
         selectedQuestion: 'Waiting...',
@@ -254,69 +215,72 @@ export default ignite(withAuth(class extends React.Component {
     }
   }
 
-
+// this is a big render! to explain from top-bottom:
 // chat renders message history all the time.
-// after that it sees if the match is won or lost. if either it just displays that.
+// after that it sees if the match is won or lost. if either is true, it displays that.
 // after that it checks to see your state in the game. there are four states you can be in. it checks questioner -> answerer -> judge -> waiter, and renders one of these four states
 
+
   render() {
-    const {user, snapshot, asEntries} = this.props
-        , messages = asEntries(snapshot)
+    const { user, snapshot, asEntries } = this.props,
+          messages = asEntries(snapshot)
+
     return (
       <div>
-       {
-          messages.map(({key, fireRef}) => {
-            return <ChatMessage key={key} fireRef={fireRef}/>
-          })
-        }
+        <div className="messageHistory" ref={ele => { this.container = ele; }}>
+          {
+            messages.map(({key, fireRef}) => {
+              return <ChatMessage key={key} fireRef={fireRef}/>
+            })
+          }
+        </div>
         <hr />
-      {
-        this.currentMatch && this.currentMatch.heartStatus > 4 ?
-        <div>
-          <p> YOU WIN!!! Get chattin'! </p>
-          {this.renderSendMsg(user)}
-        </div>
-        :
-        this.currentMatch && (this.currentMatch.heartStatus < 0 || this.currentMatch.askedQuestions > 8) ?
-        <div>
-          <p> YOU LOSE </p>
-        </div>
-        :
-        this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isAsker ?
-      <div>
-        <p> YOU'RE ASKING! </p>
         {
-          this.state.randomNumbers.map(number => {
-            return <p key={number} onClick={this.askQuestion(number)}> {this.state.questions[number]} </p>
-          })
+          this.currentMatch && this.currentMatch.heartStatus > 4 ?
+          <div>
+            <p> Your HeartRate is maxed out! Get chattin'! </p>
+            {this.renderSendMsg(user, this.sendMessage)}
+          </div>
+          :
+          this.currentMatch && (this.currentMatch.heartStatus < 0 || this.currentMatch.askedQuestions > 8) ?
+          <div>
+            <p> You ran out of hearts... </p>
+            <Link to="profile"> Match again? </Link>
+          </div>
+          :
+          this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isAsker ?
+          <div>
+            <p> YOU'RE ASKING! </p>
+            {
+              this.state.randomNumbers.map(number => {
+                return <p key={number} onClick={this.askQuestion(number)}> {this.state.questions[number]} </p>
+              })
+            }
+          </div>
+          :
+          this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isAnswerer ?
+          <div>
+            <p>YOU'RE ANSWERING</p>
+            <p> Your question: </p>
+            <p> { this.state.userInfo.matches[this.props.partnerId].selectedQuestion } </p>
+            <div>
+              {this.renderSendMsg(user, this.answerQuestion)}
+            </div>
+          </div>
+          :
+          this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isJudge ?
+          <div>
+            <p> YOU'RE JUDGING </p>
+            <button onClick={this.judgeQuestion(1)}>LIKE</button>
+            <button onClick={this.judgeQuestion(-1)}>DON'T LIKE</button>
+          </div>
+          :
+          <p> Waiting on your partner's response... </p>
         }
-      </div>
-      :
-      this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isAnswerer ?
-      <div>
-      <p>YOU'RE ANSWERING</p>
-        <p> Your question: </p>
-        <p> { this.state.userInfo.matches[this.props.partnerId].selectedQuestion } </p>
-        <div className='chat-log'>
-        </div>
         <div>
-        {this.renderAnswerForm(user)}
+          <p> You have {this.state.userInfo.matches ? this.state.userInfo.matches[this.props.partnerId].heartStatus : 0} hearts </p>
         </div>
-    </div>
-    :
-     this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isJudge ?
-    <div>
-    <p> YOU'RE JUDGING </p>
-      <button onClick={this.judgeQuestion(1)}>LIKE</button>
-      <button onClick={this.judgeQuestion(-1)}>DON'T LIKE</button>
-    </div>
-      :
-      <p> Waiting on your partner's response... </p>
-      }
-      <div>
-      <p> You have {this.state.userInfo.matches ? this.state.userInfo.matches[this.props.partnerId].heartStatus : 0} hearts </p>
       </div>
-      </div>
-      )
+    )
   }
 }))
