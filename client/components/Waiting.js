@@ -174,7 +174,7 @@ export default class Waiting extends React.Component {
             </div> :
             <div>
                 <h1>{this.state.theirName} is still answering</h1>
-                <h3>We'll let you know when they're done</h3>
+                <h3>INSERT LOADING GRAPHIC HERE</h3>
                 <Link to="/profile"><p className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
             </div>
         )
