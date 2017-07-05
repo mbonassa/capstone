@@ -92,9 +92,6 @@ export default class EditProfile extends React.Component {
         <div className="col-sm-10">
           <input onChange={this.onChange('name')} type="userName" className="form-control" id="userName" value={this.state.name} />
         </div>
-          <div className="col-sm-10">
-            <p className="control-label"> Gender: {this.state.gender} </p>
-          </div>
       </div>
       <div className="form-group">
         <label htmlFor="userBio" className="col-sm-2 control-label">Update Bio</label>
@@ -115,7 +112,7 @@ export default class EditProfile extends React.Component {
       </div>
 
       <div>
-      <label htmlFor="minAge" className="age-range-title col-sm-2 control-label">Minimum Age</label>
+      <label htmlFor="minAge" className="age-range-title col-sm-2 control-label">Update Minimum Age</label>
       <select onChange={this.onChange('minAge')} className="age-range col-sm-6 form-control" placeholder="min">
         {this.generateAgeDropdown().map(el => {
           return <option key={el}>{el}</option>
@@ -125,7 +122,7 @@ export default class EditProfile extends React.Component {
       </div>
 
       <div>
-      <label htmlFor="maxAge" className="age-range-title col-sm-2 control-label">Maximum Age</label>
+      <label htmlFor="maxAge" className="age-range-title col-sm-2 control-label">Update Maximum Age</label>
       <select onChange={this.onChange('maxAge')} className="age-range col-sm-6 form-control" placeholder="max">
         {this.generateAgeDropdown().map(el => {
           return <option key={el}>{el}</option>
