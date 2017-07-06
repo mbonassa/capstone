@@ -55,13 +55,14 @@ export default class App extends React.Component {
       var errorMessage = error.message;
     })
     .then(() => {
-      if (window.md.is('iPhone')) return firebaseMessaging.getToken();
+      if (window.md.is('iPhone')) return;
       else return firebaseMessaging.getToken()
     })
     .then(token => {
-      return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+      if (token) return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
         accessToken: token
       })
+      else return;
     })
     .then(() => {
     if (firebaseAuth.currentUser) browserHistory.push("profile")
@@ -76,22 +77,24 @@ export default class App extends React.Component {
         return firebaseMessaging.getToken()
       })
       .then(token => {
-        return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+        let dataToEnter = {
           name: "Happy Fullstacker",
           email: this.state.signUpEmail,
           password: this.state.signUpPassword,
           imageUrl: `http://i.imgur.com/GGMIIKS.png`,
           gender: 'male',
           age: 22,
-          bio: "Fullstack rules",
-          accessToken: token
-        }, () => {
-        browserHistory.push('signup');
-        });
+          bio: "Fullstack rules"
+        }
+        if(token) dataToEnter.accessToken = token;
+        return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set(dataToEnter)
+        .then(() => {
+          browserHistory.push('signup');
+        })
       })
       .catch(function(error){
         console.log(error)
-        alert("Looks like you got an error. Maybe turn your cookies on and allow notifications!")
+        alert("Error. Turn on cookies and allow notifications")
       })
     } else {
       alert("Invalid Password: Must be at least six characters")

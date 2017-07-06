@@ -6,6 +6,7 @@ import { arrayify, arrayifyWithKey} from '../../utils/helperFunctions';
 import { Link } from 'react-router';
 import DailyMatch from './';
 import Wait from './';
+import Notify from 'notifyjs'
 
 export default class UserView extends React.Component {
   constructor(props){
@@ -26,31 +27,28 @@ export default class UserView extends React.Component {
 
     this.handleLogout = this.handleLogout.bind(this);
     this.setActive = this.setActive.bind(this);
+
+    this.unsubscribe = null;
   }
 
   componentDidMount(){
 
     console.log("let's see the mobile status", window.md)
-    //cloud messaging test!
-
-    firebaseMessaging.onMessage(payload => {
-        alert(payload.data.tweet)
-    })
+    //cloud messaging
+    this.unsubscribe = firebaseMessaging.onMessage(payload => {
+      const matchNotification = new Notify(payload.notification.title, {
+        body: `${payload.notification.body}`,
+        icon: payload.notification.icon
+      });
+      matchNotification.show();
+    });
 
     firebaseAuth.onAuthStateChanged((user) => {
 
       if (user) {
+
           firebaseUsersRef.on("value", (snapshot) => {
-            this.setState({usersObj: snapshot.val()}, () => {
-                  if (this.state.usersObj[this.state
-                    .val.partnerId]){
-                    console.log(this.state
-                    .val.partnerId)
-                    console.log(this.state.usersObj[this.state
-                    .val.partnerId])
-                    if (this.state.usersObj[this.state.val.partnerId].accessToken){
-                    return axios.get(`/test/${this.state.usersObj[this.state.val.partnerId].accessToken}`)
-                    }}});;
+            this.setState({usersObj: snapshot.val()})
          },
           (errorObject) => {
           console.log("The read failed: " + errorObject.code);
@@ -73,6 +71,7 @@ export default class UserView extends React.Component {
   componentWillUnmount(){
     firebaseUsersRef.off()
     firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
+    if (this.unsubscribe) this.unsubscribe()
   }
 
   setActive(){
@@ -98,7 +97,6 @@ export default class UserView extends React.Component {
       if (activeUsers.length){
         let partnerId = activeUsers[0].key;
         let userId = firebaseAuth.currentUser.uid;
-        console.log(partnerId, userId)
         return firebaseUsersRef.child(userId).update({
             active: true,
             partnerId: partnerId
@@ -118,6 +116,18 @@ export default class UserView extends React.Component {
           firebaseUsersRef.child(partnerId).child('pastMatches').update({
             [userId]: true
           })
+        })
+        //axios request to spark cloud message (must be handled from server)
+        .then(() => {
+          if (this.state.usersObj[this.state.val.partnerId]){
+            if (this.state.usersObj[this.state.val.partnerId].accessToken){
+              let partnerToken = this.state.usersObj[this.state.val.partnerId].accessToken
+              return axios.get( `/messaging/newmatch/${partnerToken}`)
+            }
+          }
+        })
+        .catch(err => {
+          console.log(err)
         })
       } else {
          console.log("no match found")
