@@ -33,7 +33,8 @@ export default class App extends React.Component {
           name: user.name,
           gender: user.gender,
           imageUrl: user.picture.data.url,
-          age: 20,
+          age: 25,
+          partnerId: "",
           bio: `I'm ${user.name}. Check me out on facebook`
           })
         }
