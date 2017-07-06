@@ -24,7 +24,6 @@ export default class App extends React.Component {
     FireBaseTools.loginWithProvider('facebook')
     .then((user) => {
       user = user.additionalUserInfo.profile
-      console.log(user)
       if (user.age_range.min < 18){
         alert("You are too young for this. Come back later")
         throw new Error("baby detected")
