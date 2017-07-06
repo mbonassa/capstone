@@ -24,10 +24,6 @@ export const firebaseMessaging = firebaseApp.messaging();
         console.log(`An error occurred. ${err.code}`)
     })
 
-    firebaseMessaging.onMessage(payload => {
-        console.log(payload)
-    })
-
 const FireBaseTools = {
 
   /**

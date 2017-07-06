@@ -6,6 +6,8 @@ import { arrayify, arrayifyWithKey} from '../../utils/helperFunctions';
 import { Link } from 'react-router';
 import DailyMatch from './';
 import Wait from './';
+import Notify from 'notifyjs'
+
 export default class UserView extends React.Component {
   constructor(props){
     super(props)
@@ -25,10 +27,54 @@ export default class UserView extends React.Component {
 
     this.handleLogout = this.handleLogout.bind(this);
     this.setActive = this.setActive.bind(this);
+
+    this.unsubscribe = null;
+  }
+
+  componentDidMount(){
+
+    console.log("let's see the mobile status", window.md)
+    //cloud messaging
+    this.unsubscribe = firebaseMessaging.onMessage(payload => {
+      const matchNotification = new Notify(payload.notification.title, {
+        body: `${payload.notification.body}`,
+        icon: payload.notification.icon
+      });
+      matchNotification.show();
+    });
+
+    firebaseAuth.onAuthStateChanged((user) => {
+
+      if (user) {
+
+          firebaseUsersRef.on("value", (snapshot) => {
+            this.setState({usersObj: snapshot.val()})
+         },
+          (errorObject) => {
+          console.log("The read failed: " + errorObject.code);
+          })
+
+          firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value",
+            (snapshot) => {
+              this.setState({val: snapshot.val()});
+          },
+          (errorObject) => {
+              console.log("The read failed: " + errorObject.code);
+            });
+          this.setState({disabled: false})
+        } else {
+          browserHistory.push('/login')
+        }
+     });
+  }
+
+  componentWillUnmount(){
+    firebaseUsersRef.off()
+    firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
+    if (this.unsubscribe) this.unsubscribe()
   }
 
   setActive(){
-
     this.setState({
               waiting: true,
               disabled: true
@@ -51,7 +97,6 @@ export default class UserView extends React.Component {
       if (activeUsers.length){
         let partnerId = activeUsers[0].key;
         let userId = firebaseAuth.currentUser.uid;
-        console.log(partnerId, userId)
         return firebaseUsersRef.child(userId).update({
             active: true,
             partnerId: partnerId
@@ -72,6 +117,18 @@ export default class UserView extends React.Component {
             [userId]: true
           })
         })
+        //axios request to spark cloud message (must be handled from server)
+        .then(() => {
+          if (this.state.usersObj[this.state.val.partnerId]){
+            if (this.state.usersObj[this.state.val.partnerId].accessToken){
+              let partnerToken = this.state.usersObj[this.state.val.partnerId].accessToken
+              return axios.get( `/messaging/newmatch/${partnerToken}`)
+            }
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
       } else {
          console.log("no match found")
       }
@@ -88,45 +145,8 @@ export default class UserView extends React.Component {
     browserHistory.push('/login');
   }
 
-  componentDidMount(){
-    firebaseMessaging.onMessage(payload => {
-        console.log(payload)
-    })
-    firebaseMessaging.getToken()
-      .then(token => {
-        axios.get(`/test/${token}`)
-      })
-
-     firebaseAuth.onAuthStateChanged((user) => {
-      if (user) {
-          firebaseUsersRef.on("value", (snapshot) => {
-          this.setState({usersObj: snapshot.val()});
-      },
-        (errorObject) => {
-        console.log("The read failed: " + errorObject.code);
-      })
-          firebaseUsersRef.child(firebaseAuth.currentUser.uid).on("value",
-            (snapshot) => {
-            this.setState({val: snapshot.val()});
-          },
-            (errorObject) => {
-            console.log("The read failed: " + errorObject.code);
-          });
-        this.setState({disabled: false})
-      } else {
-        browserHistory.push('/login')
-      }
-     });
-
-     console.log(firebaseAuth.currentUser)
-  }
-
-  componentWillUnmount(){
-    firebaseUsersRef.off()
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).off()
-  }
-
   render() {
+    console.log(this.state)
       return (
       <div className="user-page">
       <img className="logo-top" src="./img/sm-logo.png" />
@@ -167,7 +187,6 @@ export default class UserView extends React.Component {
               >See my match</button></Link>
             </div>
          }
-         {this.state.waiting && !this.state.val.partnerId ? browserHistory.push('/wait') : null}
         <Link to={
             {
               pathname: "matchHistory",

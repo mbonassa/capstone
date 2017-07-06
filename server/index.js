@@ -5,7 +5,10 @@ const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 8080;
 const app = express();
 // module.exports = app;
+const MobileDetect = require('mobile-detect')
+const md = new MobileDetect
 
+// firebase cloud messaging routes
 
 // let's bring our adminbot to life
 const admin = require("firebase-admin");
@@ -18,12 +21,38 @@ admin.initializeApp({
 
 module.exports = admin;
 
+app
+
+
 const createApp = () => app
   .use(morgan('dev'))
   .use(express.static(path.join(__dirname, '..', 'public')))
   .use(express.static(path.join(__dirname, '..', 'node_modules/bootstrap/dist')))
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({ extended: true }))
+  .get('/messaging/newmatch/:tokenId', (req, res, next) => {
+    console.log("HI", req.params.tokenId)
+    let payload = {
+      notification: {
+        title: 'New Match',
+        body: `You've got a match!`,
+        color: 'pink',
+        icon: 'http://i.imgur.com/GGMIIKS.png',
+        //sound: something
+      },
+      data: {
+        whatever: 'you want!'
+      }
+    };
+    return admin.messaging().sendToDevice(req.params.tokenId, payload)
+    .then(result => {
+      console.log("Success!", result)
+      res.sendStatus(200)
+    })
+    .catch(err => {
+      console.log("Error :(", err)
+    })
+  })
   // .use('/auth', require('./auth'))
   // .use('/api', require('./api'))
   .use((req, res, next) =>
@@ -52,15 +81,3 @@ listenUp();
 // } else {
 //   createApp(app);
 // }
-
-app.get('/test/:tokenId', (req, res, next) => {
-  console.log("HI", req.params.tokenId)
-  let payload = {score: 'very nice!'};
-  return admin.messaging.sendToDevice(req.params.tokenId, payload)
-  .then(res => {
-    console.log("Success!", res)
-  })
-  .catch(err => {
-    console.log("Error :(", err)
-  })
-})

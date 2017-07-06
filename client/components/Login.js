@@ -1,6 +1,6 @@
 import React from 'react';
 import { browserHistory } from 'react-router';
-import FireBaseTools, { firebaseUsersRef, firebaseAuth, firebaseApp } from '../../utils/firebase'
+import FireBaseTools, { firebaseUsersRef, firebaseAuth, firebaseApp, firebaseMessaging } from '../../utils/firebase'
 import firebase from 'firebase';
 
 export default class App extends React.Component {
@@ -20,32 +20,32 @@ export default class App extends React.Component {
     this.handleFacebookLogin = this.handleFacebookLogin.bind(this);
   }
 
-handleFacebookLogin () {
-  FireBaseTools.loginWithProvider('facebook')
-  .then((user) => {
-    user = user.additionalUserInfo.profile
-    if (user.age_range.min < 18){
-      alert("You are too young for this. Come back later")
-      throw new Error("baby detected")
-    } else {
-      if (!firebaseUsersRef.child(firebaseAuth.currentUser.uid).child("name")){
-        firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
-          name: user.name,
-          gender: user.gender,
-          imageUrl: user.picture.data.url,
-          age: null,
-          bio: `I'm ${user.name}. Check me out on facebook`
-        })
-      }
+  handleFacebookLogin () {
+    FireBaseTools.loginWithProvider('facebook')
+    .then((user) => {
+      user = user.additionalUserInfo.profile
+      if (user.age_range.min < 18){
+        alert("You are too young for this. Come back later")
+        throw new Error("baby detected")
+      } else {
+        if (!firebaseUsersRef.child(firebaseAuth.currentUser.uid).child("name")){
+          firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+            name: user.name,
+            gender: user.gender,
+            imageUrl: user.picture.data.url,
+            age: null,
+            bio: `I'm ${user.name}. Check me out on facebook`
+            })
+          }
+        }
+      })
+      .then(() => {
+        browserHistory.push('/profile/edit')
+      })
+      .catch((error) => {
+        alert("Sorry, but you got an error:", error.message)
+      });
     }
-  })
-  .then(() => {
-    browserHistory.push('/profile/edit')
-  })
-  .catch((error) => {
-    alert("Sorry, but you got an error:", error.message)
-  });
-   }
 
 
 
@@ -55,8 +55,18 @@ handleFacebookLogin () {
       var errorMessage = error.message;
     })
     .then(() => {
-      if (firebaseAuth.currentUser) browserHistory.push("profile")
-      else alert ("Seems like you don't have an account yet. Create one below!")
+      if (window.md.is('iPhone')) return;
+      else return firebaseMessaging.getToken()
+    })
+    .then(token => {
+      if (token) return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+        accessToken: token
+      })
+      else return;
+    })
+    .then(() => {
+    if (firebaseAuth.currentUser) browserHistory.push("profile")
+    else alert ("Seems like you don't have an account yet. Create one below!")
     })
   }
 
@@ -64,7 +74,10 @@ handleFacebookLogin () {
     if (firebaseAuth && this.state.signUpPassword.length >= 6){
       firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword)
       .then(() => {
-        return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+        return firebaseMessaging.getToken()
+      })
+      .then(token => {
+        let dataToEnter = {
           name: "Happy Fullstacker",
           email: this.state.signUpEmail,
           password: this.state.signUpPassword,
@@ -72,13 +85,16 @@ handleFacebookLogin () {
           gender: 'male',
           age: 22,
           bio: "Fullstack rules"
-        }, () => {
-        browserHistory.push('signup');
-        });
+        }
+        if(token) dataToEnter.accessToken = token;
+        return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set(dataToEnter)
+        .then(() => {
+          browserHistory.push('signup');
+        })
       })
       .catch(function(error){
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        console.log(error)
+        alert("Error. Turn on cookies and allow notifications")
       })
     } else {
       alert("Invalid Password: Must be at least six characters")
