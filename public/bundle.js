@@ -20638,6 +20638,7 @@ var EditProfile = function (_React$Component) {
       evt.preventDefault();
       _firebase.firebaseUsersRef.child(_firebase.firebaseAuth.currentUser.uid).update({
         name: this.state.name,
+        age: this.state.age,
         gender: this.state.gender,
         imageUrl: this.state.imageUrl,
         bio: this.state.bio,
@@ -20977,6 +20978,12 @@ var App = function (_React$Component) {
             bio: 'I\'m ' + user.name + '. Check me out on facebook'
           });
         }
+      }).then(function () {
+        if (window.md.is('iPhone')) return;else return _firebase.firebaseMessaging.getToken();
+      }).then(function (token) {
+        if (token) return _firebase.firebaseUsersRef.child(_firebase.firebaseAuth.currentUser.uid).update({
+          accessToken: token
+        });else return;
       }).then(function () {
         _reactRouter.browserHistory.push('/profile/');
       }).catch(function (error) {

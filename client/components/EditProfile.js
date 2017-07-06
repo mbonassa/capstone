@@ -50,6 +50,7 @@ export default class EditProfile extends React.Component {
     evt.preventDefault();
     firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
       name: this.state.name,
+      age: this.state.age,
       gender: this.state.gender,
       imageUrl: this.state.imageUrl,
       bio: this.state.bio,

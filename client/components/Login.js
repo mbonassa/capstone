@@ -40,6 +40,16 @@ export default class App extends React.Component {
         }
       })
       .then(() => {
+        if (window.md.is('iPhone')) return;
+        else return firebaseMessaging.getToken()
+      })
+      .then(token => {
+        if (token) return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+          accessToken: token
+        })
+        else return;
+      })
+      .then(() => {
         browserHistory.push('/profile/')
       })
       .catch((error) => {
