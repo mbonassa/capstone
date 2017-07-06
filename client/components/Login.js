@@ -33,17 +33,17 @@ export default class App extends React.Component {
             name: user.name,
             gender: user.gender,
             imageUrl: user.picture.data.url,
-            age: null,
+            age: 20,
             bio: `I'm ${user.name}. Check me out on facebook`
             })
           }
         }
       })
       .then(() => {
-        browserHistory.push('/profile/edit')
+        browserHistory.push('/profile/')
       })
       .catch((error) => {
-        alert("Sorry, but you got an error:", error.message)
+        alert("Sorry, but you got an error:", error.code)
       });
     }
 
