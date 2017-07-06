@@ -20246,15 +20246,14 @@ exports.default = (0, _ignite2.default)((0, _ignite.withAuth)(function (_React$C
         _react2.default.createElement(
           'div',
           null,
-          heartStatus == 0 ? _react2.default.createElement('img', { className: 'chat-hearts', src: '/img/no-hearts.gif' }) : null,
-          heartStatus == 1 ? _react2.default.createElement('img', { className: 'chat-hearts', src: '/img/1-heart.gif' }) : null,
-          heartStatus == 2 ? _react2.default.createElement('img', { className: 'chat-hearts', src: '/img/2-hearts.gif' }) : null,
-          heartStatus == 3 ? _react2.default.createElement('img', { className: 'chat-hearts', src: '/img/3-hearts.gif' }) : null,
-          heartStatus == 4 ? _react2.default.createElement('img', { className: 'chat-hearts', src: '/img/4-hearts.gif' }) : null,
+          heartStatus == 0 ? _react2.default.createElement('img', { id: 'chat-hearts', src: '/img/no-hearts.gif' }) : null,
+          heartStatus == 1 ? _react2.default.createElement('img', { id: 'chat-hearts', src: '/img/1-heart.gif' }) : null,
+          heartStatus == 2 ? _react2.default.createElement('img', { id: 'chat-hearts', src: '/img/2-hearts.gif' }) : null,
+          heartStatus == 3 ? _react2.default.createElement('img', { id: 'chat-hearts', src: '/img/3-hearts.gif' }) : null,
+          heartStatus == 4 ? _react2.default.createElement('img', { id: 'chat-hearts', src: '/img/4-hearts.gif' }) : null,
           heartStatus == 5 ? _react2.default.createElement(
             'div',
             null,
-            _react2.default.createElement('img', { className: 'chat-hearts', src: '/img/5-hearts.gif' }),
             _react2.default.createElement(
               'p',
               { className: 'center' },
@@ -20340,9 +20339,10 @@ exports.default = (0, _ignite2.default)((0, _ignite.withAuth)(function (_React$C
           'div',
           null,
           _react2.default.createElement(
-            'p',
-            null,
-            'waiting'
+            'h3',
+            { className: 'center' },
+            'Waiting for ',
+            this.state.partnerInfo.name
           )
         )
       );
@@ -21240,15 +21240,15 @@ var App = function (_React$Component) {
               name: user.name,
               gender: user.gender,
               imageUrl: user.picture.data.url,
-              age: null,
+              age: 20,
               bio: 'I\'m ' + user.name + '. Check me out on facebook'
             });
           }
         }
       }).then(function () {
-        _reactRouter.browserHistory.push('/profile/edit');
+        _reactRouter.browserHistory.push('/profile/');
       }).catch(function (error) {
-        alert("Sorry, but you got an error:", error.message);
+        alert("Sorry, but you got an error:", error.code);
       });
     }
   }, {
@@ -21260,7 +21260,7 @@ var App = function (_React$Component) {
       }).then(function () {
         if (window.md.is('iPhone')) return;else return _firebase.firebaseMessaging.getToken();
       }).then(function (token) {
-        if (token) return _firebase.firebaseUsersRef.child(_firebase.firebaseAuth.currentUser.uid).set({
+        if (token) return _firebase.firebaseUsersRef.child(_firebase.firebaseAuth.currentUser.uid).update({
           accessToken: token
         });else return;
       }).then(function () {
@@ -22451,7 +22451,9 @@ var Quiz = function (_React$Component) {
                                         questionNumbers: snapshot.val().numbers.split(',')
                                     }, function () {
                                         console.log(_this2.state);
-                                        if ((0, _helperFunctions.arrayify)(_this2.state.round1).length === 5) _reactRouter.browserHistory.push('waiting');
+                                        if (_this2.state.round1) {
+                                            if ((0, _helperFunctions.arrayify)(_this2.state.round1).length === 5) _reactRouter.browserHistory.push('waiting');
+                                        }
                                     });
                                 });
                             }
@@ -22495,12 +22497,10 @@ var Quiz = function (_React$Component) {
             var latestMatchKey = void 0;
 
             if (this.partnerId.length && answerNumber) {
-                console.log('firing with', answerNumber);
                 latestMatchKey = this.partnerId;
                 matchRef.child(latestMatchKey).child('round1').update(_defineProperty({}, questionNumber, answerNumber)).then(function () {
                     var current = _this3.state.current + 1;
                     _this3.setState({ current: current }, function () {
-                        console.log("current is", _this3.state.current);
                         if (_this3.state.current > 4) {
                             _reactRouter.browserHistory.push('waiting');
                         }
@@ -22509,19 +22509,11 @@ var Quiz = function (_React$Component) {
             }
 
             //Update database with new question count and answer count
-            var questionData = this.state.quizData[questionNumber];
-            var questionCount = questionData.questionCount ? questionData.questionCount + 1 : 1;
-            var answerCountKey = answerNumber.toString() + 'a';
-            var answerCount = questionData[answerCountKey] ? questionData[answerCountKey] + 1 : 1;
-            _firebase.firebaseQuizRef.child(questionNumber).update(_defineProperty({ questionCount: questionCount }, answerCountKey, answerCount));
-
-            // let current = this.state.current +1;
-            // this.setState({current}, () => {
-            //     console.log("current is", this.state.current)
-            //     if (this.state.current > 4){
-            //         browserHistory.push('waiting')
-            //     }
-            // });
+            // let questionData = this.state.quizData[questionNumber];
+            // let questionCount = questionData.questionCount ? questionData.questionCount + 1 : 1;
+            // let answerCountKey = answerNumber.toString() + 'a';
+            // let answerCount = questionData[answerCountKey] ? questionData[answerCountKey] + 1 : 1;
+            // firebaseQuizRef.child(questionNumber).update({questionCount, [answerCountKey]: answerCount});
         }
     }, {
         key: 'render',
@@ -24018,7 +24010,7 @@ exports = module.exports = __webpack_require__(199)();
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=VT323);", ""]);
 
 // module
-exports.push([module.i, "@media (max-width: 400px) {\n  .container {\n    padding: 20px; }\n  .back {\n    margin-top: 30px;\n    margin-bottom: -5px; }\n  .messageHistory {\n    overflow: scroll;\n    width: 100%;\n    height: 300px; }\n  .logo-top {\n    width: 40%;\n    margin-top: 0px;\n    margin-bottom: 15px; }\n  .logo-top:after {\n    clear: both; }\n  .misc-btn {\n    background-color: white;\n    margin-top: 10px;\n    margin-right: 15px;\n    color: #fc5f5d; }\n  .misc-btn:hover {\n    background-color: rgba(255, 255, 255, 0.5); }\n  /* LOAD */\n  #load-img {\n    width: 50%;\n    margin-left: 25%;\n    margin-top: 55%; }\n  /* LOGIN */\n  #login-img {\n    margin-bottom: 0px;\n    width: 60%;\n    text-align: center;\n    margin-top: 90px;\n    margin-left: 20%; }\n  .login-input {\n    background-color: rgba(255, 255, 255, 0.3);\n    color: white;\n    width: 100%;\n    margin-bottom: 10px;\n    border-radius: 5px;\n    height: 40px;\n    padding: 0px 8px;\n    border: 1px;\n    border-color: white; }\n  .login-btn {\n    background-color: white;\n    color: #fc5f5d;\n    margin-left: 33%;\n    font-size: 1.4em;\n    padding: 10px 20px;\n    margin-top: 15px; }\n  .signup-btn {\n    background-color: white;\n    color: #fc5f5d;\n    margin-left: 30%;\n    font-size: 1.4em;\n    padding: 10px 20px;\n    margin-top: 15px; }\n  #returning {\n    margin-left: 17%; }\n  #fb-login {\n    margin-left: 10%; }\n  .toggle-btn {\n    font-size: 1.5em;\n    color: white;\n    margin-top: 30px;\n    margin-left: 15%; }\n  /* PROFILE */\n  .edit {\n    margin-left: 7px; }\n  #see-match {\n    margin-top: 20px;\n    padding: 5px 20px;\n    font-size: 2.5em;\n    margin-left: 18%;\n    margin-bottom: -6px;\n    font-family: 'VT323', monospace; }\n  #profile-main {\n    clear: both;\n    padding: -10px 30px; }\n  #past-matches {\n    margin-left: 18%;\n    margin-right: 0px; }\n  #find-match {\n    margin-top: 20px;\n    padding: 5px 20px;\n    font-size: 2.5em;\n    margin-left: 18%;\n    margin-bottom: -6px;\n    font-family: 'VT323', monospace; }\n  #bio {\n    margin-top: -4px; }\n  /* QUIZ */\n  #answers {\n    margin-top: 150px; }\n  #question-title {\n    top: 15px !important;\n    text-align: center;\n    margin-bottom: 25px;\n    font-family: 'VT323', monospace;\n    font-size: 3em;\n    position: absolute;\n    left: -250px;\n    width: 100%; }\n  .answer {\n    background-color: white;\n    border: 1px red;\n    padding: 15px 20px;\n    text-align: center;\n    border-radius: 5px;\n    margin-top: 20px; }\n  .answer-text {\n    color: #fc5f5d;\n    background-color: white; }\n  /* DAILY MATCH */\n  #match-main {\n    padding: -30px 30px; }\n  #your-match {\n    font-size: 4em;\n    margin-top: -10px;\n    margin-bottom: -2px; }\n  #match-photo {\n    border: white 1px; }\n  #quiz-btn {\n    padding: 10px 25px;\n    font-size: 1.5em;\n    margin-left: 33%; }\n  /* ALL MATCHES */\n  .matches-img {\n    width: 50%; }\n  #matches-chat {\n    vertical-align: center;\n    margin-left: 15%;\n    font-size: 1.5em; }\n  #matches-chat-disabled {\n    vertical-align: center;\n    margin-left: 15%;\n    font-size: 1.5em;\n    background-color: rgba(255, 255, 255, 0.5); }\n  /* WAITING */\n  #five-hearts {\n    margin-top: 200px;\n    width: 80%;\n    margin-left: 10%; }\n  #waiting-back {\n    margin-top: -5px; }\n  #waiting-heart {\n    width: 15%;\n    margin-left: 10px;\n    margin-right: -5px; }\n  #waiting-hearts {\n    width: 90%;\n    margin-left: 5%;\n    margin-top: 100px; }\n  #round2-btn {\n    padding: 10px 25px;\n    font-size: 1.5em;\n    margin-left: 28%; }\n  .ready-round2 {\n    margin-top: 100px; }\n  /* SIGN UP FORM */\n  .age-range {\n    width: 33%;\n    display: inline-block; }\n  .age-range-title {\n    display: inline-block;\n    text-align: left; }\n  .age-range-div {\n    margin-left: -15px;\n    margin-bottom: 15px; }\n  #and {\n    margin-left: 0px; }\n  #max-age {\n    width: 53%; }\n  #signup-form-submit {\n    margin-top: 20px;\n    padding: 5px 20px;\n    font-size: 2.5em;\n    margin-left: 30%;\n    margin-bottom: 0px;\n    color: #fc5f5d; }\n  .gender {\n    margin-top: -7px !important; }\n  #age-drop {\n    width: 20%;\n    margin-bottom: 15px; }\n  #looking-for {\n    margin-top: 10px;\n    font-size: 1.5em; }\n  #about-me {\n    font-size: 1.5em;\n    margin-top: 0px; }\n  /* LOST MATCH */\n  #lose-text {\n    width: 90%;\n    margin-left: 5%; }\n  /* CHAT */\n  .messageHistory {\n    background-color: white !important;\n    color: #fc5f5d;\n    padding: 15px;\n    border-radius: 5px; }\n  .chat-hearts {\n    width: 90%;\n    margin-left: 5%;\n    margin-bottom: 15px; }\n  .chat-input {\n    width: 75%;\n    font-size: 1em;\n    margin-top: 5px;\n    border-radius: 5px;\n    padding: 10px; }\n  .chat-submit {\n    width: 25%;\n    background-color: rgba(255, 255, 255, 0.7);\n    color: #fc5f5d;\n    margin-top: 0px;\n    height: 44px; }\n  .chat-questions {\n    padding: 10px;\n    border-radius: 3px; }\n  .pick-q {\n    margin: 15px 0px;\n    text-align: right; }\n  .judge {\n    width: 30%;\n    margin-left: 40px; } }\n\n* {\n  background-color: #fc5f5d;\n  color: white;\n  margin: 0px;\n  padding: 0px; }\n\nimg {\n  width: 100%; }\n\n.center {\n  text-align: center; }\n\n.horizontal-line {\n  background-color: #f0f0f0;\n  width: 700px;\n  border-top: 1px solid #8c8b8b;\n  margin-left: 0px; }\n\n#app {\n  max-width: 100vw;\n  overflow-x: hidden; }\n\n.fancy-type {\n  font-family: 'VT323', monospace; }\n\n.caps {\n  text-transform: uppercase; }\n\n.center {\n  text-align: center; }\n\n.inline-block {\n  display: inline-block; }\n\n.white {\n  background-color: white;\n  color: #fc5f5d; }\n", ""]);
+exports.push([module.i, "@media (max-width: 400px) {\n  .container {\n    padding: 20px; }\n  .back {\n    margin-top: 30px;\n    margin-bottom: -5px; }\n  .messageHistory {\n    overflow: scroll;\n    width: 100%;\n    height: 300px; }\n  .logo-top {\n    width: 40%;\n    margin-top: 0px;\n    margin-bottom: 15px; }\n  .logo-top:after {\n    clear: both; }\n  .misc-btn {\n    background-color: white;\n    margin-top: 10px;\n    margin-right: 15px;\n    color: #fc5f5d; }\n  .misc-btn:hover {\n    background-color: rgba(255, 255, 255, 0.5); }\n  /* LOAD */\n  #load-img {\n    width: 50%;\n    margin-left: 25%;\n    margin-top: 55%; }\n  /* LOGIN */\n  #login-img {\n    margin-bottom: 0px;\n    width: 60%;\n    text-align: center;\n    margin-top: 90px;\n    margin-left: 20%; }\n  .login-input {\n    background-color: rgba(255, 255, 255, 0.3);\n    color: white;\n    width: 100%;\n    margin-bottom: 10px;\n    border-radius: 5px;\n    height: 40px;\n    padding: 0px 8px;\n    border: 1px;\n    border-color: white; }\n  .login-btn {\n    background-color: white;\n    color: #fc5f5d;\n    margin-left: 33%;\n    font-size: 1.4em;\n    padding: 10px 20px;\n    margin-top: 15px; }\n  .signup-btn {\n    background-color: white;\n    color: #fc5f5d;\n    margin-left: 30%;\n    font-size: 1.4em;\n    padding: 10px 20px;\n    margin-top: 15px; }\n  #returning {\n    margin-left: 17%; }\n  #fb-login {\n    margin-left: 10%; }\n  .toggle-btn {\n    font-size: 1.5em;\n    color: white;\n    margin-top: 30px;\n    margin-left: 15%; }\n  /* PROFILE */\n  .edit {\n    margin-left: 7px; }\n  #see-match {\n    margin-top: 20px;\n    padding: 5px 20px;\n    font-size: 2.5em;\n    margin-left: 18%;\n    margin-bottom: -6px;\n    font-family: 'VT323', monospace; }\n  #profile-main {\n    clear: both;\n    padding: -10px 30px; }\n  #past-matches {\n    margin-left: 18%;\n    margin-right: 0px; }\n  #find-match {\n    margin-top: 20px;\n    padding: 5px 20px;\n    font-size: 2.5em;\n    margin-left: 18%;\n    margin-bottom: -6px;\n    font-family: 'VT323', monospace; }\n  #bio {\n    margin-top: -4px; }\n  /* QUIZ */\n  #answers {\n    margin-top: 150px; }\n  #question-title {\n    top: 15px !important;\n    text-align: center;\n    margin-bottom: 25px;\n    font-family: 'VT323', monospace;\n    font-size: 3em;\n    position: absolute;\n    left: -250px;\n    width: 100%; }\n  .answer {\n    background-color: white;\n    border: 1px red;\n    padding: 15px 20px;\n    text-align: center;\n    border-radius: 5px;\n    margin-top: 20px; }\n  .answer-text {\n    color: #fc5f5d;\n    background-color: white; }\n  /* DAILY MATCH */\n  #match-main {\n    padding: -30px 30px; }\n  #your-match {\n    font-size: 4em;\n    margin-top: -10px;\n    margin-bottom: -2px; }\n  #match-photo {\n    border: white 1px; }\n  #quiz-btn {\n    padding: 10px 25px;\n    font-size: 1.5em;\n    margin-left: 33%; }\n  /* ALL MATCHES */\n  .matches-img {\n    width: 50%; }\n  #matches-chat {\n    vertical-align: center;\n    margin-left: 15%;\n    font-size: 1.5em; }\n  #matches-chat-disabled {\n    vertical-align: center;\n    margin-left: 15%;\n    font-size: 1.5em;\n    background-color: rgba(255, 255, 255, 0.5); }\n  /* WAITING */\n  #five-hearts {\n    margin-top: 200px;\n    width: 80%;\n    margin-left: 10%; }\n  #waiting-back {\n    margin-top: -5px; }\n  #waiting-heart {\n    width: 15%;\n    margin-left: 10px;\n    margin-right: -5px; }\n  #waiting-hearts {\n    width: 90%;\n    margin-left: 5%;\n    margin-top: 100px; }\n  #round2-btn {\n    padding: 10px 25px;\n    font-size: 1.5em;\n    margin-left: 28%; }\n  .ready-round2 {\n    margin-top: 100px; }\n  /* SIGN UP FORM */\n  .age-range {\n    width: 33%;\n    display: inline-block; }\n  .age-range-title {\n    display: inline-block;\n    text-align: left; }\n  .age-range-div {\n    margin-left: -15px;\n    margin-bottom: 15px; }\n  #and {\n    margin-left: 0px; }\n  #max-age {\n    width: 53%; }\n  #signup-form-submit {\n    margin-top: 20px;\n    padding: 5px 20px;\n    font-size: 2.5em;\n    margin-left: 30%;\n    margin-bottom: 0px;\n    color: #fc5f5d; }\n  .gender {\n    margin-top: -7px !important; }\n  #age-drop {\n    width: 20%;\n    margin-bottom: 15px; }\n  #looking-for {\n    margin-top: 10px;\n    font-size: 1.5em; }\n  #about-me {\n    font-size: 1.5em;\n    margin-top: 0px; }\n  /* LOST MATCH */\n  #lose-text {\n    width: 90%;\n    margin-left: 5%; }\n  /* CHAT */\n  .messageHistory {\n    background-color: white !important;\n    color: #fc5f5d;\n    padding: 15px;\n    border-radius: 5px; }\n  #chat-hearts {\n    width: 90%;\n    margin-left: 5%;\n    margin-bottom: 15px; }\n  .chat-input {\n    width: 75%;\n    font-size: 1em;\n    margin-top: 5px;\n    border-radius: 5px;\n    padding: 10px; }\n  .chat-submit {\n    width: 25%;\n    background-color: rgba(255, 255, 255, 0.7);\n    color: #fc5f5d;\n    margin-top: 0px;\n    height: 44px; }\n  .chat-questions {\n    padding: 10px;\n    border-radius: 3px; }\n  .pick-q {\n    margin: 15px 0px;\n    text-align: right; }\n  .judge {\n    width: 30%;\n    margin-left: 40px; } }\n\n* {\n  background-color: #fc5f5d;\n  color: white;\n  margin: 0px;\n  padding: 0px; }\n\nimg {\n  width: 100%; }\n\n.center {\n  text-align: center; }\n\n.horizontal-line {\n  background-color: #f0f0f0;\n  width: 700px;\n  border-top: 1px solid #8c8b8b;\n  margin-left: 0px; }\n\n#app {\n  max-width: 100vw;\n  overflow-x: hidden; }\n\n.fancy-type {\n  font-family: 'VT323', monospace; }\n\n.caps {\n  text-transform: uppercase; }\n\n.center {\n  text-align: center; }\n\n.inline-block {\n  display: inline-block; }\n\n.white {\n  background-color: white;\n  color: #fc5f5d; }\n", ""]);
 
 // exports
 
