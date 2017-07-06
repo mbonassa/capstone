@@ -225,6 +225,7 @@ export default ignite(withAuth(class extends React.Component {
     this.state.userInfo.matches ? heartStatus = this.state.userInfo.matches[this.props.partnerId].heartStatus : null
     const { user, snapshot, asEntries } = this.props,
           messages = asEntries(snapshot)
+    console.log("partner",this.state.partnerInfo)
 
     return (
       <div>
@@ -258,18 +259,17 @@ export default ignite(withAuth(class extends React.Component {
           :
           this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isAsker ?
           <div>
-            <p> YOU'RE ASKING! </p>
+            <h4 className="caps pick-q"> Pick a question to send:</h4>
             {
               this.state.randomNumbers.map(number => {
-                return <p key={number} onClick={this.askQuestion(number)}> {this.state.questions[number]} </p>
+                return <p className="white chat-questions center" key={number} onClick={this.askQuestion(number)}> {this.state.questions[number]} </p>
               })
             }
           </div>
           :
           this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isAnswerer ?
           <div>
-            <p>YOU'RE ANSWERING</p>
-            <p> Your question: </p>
+            <h3>{this.state.partnerInfo.name} asked:</h3>
             <p> { this.state.userInfo.matches[this.props.partnerId].selectedQuestion } </p>
             <div>
               {this.renderSendMsg(user, this.answerQuestion)}
@@ -278,12 +278,12 @@ export default ignite(withAuth(class extends React.Component {
           :
           this.state.userInfo.matches && this.state.userInfo.matches[this.props.partnerId].isJudge ?
           <div>
-            <p> YOU'RE JUDGING </p>
-            <button onClick={this.judgeQuestion(1)}>LIKE</button>
-            <button onClick={this.judgeQuestion(-1)}>DON'T LIKE</button>
+            <h4 className="center judge-title">How'd you like {this.state.partnerInfo.name}'s response:</h4>
+            <button className="judge btn" onClick={this.judgeQuestion(-1)}><img className="inline-block" src="/img/empty-heart.png" /></button>
+            <button className="judge btn" onClick={this.judgeQuestion(1)}><img className="inline-block" src="/img/full-heart.png" /></button>
           </div>
           :
-          <p> Waiting on your partner's response... </p>
+          <div><p>waiting</p></div>
         }
 
       </div>
