@@ -111,7 +111,7 @@
     padding: 5px 20px;
     font-size: 2.5em;
     margin-left: 18%;
-    margin-bottom: -4px;
+    margin-bottom: -6px;
     font-family: 'VT323', monospace;
   }
 
@@ -122,7 +122,7 @@
 
   #past-matches {
     margin-left: 18%;
-    margin-right: 1px;
+    margin-right: 0px;
   }
 
   #find-match {
@@ -130,7 +130,7 @@
     padding: 5px 20px;
     font-size: 2.5em;
     margin-left: 18%;
-    margin-bottom: -4px;
+    margin-bottom: -6px;
     font-family: 'VT323', monospace;
   }
 
@@ -177,8 +177,8 @@
 
   #your-match {
     font-size: 4em;
-    margin-top: -20px;
-    margin-bottom: -2px;
+    margin-top: -10px;
+    margin-bottom:-2px;
   }
 
   #match-photo {
@@ -232,21 +232,21 @@
     margin-right: -5px;
   }
 
-   #waiting-hearts {
-      width: 90%;
-      margin-left: 5%;
-      margin-top: 100px;
-    }
+ #waiting-hearts {
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 100px;
+  }
 
-    #round2-btn {
-      padding: 10px 25px;
-      font-size: 1.5em;
-      margin-left: 28%;
-    }
+  #round2-btn {
+    padding: 10px 25px;
+    font-size: 1.5em;
+    margin-left: 28%;
+  }
 
-    .ready-round2 {
-      margin-top: 100px;
-    }
+  .ready-round2 {
+    margin-top: 100px;
+  }
 
     /* SIGN UP FORM */
 
@@ -320,7 +320,7 @@
   .chat-hearts {
     width: 90%;
     margin-left: 5%;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
   }
 
   .chat-input {
@@ -339,6 +339,22 @@
     height: 44px;
 
   }
+
+  .chat-questions {
+    padding: 10px;
+    border-radius: 3px;
+  }
+
+  .pick-q {
+    margin: 15px 0px;
+    text-align: right;
+  }
+
+  .judge {
+    width: 30%;
+    margin-left: 40px;
+  }
+
 }
 
 @media (max-width: 600px) and (min-width: 401px) {
