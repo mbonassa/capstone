@@ -59,7 +59,7 @@ export default class App extends React.Component {
       else return firebaseMessaging.getToken()
     })
     .then(token => {
-      if (token) return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+      if (token) return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
         accessToken: token
       })
       else return;
