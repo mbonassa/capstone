@@ -30,7 +30,7 @@ export default class App extends React.Component {
         throw new Error("baby detected")
       } else {
         if (!firebaseUsersRef.child(firebaseAuth.currentUser.uid).child("name")){
-          firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+          return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
             name: user.name,
             gender: user.gender,
             imageUrl: user.picture.data.url,

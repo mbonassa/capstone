@@ -21237,7 +21237,7 @@ var App = function (_React$Component) {
           throw new Error("baby detected");
         } else {
           if (!_firebase.firebaseUsersRef.child(_firebase.firebaseAuth.currentUser.uid).child("name")) {
-            _firebase.firebaseUsersRef.child(_firebase.firebaseAuth.currentUser.uid).set({
+            return _firebase.firebaseUsersRef.child(_firebase.firebaseAuth.currentUser.uid).set({
               name: user.name,
               gender: user.gender,
               imageUrl: user.picture.data.url,
