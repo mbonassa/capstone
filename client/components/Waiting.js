@@ -182,13 +182,14 @@ export default class Waiting extends React.Component {
      }
 
     render() {
+        console.log(this.state.userData)
         return (
             this.state.userData.matches && this.state.heartStatus !== null && this.state.theirName && this.state.finishedQuiz && this.state.theirAnswers.length === 5 && this.state.myAnswers.length === 5 ?
             <div>
                 <Link to="/profile"><p id="waiting-back" className="caps back"><span className="glyphicon glyphicon-chevron-left"></span>back to profile</p></Link>
                 <img id="waiting-hearts" src={this.state.img} />
                 <h2 className='center'>You and {this.state.theirName} had {this.state.heartStatus}  {this.state.heartStatus == 1 ? 'answer' : 'answers'} in common</h2>
-                <h1 className="fancy-type center caps ready-round2">Ready player one?</h1>
+                <h1 className="fancy-type center caps ready-round2"> Ready Player{this.state.userData.partnerId && this.state.userData.matches[this.state.userData.partnerId].playerNumber ? ` ${this.state.userData.matches[this.state.userData.partnerId].playerNumber}` : ' One'}?</h1>
                   <Link to={`/chat/${this.state.userData.partnerId}`
                     }><button
                     id="round2-btn"
