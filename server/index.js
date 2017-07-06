@@ -12,9 +12,7 @@ const md = new MobileDetect
 
 // let's bring our adminbot to life
 const admin = require("firebase-admin");
-let serviceAccount;
-if (process.env.SECRETS) serviceAccount = process.env.SECRETS
-else serviceAccount = require('../secrets.js');
+let serviceAccount = require('../secrets.js');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
