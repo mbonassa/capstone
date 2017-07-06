@@ -24,6 +24,7 @@ export default class App extends React.Component {
     FireBaseTools.loginWithProvider('facebook')
     .then((user) => {
       user = user.additionalUserInfo.profile
+      console.log(user)
       if (user.age_range.min < 18){
         alert("You are too young for this. Come back later")
         throw new Error("baby detected")
@@ -74,7 +75,8 @@ export default class App extends React.Component {
     if (firebaseAuth && this.state.signUpPassword.length >= 6){
       firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword)
       .then(() => {
-        return firebaseMessaging.getToken()
+         if (window.md.is('iPhone')) return;
+         else return firebaseMessaging.getToken()
       })
       .then(token => {
         let dataToEnter = {

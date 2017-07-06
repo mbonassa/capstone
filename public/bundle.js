@@ -21231,6 +21231,7 @@ var App = function (_React$Component) {
     value: function handleFacebookLogin() {
       _firebase2.default.loginWithProvider('facebook').then(function (user) {
         user = user.additionalUserInfo.profile;
+        console.log(user);
         if (user.age_range.min < 18) {
           alert("You are too young for this. Come back later");
           throw new Error("baby detected");
@@ -21274,7 +21275,7 @@ var App = function (_React$Component) {
 
       if (_firebase.firebaseAuth && this.state.signUpPassword.length >= 6) {
         _firebase.firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword).then(function () {
-          return _firebase.firebaseMessaging.getToken();
+          if (window.md.is('iPhone')) return;else return _firebase.firebaseMessaging.getToken();
         }).then(function (token) {
           var dataToEnter = {
             name: "Happy Fullstacker",
