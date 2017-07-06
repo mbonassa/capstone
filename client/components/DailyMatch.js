@@ -40,6 +40,7 @@ export default class DailyMatch extends React.Component {
         isAsker: true,
         isAnswerer: false,
         isJudge: false,
+        playerNumber: 'One'
       })
       .then(() => {
         return firebaseUsersRef.child(this.state.partnerId).child('matches').child(firebaseAuth.currentUser.uid).set({
@@ -53,6 +54,7 @@ export default class DailyMatch extends React.Component {
           isAsker: true,
           isAnswerer: false,
           isJudge: false,
+          playerNumber: 'Two'
         });
       })
       .then(() => {
@@ -140,7 +142,7 @@ export default class DailyMatch extends React.Component {
              return el.key === firebaseAuth.currentUser.uid
           }).length ?
           <div>
-            <h2 id="ready-one" className="fancy-type caps center"> Ready Player One? </h2>
+            <h2 id="ready-one" className="fancy-type caps center"> Ready Player{this.state.userObj.partnerId && this.state.userObj.matches[this.state.userObj.partnerId].playerNumber ? ` ${this.state.userObj.matches[this.state.userObj.partnerId].playerNumber}` : ' One'}?</h2>
             <button
             id="quiz-btn"
             className="btn misc-btn caps"

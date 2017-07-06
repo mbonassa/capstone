@@ -130,7 +130,7 @@ export default class UserView extends React.Component {
           console.log(err)
         })
       } else {
-         console.log("no match found")
+         browserHistory.push('wait')
       }
     });
     this.setState({

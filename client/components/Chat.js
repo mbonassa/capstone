@@ -209,7 +209,11 @@ export default ignite(withAuth(class extends React.Component {
         isAnswerer: false,
         isJudge: false
       })
-      let msg = `${this.state.userInfo.name} changed the heartstatus by ${heartsToAdd}!`
+      // building our custom judging message
+      let msg;
+      if (heartsToAdd === 1) msg = `${this.state.userInfo.name} raised the HeartRate!`
+      else if (heartsToAdd === -1) msg = `${this.state.userInfo.name} lowered the HeartRate.`
+      else msg = `${this.state.userInfo.name} changed the HeartRate by ${heartsToAdd}!`
       this.sendMessage(null, msg)
     }
   }
@@ -225,8 +229,6 @@ export default ignite(withAuth(class extends React.Component {
     this.state.userInfo.matches ? heartStatus = this.state.userInfo.matches[this.props.partnerId].heartStatus : null
     const { user, snapshot, asEntries } = this.props,
           messages = asEntries(snapshot)
-
-
     return (
       <div>
         <div>
@@ -237,8 +239,7 @@ export default ignite(withAuth(class extends React.Component {
           { heartStatus == 4 ? <img id="chat-hearts" src="/img/4-hearts.gif" /> : null }
           { heartStatus == 5 ?
             <div>
-              <img id="chat-hearts" src="/img/5-hearts.gif" />
-              <p className="center"> Your HeartRate is maxed out, congrats! Get chatting! </p>
+              <p className="center"> Your HeartRate is through the roof, congrats! Get chatting! </p>
             </div> : null }
         </div>
         <div className="messageHistory white" ref={ele => { this.container = ele; }}>

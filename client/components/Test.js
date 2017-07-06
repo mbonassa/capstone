@@ -1,6 +1,7 @@
 import React from 'react';
-import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth } from '../../utils/firebase.js';
-import { Link } from 'react-router'
+import FireBaseTools, { firebaseUsersRef, firebaseQuizRef, firebaseAuth, firebaseMessaging } from '../../utils/firebase.js';
+import { Link, browserHistory } from 'react-router'
+import Notify from 'notifyjs';
 
 export default class Wait extends React.Component {
     constructor(props) {
@@ -21,9 +22,21 @@ export default class Wait extends React.Component {
         this.otherUserMatch = null;
         this.dataRef = null;
         this.usersRef = null;
+        this.unsubscribe = null;
     }
 
     componentDidMount () {
+
+    console.log("let's see the mobile status", window.md)
+        //cloud messaging
+        this.unsubscribe = firebaseMessaging.onMessage(payload => {
+        const matchNotification = new Notify(payload.notification.title, {
+            body: `${payload.notification.body}`,
+            icon: payload.notification.icon,
+            onclick: browserHistory.push('profile')
+        });
+        matchNotification.show();
+        });
 
      firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
@@ -154,6 +167,7 @@ export default class Wait extends React.Component {
     }
 
     componentWillUnmount(){
+        if (this.unsubscribe) this.unsubscribe();
         firebaseUsersRef.off();
         firebaseQuizRef.off()
         firebaseUsersRef.child(firebaseAuth.currentUser.uid).child('matches').off()
