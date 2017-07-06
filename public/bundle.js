@@ -21236,15 +21236,13 @@ var App = function (_React$Component) {
           alert("You are too young for this. Come back later");
           throw new Error("baby detected");
         } else {
-          if (!_firebase.firebaseUsersRef.child(_firebase.firebaseAuth.currentUser.uid).child("name")) {
-            return _firebase.firebaseUsersRef.child(_firebase.firebaseAuth.currentUser.uid).set({
-              name: user.name,
-              gender: user.gender,
-              imageUrl: user.picture.data.url,
-              age: 20,
-              bio: 'I\'m ' + user.name + '. Check me out on facebook'
-            });
-          }
+          return _firebase.firebaseUsersRef.child(_firebase.firebaseAuth.currentUser.uid).set({
+            name: user.name,
+            gender: user.gender,
+            imageUrl: user.picture.data.url,
+            age: 20,
+            bio: 'I\'m ' + user.name + '. Check me out on facebook'
+          });
         }
       }).then(function () {
         _reactRouter.browserHistory.push('/profile/');

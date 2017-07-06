@@ -29,15 +29,13 @@ export default class App extends React.Component {
         alert("You are too young for this. Come back later")
         throw new Error("baby detected")
       } else {
-        if (!firebaseUsersRef.child(firebaseAuth.currentUser.uid).child("name")){
-          return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
-            name: user.name,
-            gender: user.gender,
-            imageUrl: user.picture.data.url,
-            age: 20,
-            bio: `I'm ${user.name}. Check me out on facebook`
-            })
-          }
+        return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+          name: user.name,
+          gender: user.gender,
+          imageUrl: user.picture.data.url,
+          age: 20,
+          bio: `I'm ${user.name}. Check me out on facebook`
+          })
         }
       })
       .then(() => {
