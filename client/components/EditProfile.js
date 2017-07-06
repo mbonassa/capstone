@@ -9,6 +9,7 @@ export default class EditProfile extends React.Component {
       name: '',
       gender: '',
       imageUrl: '',
+      age: '',
       bio: '',
       genderPreference: {
                           male: false,
@@ -93,6 +94,17 @@ export default class EditProfile extends React.Component {
           <input onChange={this.onChange('name')} type="userName" className="form-control" id="userName" value={this.state.name} />
         </div>
       </div>
+
+      <div>
+        <label htmlFor="age" className="col-sm-2 control-label inline-block" id="age-label">Update Age</label>
+        <select onChange={this.onChange('age')} className="form-control inline-block" id="age-drop">
+          {this.generateAgeDropdown().map(el => {
+            return <option key={el}>{el}</option>
+          })
+        }
+        </select>
+      </div>
+
       <div className="form-group">
         <label htmlFor="userBio" className="col-sm-2 control-label">Update Bio</label>
         <div className="col-sm-10">
