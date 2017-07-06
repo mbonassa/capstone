@@ -8,6 +8,7 @@ export default class EditProfile extends React.Component {
     this.state = {
       name: '',
       gender: '',
+      age: '',
       imageUrl: '',
       bio: '',
       genderPreference: {
@@ -97,6 +98,17 @@ export default class EditProfile extends React.Component {
             <p className="control-label"> Gender: {this.state.gender} </p>
           </div>
       </div>
+
+      <div>
+      <label htmlFor="age" className="col-sm-2 control-label">Your Age</label>
+      <select onChange={this.onChange('age')} className="form-control">
+        {this.generateAgeDropdown().map(el => {
+          return <option key={el}>{el}</option>
+        })
+      }
+      </select>
+      </div>
+      
       <div className="form-group">
         <label htmlFor="userBio" className="col-sm-2 control-label">Update Bio</label>
         <div className="col-sm-10">
