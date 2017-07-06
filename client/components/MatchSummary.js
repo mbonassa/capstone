@@ -21,7 +21,7 @@ export default class MatchSummary extends React.Component {
           quizData: {},
           data: {}
       }
-      this.partnerId = this.props.params.partnerId || {};
+      this.partnerId = props.params.partnerId || {}
     }
 
     componentDidMount(){
@@ -67,11 +67,11 @@ export default class MatchSummary extends React.Component {
   render(){
     let questionNumbers = this.state.questionNumbers;
     let question = questionNumbers ? this.state.data[questionNumbers[this.state.current]] : null;
-      console.log('jen', this.state.userObj)
+      console.log('Props!', this.state.userObj.matches[this.partnerId].heartStatus)
       console.log('question', question)
       console.log('data', this.state.data)
       console.log('qnumbers', questionNumbers)
-      console.log('partner', this.partnerId.numbers)
+      console.log('partner', this.partnerId)
 
 
     return (
