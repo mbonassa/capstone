@@ -24,26 +24,36 @@ export default class App extends React.Component {
     FireBaseTools.loginWithProvider('facebook')
     .then((user) => {
       user = user.additionalUserInfo.profile
+      console.log(user)
       if (user.age_range.min < 18){
         alert("You are too young for this. Come back later")
         throw new Error("baby detected")
       } else {
-        if (!firebaseUsersRef.child(firebaseAuth.currentUser.uid).child("name")){
-          firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
-            name: user.name,
-            gender: user.gender,
-            imageUrl: user.picture.data.url,
-            age: null,
-            bio: `I'm ${user.name}. Check me out on facebook`
-            })
-          }
+        return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+          name: user.name,
+          gender: user.gender,
+          imageUrl: user.picture.data.url,
+          age: 25,
+          partnerId: "",
+          bio: `I'm ${user.name}. Check me out on facebook`
+          })
         }
       })
       .then(() => {
-        browserHistory.push('/profile/edit')
+        if (window.md.is('iPhone')) return;
+        else return firebaseMessaging.getToken()
+      })
+      .then(token => {
+        if (token) return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+          accessToken: token
+        })
+        else return;
+      })
+      .then(() => {
+        browserHistory.push('/profile/')
       })
       .catch((error) => {
-        alert("Sorry, but you got an error:", error.message)
+        alert("Sorry, but you got an error:", error.code)
       });
     }
 
@@ -59,7 +69,7 @@ export default class App extends React.Component {
       else return firebaseMessaging.getToken()
     })
     .then(token => {
-      if (token) return firebaseUsersRef.child(firebaseAuth.currentUser.uid).set({
+      if (token) return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
         accessToken: token
       })
       else return;
@@ -74,7 +84,8 @@ export default class App extends React.Component {
     if (firebaseAuth && this.state.signUpPassword.length >= 6){
       firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword)
       .then(() => {
-        return firebaseMessaging.getToken()
+         if (window.md.is('iPhone')) return;
+         else return firebaseMessaging.getToken()
       })
       .then(token => {
         let dataToEnter = {

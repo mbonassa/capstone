@@ -4,7 +4,8 @@
   "description": "Some boilerplate code to get you started - get shakin'!",
   "main": "index.js",
   "scripts": {
-    "start": "webpack -w & nodemon server",
+    "start": "node server",
+    "start-dev": "webpack && nodemon server",
     "start-server": "nodemon server",
     "build-client": "webpack"
   },

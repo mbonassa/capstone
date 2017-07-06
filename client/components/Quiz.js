@@ -47,7 +47,9 @@ export default class Quiz extends React.Component {
                                 questionNumbers: snapshot.val().numbers.split(',')
                             }, () => {
                                 console.log(this.state)
-                                if (arrayify(this.state.round1).length === 5) browserHistory.push('waiting')
+                                if (this.state.round1) {
+                                    if (arrayify(this.state.round1).length === 5)   browserHistory.push('waiting')
+                                }
                             })
                         });
                     }
@@ -91,7 +93,6 @@ export default class Quiz extends React.Component {
         let latestMatchKey;
 
         if (this.partnerId.length && answerNumber) {
-            console.log('firing with', answerNumber)
             latestMatchKey = this.partnerId;
             matchRef.child(latestMatchKey).child('round1').update({
                 [questionNumber]: answerNumber
@@ -99,7 +100,6 @@ export default class Quiz extends React.Component {
             .then(() => {
                 let current = this.state.current +1;
                 this.setState({current}, () => {
-                    console.log("current is", this.state.current)
                     if (this.state.current > 4){
                         browserHistory.push('waiting')
                     }
@@ -109,20 +109,11 @@ export default class Quiz extends React.Component {
         }
 
         //Update database with new question count and answer count
-        let questionData = this.state.quizData[questionNumber];
-        let questionCount = questionData.questionCount ? questionData.questionCount + 1 : 1;
-        let answerCountKey = answerNumber.toString() + 'a';
-        let answerCount = questionData[answerCountKey] ? questionData[answerCountKey] + 1 : 1;
-        firebaseQuizRef.child(questionNumber).update({questionCount, [answerCountKey]: answerCount});
-
-        // let current = this.state.current +1;
-        // this.setState({current}, () => {
-        //     console.log("current is", this.state.current)
-        //     if (this.state.current > 4){
-        //         browserHistory.push('waiting')
-        //     }
-        // });
-
+        // let questionData = this.state.quizData[questionNumber];
+        // let questionCount = questionData.questionCount ? questionData.questionCount + 1 : 1;
+        // let answerCountKey = answerNumber.toString() + 'a';
+        // let answerCount = questionData[answerCountKey] ? questionData[answerCountKey] + 1 : 1;
+        // firebaseQuizRef.child(questionNumber).update({questionCount, [answerCountKey]: answerCount});
     }
 
     render() {

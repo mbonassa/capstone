@@ -4,7 +4,7 @@ HeartRate is an innovative dating app where you get to know your matches through
 
 ## Website
 
-http://score-dating.herokuapp.com/
+https://heart-rate.herokuapp.com/
 
 ## Setup
 

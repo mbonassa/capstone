@@ -14,10 +14,6 @@ export const firebaseMessaging = firebaseApp.messaging();
     firebaseMessaging.requestPermission()
     .then(() => {
         console.log("we're good")
-        return firebaseMessaging.getToken()
-    })
-    .then(token => {
-        console.log(token)
     })
     .catch(err => {
         console.log(err)
