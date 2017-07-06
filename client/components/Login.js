@@ -158,7 +158,21 @@ export default class App extends React.Component {
               title="Sign in with Facebook"
               onClick={this.handleFacebookLogin}
           > Sign in with Facebook </button>
-          <button id={!this.state.toggleLogin ? "returning" : "new"} className="btn toggle-btn center"  onClick={()=>{this.setState({toggleLogin: !this.state.toggleLogin})}} >
+          <button id={!this.state.toggleLogin ? "returning" : "new"} className="btn toggle-btn center"  onClick={()=>{
+            if (this.state.toggleLogin)
+              this.setState({
+                toggleLogin: !this.state.toggleLogin,
+                signUpPassword: this.state.logInPassword,
+                signUpEmail: this.state.logInEmail
+              })
+            else
+              this.setState({
+                toggleLogin: !this.state.toggleLogin,
+                logInPassword: this.state.signUpPassword,
+                logInEmail: this.state.signUpEmail
+              })
+            }
+          } >
           {!this.state.toggleLogin ? "Returning? Login" : "New here? Sign up"}
           </button>
         </div>
