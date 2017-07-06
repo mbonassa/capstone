@@ -23,9 +23,6 @@ admin.initializeApp({
 
 module.exports = admin;
 
-app
-
-
 const createApp = () => app
   .use(morgan('dev'))
   .use(express.static(path.join(__dirname, '..', 'public')))
