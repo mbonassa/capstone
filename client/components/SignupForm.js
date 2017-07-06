@@ -26,23 +26,29 @@ export default class Signup extends React.Component {
   handleSubmit(evt){
     evt.preventDefault();
     console.log(this.state)
-    firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
-      name: this.state.name,
-      gender: this.state.gender,
-      age: this.state.age,
-      imageUrl: this.state.imageUrl,
-      bio: this.state.bio,
-      genderPreference: this.state.genderPreference,
-      minAge: this.state.minAge,
-      maxAge: this.state.maxAge,
-      active: false,
-      partnerId: '',
-      viewed: {},
-      matches: {}
-    })
-    .then(() => {
-      browserHistory.push('/profile')
-    })
+    if (!this.state.name.length) {
+      alert ('Please enter your name')
+    } else if (!this.state.age){
+      alert ('You must enter an age to create a profile')
+    } else {
+      firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
+        name: this.state.name,
+        gender: this.state.gender,
+        age: this.state.age,
+        imageUrl: this.state.imageUrl,
+        bio: this.state.bio,
+        genderPreference: this.state.genderPreference,
+        minAge: this.state.minAge,
+        maxAge: this.state.maxAge,
+        active: false,
+        partnerId: '',
+        viewed: {},
+        matches: {}
+      })
+      .then(() => {
+        browserHistory.push('/profile')
+      })
+    }
   }
 
   genderPreferenceChange(evt){
