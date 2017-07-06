@@ -225,19 +225,19 @@ export default ignite(withAuth(class extends React.Component {
     this.state.userInfo.matches ? heartStatus = this.state.userInfo.matches[this.props.partnerId].heartStatus : null
     const { user, snapshot, asEntries } = this.props,
           messages = asEntries(snapshot)
-    console.log("partner",this.state.partnerInfo)
+
 
     return (
       <div>
         <div>
-          { heartStatus == 0 ? <img className="chat-hearts" src="/img/no-hearts.gif" /> : null }
-          { heartStatus == 1 ? <img className="chat-hearts" src="/img/1-heart.gif" /> : null }
-          { heartStatus == 2 ? <img className="chat-hearts" src="/img/2-hearts.gif" /> : null }
-          { heartStatus == 3 ? <img className="chat-hearts" src="/img/3-hearts.gif" /> : null }
-          { heartStatus == 4 ? <img className="chat-hearts" src="/img/4-hearts.gif" /> : null }
+          { heartStatus == 0 ? <img id="chat-hearts" src="/img/no-hearts.gif" /> : null }
+          { heartStatus == 1 ? <img id="chat-hearts" src="/img/1-heart.gif" /> : null }
+          { heartStatus == 2 ? <img id="chat-hearts" src="/img/2-hearts.gif" /> : null }
+          { heartStatus == 3 ? <img id="chat-hearts" src="/img/3-hearts.gif" /> : null }
+          { heartStatus == 4 ? <img id="chat-hearts" src="/img/4-hearts.gif" /> : null }
           { heartStatus == 5 ?
             <div>
-              <img className="chat-hearts" src="/img/5-hearts.gif" />
+              <img id="chat-hearts" src="/img/5-hearts.gif" />
               <p className="center"> Your HeartRate is maxed out, congrats! Get chatting! </p>
             </div> : null }
         </div>
@@ -283,7 +283,8 @@ export default ignite(withAuth(class extends React.Component {
             <button className="judge btn" onClick={this.judgeQuestion(1)}><img className="inline-block" src="/img/full-heart.png" /></button>
           </div>
           :
-          <div><p>waiting</p></div>
+          <div><h3 className="center">Waiting for {this.state.partnerInfo.name}</h3></div>
+
         }
 
       </div>
