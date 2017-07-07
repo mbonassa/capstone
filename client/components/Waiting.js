@@ -164,11 +164,7 @@ export default class Waiting extends React.Component {
             console.error('The read failed: ' + errorObject.code)
         });
       }
-      })
-
-
-
-        console.log("this.state.img", this.state.img, "heartStatus",this.state.heartStatus)
+    })
     }
 
     componentWillUnmount(){

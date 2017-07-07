@@ -2,7 +2,7 @@ import React from 'react';
 import FireBaseTools, { firebaseUsersRef, firebaseAuth } from '../../utils/firebase.js';
 import { browserHistory, Link } from 'react-router';
 import { randomize } from '../../utils/helperFunctions'
-
+import Wait from './Test'
 
 export default class DailyMatch extends React.Component {
   constructor(props){
@@ -152,7 +152,7 @@ export default class DailyMatch extends React.Component {
           :
           this.state.userObj && !this.state.userObj.active && this.state.partnerInfo.active ?
           <div>
-            <h4> Waiting for {this.state.partnerInfo.name} </h4>
+            <Wait/>
             <Link to="profile"> Return to Profile </Link>
           </div>
           :

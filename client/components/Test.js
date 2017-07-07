@@ -30,6 +30,7 @@ export default class Wait extends React.Component {
     console.log("let's see the mobile status", window.md)
         //cloud messaging
         this.unsubscribe = firebaseMessaging.onMessage(payload => {
+            console.log('MESSAGE RECEIVED')
         const matchNotification = new Notify(payload.notification.title, {
             body: `${payload.notification.body}`,
             icon: payload.notification.icon,
