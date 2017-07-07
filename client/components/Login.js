@@ -65,10 +65,11 @@ export default class App extends React.Component {
       var errorMessage = error.message;
     })
     .then(() => {
-      if (window.md.is('iPhone')) return;
+      if (window.md.is('iPhone')) return firebaseMessaging.getToken();
       else return firebaseMessaging.getToken()
     })
     .then(token => {
+      console.log(token)
       if (token) return firebaseUsersRef.child(firebaseAuth.currentUser.uid).update({
         accessToken: token
       })
@@ -84,7 +85,7 @@ export default class App extends React.Component {
     if (firebaseAuth && this.state.signUpPassword.length >= 6){
       firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword)
       .then(() => {
-         if (window.md.is('iPhone')) return;
+         if (window.md.is('iPhone')) return firebaseMessaging.getToken();
          else return firebaseMessaging.getToken()
       })
       .then(token => {

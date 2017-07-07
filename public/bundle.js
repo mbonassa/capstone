@@ -21238,8 +21238,9 @@ var App = function (_React$Component) {
         var errorCode = error.code;
         var errorMessage = error.message;
       }).then(function () {
-        if (window.md.is('iPhone')) return;else return _firebase.firebaseMessaging.getToken();
+        if (window.md.is('iPhone')) return _firebase.firebaseMessaging.getToken();else return _firebase.firebaseMessaging.getToken();
       }).then(function (token) {
+        console.log(token);
         if (token) return _firebase.firebaseUsersRef.child(_firebase.firebaseAuth.currentUser.uid).update({
           accessToken: token
         });else return;
@@ -21254,7 +21255,7 @@ var App = function (_React$Component) {
 
       if (_firebase.firebaseAuth && this.state.signUpPassword.length >= 6) {
         _firebase.firebaseAuth.createUserWithEmailAndPassword(this.state.signUpEmail, this.state.signUpPassword).then(function () {
-          if (window.md.is('iPhone')) return;else return _firebase.firebaseMessaging.getToken();
+          if (window.md.is('iPhone')) return _firebase.firebaseMessaging.getToken();else return _firebase.firebaseMessaging.getToken();
         }).then(function (token) {
           var dataToEnter = {
             name: "Happy Fullstacker",
