@@ -21907,6 +21907,11 @@ var Quiz = function (_React$Component) {
                                         finishedQuiz: snapshot.val().finishedQuiz,
                                         round1: snapshot.val().round1,
                                         questionNumbers: snapshot.val().numbers.split(',')
+                                    }, function () {
+                                        console.log(_this2.state);
+                                        if (_this2.state.round1) {
+                                            if ((0, _helperFunctions.arrayify)(_this2.state.round1).length === 5) _reactRouter.browserHistory.push('waiting');
+                                        }
                                     });
                                 });
                             }

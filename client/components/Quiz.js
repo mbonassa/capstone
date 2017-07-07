@@ -45,6 +45,11 @@ export default class Quiz extends React.Component {
                                 finishedQuiz: snapshot.val().finishedQuiz,
                                 round1: snapshot.val().round1,
                                 questionNumbers: snapshot.val().numbers.split(',')
+                            }, () => {
+                                console.log(this.state)
+                                if (this.state.round1) {
+                                    if (arrayify(this.state.round1).length === 5)   browserHistory.push('waiting')
+                                }
                             })
                         });
                     }
